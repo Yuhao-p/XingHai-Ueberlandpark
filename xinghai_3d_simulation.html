@@ -640,15 +640,17 @@ const UP_HALF = 226, UP_RAMP = 130, UP_D = -6.5;   // ✓ 既有辛亥車行地�
 const UPW = X_KL - UP_HALF, UPE = X_KL + UP_HALF;
 const XMIN = -780, XMAX = X_KL + 280, ZN = -560, ZS = 560;
 const H_JG = 10;                         // △ 建國高架路面高程
-const SL = 26, ZF = -31.5;               // 復興南路口沿辛亥路半長；復興南路南向停止線
+const SL = 26;                          // 復興南路口沿辛亥路半長
 // ◎ 斷面依 114/09/09 路口調查（站號 EI109）車道數：西行進口（A）中央 3＋劃分島右側 4；東行進口（C）中央 2＋右側 3；復興南路南向（D）3
 const LE = [3.3, 6.8], LW = [3.3, 6.8, 10.3];   // 中央車道偏移：東行 2、西行 3（西行位於北側，取負值）
 const LN = LE;
 const HS = 10, HN = 13.5;                // 中央路廊南、北半寬（北側多一條西行車道）
-const ZE = [12.1, 15.3, 18.5];           // 東行在地車道（南側，由內而外）
-const ZW = [15.6, 18.8, 22.0, 25.2];     // 西行在地車道（北側，z 取負）
-const RD = { S: 20.1, N: 26.8 }, PL = { S: 22.6, N: 29.3 }, WK = { S: 26.1, N: 32.8 }, NTU_WALL = 26.5;   // 車道外緣、植栽帶外緣、人行道外緣、臺大圍牆
-const SWC = { S: 24.35, N: -31.05 };     // 人行道中心
+const DV = 2.0;                          // ◎ 快慢車道間劃分島（植栽、種樹）寬度
+const ZE = [13.6, 16.8, 20.0];           // 東行在地車道（南側，由內而外）
+const ZW = [17.1, 20.3, 23.5, 26.7];     // 西行在地車道（北側，z 取負）
+const RD = { S: 21.6, N: 28.3 }, PL = { S: 24.1, N: 30.8 }, WK = { S: 27.6, N: 34.3 }, NTU_WALL = 28.0;   // 車道外緣、植栽帶外緣、人行道外緣、臺大圍牆
+const SWC = { S: 25.85, N: -32.55 };     // 人行道中心
+const ZF = -RD.N - 4.7;                  // 復興南路南向停止線（行人穿越道以北）
 const FXL = [5.3, 8.6, 11.9], FX_MED = 3.65;   // 復興南路車道中心（內→外，各向 3 車道）；中央分隔帶 7.3 m（簡化路段，不施作）
 const OPTS = ['0', 'A', 'B', 'C'];
 const AT_GRADE = o => o === '0' || o === 'B';
@@ -826,6 +828,17 @@ function building(parent, wall, roof, x0, x1, h, z0, z1) {
 const TRUNK = new THREE.CylinderGeometry(0.22, 0.32, 3, 6); TRUNK.translate(0, 1.5, 0);
 const CROWN = new THREE.IcosahedronGeometry(2.4, 1); CROWN.translate(0, 4.1, 0);
 const CROWN_MAT = lam(0xffffff, { flatShading: true });
+// 行道樹（高幹型）：樹冠底部約 4 m 以上，可懸伸於車道上方而不影響車輛淨高
+const TRUNK_T = new THREE.CylinderGeometry(0.2, 0.3, 4.6, 6); TRUNK_T.translate(0, 2.3, 0);
+const CROWN_T = new THREE.IcosahedronGeometry(2.2, 1); CROWN_T.scale(1, 0.85, 1); CROWN_T.translate(0, 6.3, 0);
+function tallTrees(parent, list) {
+  if (!list.length) return;
+  const tr = new THREE.InstancedMesh(TRUNK_T, lam(0x6b4a2b), list.length), cr = new THREE.InstancedMesh(CROWN_T, CROWN_MAT, list.length);
+  const m = new THREE.Matrix4(), q = new THREE.Quaternion(), p = new THREE.Vector3(), s = new THREE.Vector3(), c = new THREE.Color();
+  const greens = [0x3f8a3a, 0x4f9a44, 0x5c8f3b, 0x467f3a];
+  list.forEach(([x, y, z, k], i) => { p.set(x, y, z); s.set(k, 1, k); q.setFromAxisAngle(new THREE.Vector3(0, 1, 0), i * 1.7); m.compose(p, q, s); tr.setMatrixAt(i, m); cr.setMatrixAt(i, m); cr.setColorAt(i, c.setHex(greens[(i + 1) % 4])); });
+  parent.add(tr, cr);
+}
 function trees(parent, list) {
   if (!list.length) return;
   const tr = new THREE.InstancedMesh(TRUNK, lam(0x6b4a2b), list.length), cr = new THREE.InstancedMesh(CROWN, CROWN_MAT, list.length);
@@ -953,8 +966,9 @@ const band = (g, mat, d0, d1, y0, y1, H, x0, x1) => sweep(g, mat, SX, [[d0, () =
   (a, b) => !(H && (inH(a, H) || inH(b, H))) && (x0 == null || (a.x >= x0 && b.x <= x1)));
 [1, -1].forEach(sd => {                     // 南側：緣石＋東行在地 3 車道＋植栽＋人行道；北側：緣石＋西行在地 4 車道＋植栽＋人行道
   const north = sd < 0, jg = north ? [[X_JG - 40, X_M + 14]] : [];
-  const c0 = north ? -HN : HS, c1 = c0 + sd * 0.5, rd = north ? -RD.N : RD.S, pl = north ? -PL.N : PL.S, wk = north ? -WK.N : WK.S;
-  band(common, M.sidewalk, c0, c1, 0, 0.15, [[X_FX - SL, X_FX + SL], ...XING, [X_KL - 12, X_KL + 12], ...jg]);
+  const c0 = north ? -HN : HS, c1 = c0 + sd * DV, rd = north ? -RD.N : RD.S, pl = north ? -PL.N : PL.S, wk = north ? -WK.N : WK.S;
+  const dh = [[X_FX - SL, X_FX + SL], ...XING, [X_KL - 12, X_KL + 12], ...jg];   // 劃分島：緣石＋植栽（路口、穿越點處開口）
+  band(common, M.concrete, c0, c0 + sd * 0.2, 0, 0.25, dh); band(common, M.planting, c0 + sd * 0.2, c1 - sd * 0.2, 0, 0.2, dh); band(common, M.concrete, c1 - sd * 0.2, c1, 0, 0.25, dh);
   band(common, M.sidewalk, c0, c1, 0, 0.03, [[X_FX - SL, X_FX + SL], [X_KL - 12, X_KL + 12], ...jg]);       // 穿越點處的齊平緣石斜坡
   band(common, M.asphalt, c1, rd, 0, 0.04);
   const rh = north ? [[X_JG - 40, X_M + 14], [X_FX - 14, X_FX + 14], [X_KL - 12, X_KL + 12]] : [[X_FX - 14, X_FX + 14], [X_KL - 12, X_KL + 12]];
@@ -973,7 +987,7 @@ for (let z = ZN; z < -36; z += 12) [-6.95, 6.95, -10.25, 10.25].forEach(x => LIN
 LINES.push([X_FX - 13.55, X_FX - FX_MED, 0.045, 0.07, ZF - 0.4, ZF]);
 box(common, M.plaza, X_FX - 14, X_FX + 14, 0, 0.16, PL.S, 50);       // 復興南路口南臂：臺大側門廣場
 box(common, M.asphalt, X_FX - 4, X_FX + 4, 0, 0.17, NTU_WALL + 0.4, 90);
-LINES.push([X_FX - SL - 0.4, X_FX - SL, 0.04, 0.07, HS + 0.5, RD.S], [X_FX + SL, X_FX + SL + 0.4, 0.04, 0.07, -RD.N, -HN - 0.5]);
+LINES.push([X_FX - SL - 0.4, X_FX - SL, 0.04, 0.07, HS + DV, RD.S], [X_FX + SL, X_FX + SL + 0.4, 0.04, 0.07, -RD.N, -HN - DV]);
 [X_CW[0], X_CW[1]].forEach(x => band(common, M.plaza, PL.S, 40, 0, 0.16, null, x - 8, x + 8));   // 節點 1、2 南側入口廣場
 band(common, M.path, 40, 230, 0, 0.1, null, X_CW[1] - 4, X_CW[1] + 4);                              // ◎ 楓香道（校內道路，示意）
 // 建國南路（建國高架主線位於其上方；東側車道與連絡匝道並行）
@@ -982,7 +996,7 @@ box(common, M.asphalt, X_JG - 14, X_JG + 4, 0, 0.045, ZN, xhAt(X_JG).z - 30);
 box(common, M.asphalt, X_KL - 12, X_KL + 12, 0, 0.045, ZN, ZS);
 for (let z = ZN; z < ZS; z += 12) if (z > RD.S + 4 || z < -RD.N - 6) LINES.push([X_KL - 0.08, X_KL + 0.08, 0.045, 0.07, z, z + 3]);
 LINES.push([X_KL - 12, X_KL, 0.045, 0.07, -RD.N - 2.4, -RD.N - 2], [X_KL, X_KL + 12, 0.045, 0.07, RD.S + 2, RD.S + 2.4]);
-LINES.push([X_KL - 14.4, X_KL - 14, 0.04, 0.07, HS + 0.5, RD.S], [X_KL + 14, X_KL + 14.4, 0.04, 0.07, -RD.N, -HN - 0.5]);
+LINES.push([X_KL - 14.4, X_KL - 14, 0.04, 0.07, HS + DV, RD.S], [X_KL + 14, X_KL + 14.4, 0.04, 0.07, -RD.N, -HN - DV]);
 box(common, M.concrete, KL_COVER[0], KL_COVER[1], -1.2, -0.02, -HN + 0.8, HS - 0.8);
 box(common, M.asphalt, KL_COVER[0], KL_COVER[1], -0.02, 0.03, -HN, HS);
 // 臺大校園（沿辛亥路南側曲線）
@@ -1020,7 +1034,7 @@ for (let x = NTU_E + 40; x <= XMAX - 20; x += 34) [48, 86, 126, 170].forEach(zc 
   SX.forEach((p, i) => {                                                // 兩側植栽帶
     if (i % 7) return;
     // 行道樹位於植栽帶外側（縮小樹冠）：樹冠不伸入在地車道（大客車淨寬）
-    [22.0, -28.7].forEach(d => { const a = { x: p.x }; if (inH(a, XING) || near(p.x, [X_FX], 18) || near(p.x, [X_KL], 16) || (d < 0 && p.x > X_JG - 40 && p.x < X_M + 14)) return; T.push([p.x + p.nx * d, 0.12, p.z + p.nz * d, 0.85]); });
+    [23.5, -30.2].forEach(d => { const a = { x: p.x }; if (inH(a, XING) || near(p.x, [X_FX], 18) || near(p.x, [X_KL], 16) || (d < 0 && p.x > X_JG - 40 && p.x < X_M + 14)) return; T.push([p.x + p.nx * d, 0.12, p.z + p.nz * d, 0.85]); });
   });
   for (let x = NTU_W + 10; x < NTU_E; x += 18) [36, 56].forEach(d => { if (!near(x, X_CW, 12) && !near(x, [X_CW[0]], 28)) { const o = offXH(x + (d > 40 ? 9 : 0), d); T.push([o.x, 0.05, o.z, 1.05]); } });
   for (let i = 0; i < 120; i++) { const x = NTU_W + rnd() * (NTU_E - NTU_W), d = 110 + rnd() * 330, o = offXH(x, d); T.push([o.x, 0.05, o.z, 0.9 + rnd() * 0.4]); }
@@ -1106,8 +1120,8 @@ function buildCorridor(g, o, S, kind) {      // kind：'x' 快速道路／連絡
   sweep(g, M.concrete, S, [[-0.3, r], [0.3, r], [0.2, s => r(s) + 0.85], [-0.2, s => r(s) + 0.85]],
     (a, b) => !atGrade(a, b) && !innerMed(a) && !(kind === 'x' && a.bz && Math.abs(a.y) < 0.3) &&                                   // 連絡匝道平面落地段不設護欄（與在地車道平面交會）
       !(AT_GRADE(o) && kind !== 'm' && Math.abs(a.y) < 0.3 && (a.st || kind === 'w') && !inBox(a) && MED_BREAK.some(([p, q]) => a.x > p && a.x < q)));
-  const T = []; for (let i = 0; i < S.length - 1; i += 2) if (atGrade(S[i], S[i + 1])) T.push([S[i].x, S[i].y + 0.25, S[i].z, 0.85]);
-  trees(g, T);
+  const T = []; for (let i = 0; i < S.length - 1; i += 4) if (atGrade(S[i], S[i + 1]) && !(kind === 'w' && S[i].x < -630)) T.push([S[i].x, S[i].y + 0.25, S[i].z, 0.9]);   // 中央分隔島密植行道樹（建國高架主線下方不種）
+  tallTrees(g, T);
   let last = -1e9;                                                                                                   // 橋墩
   S.forEach((s, i) => {
     if (s.y < 3.2 || i - last < 8) return;
@@ -1145,8 +1159,8 @@ function buildExpress(o) {
 function zebraXH(key, x, d0, d1, y, half) { const o = offXH(x, 0); for (let d = d0 + 0.3; d + 0.45 <= d1; d += 0.9) { const p = offXH(x, d + 0.225); LINES_O[key].push([p.x - half, p.x + half, y, y + 0.03, p.z - 0.225, p.z + 0.225, o.yaw]); } }
 function stopXH(key, x, d0, d1) { const p = offXH(x, (d0 + d1) / 2); LINES_O[key].push([p.x - 0.2, p.x + 0.2, 0.06, 0.09, p.z - Math.abs(d1 - d0) / 2, p.z + Math.abs(d1 - d0) / 2, p.yaw]); }
 function raisedXH(g, x) {                           // 行人優先抬高式穿越道（在地車道）
-  band(g, M.raised, HS + 0.5, RD.S, 0, 0.1, null, x - 3, x + 3); zebraXH(g.name, x, HS + 0.5, RD.S, 0.1, 2.6);
-  band(g, M.raised, -RD.N, -HN - 0.5, 0, 0.1, null, x - 3, x + 3); zebraXH(g.name, x, -RD.N, -HN - 0.5, 0.1, 2.6);
+  band(g, M.raised, HS + DV, RD.S, 0, 0.1, null, x - 3, x + 3); zebraXH(g.name, x, HS + DV, RD.S, 0.1, 2.6);
+  band(g, M.raised, -RD.N, -HN - DV, 0, 0.1, null, x - 3, x + 3); zebraXH(g.name, x, -RD.N, -HN - DV, 0.1, 2.6);
 }
 const LAMP_ON = {}, LAMP_OFF = {};
 ['x', 'w', 'f', 'n', 'j', 'e', 'g', 'h'].forEach(p => { LAMP_ON[p + 'R'] = 0xff3b30; LAMP_ON[p + 'Y'] = 0xffc300; LAMP_ON[p + 'G'] = 0x2bd96b; LAMP_OFF[p + 'R'] = 0x3a1414; LAMP_OFF[p + 'Y'] = 0x3a3014; LAMP_OFF[p + 'G'] = 0x143a1e; });
@@ -1187,7 +1201,7 @@ function midSignals(g, x, pv, pp) {                 // 穿越點 1、2：路段�
 function jgSignals(g) {                             // Y 型匯流號誌（現況／B）
   const a = at(X_M - 34, PL.S - 1.2), b = at(X_M + 30, -PL.N + 1.2), c = at(X_M - 34, 0), d = at(X_M + 30, 0);
   signalPole(g, a.x, a.z, 'x-', 'j'); signalPole(g, b.x, b.z, 'x+', 'j'); signalPole(g, c.x, c.z, 'x-', 'j'); signalPole(g, d.x, d.z, 'x+', 'e');
-  signalPole(g, X_CON + 10, xhAt(X_CON).z - 26, 'z-', 'e');
+  signalPole(g, X_CON + 12, xhAt(X_CON).z - WK.N - 2, 'z-', 'e');     // 連絡匝道停止號誌（立於北側人行道外）
 }
 function atGradeCrossings(g) { junctionSignals(g, true); midSignals(g, X_CW[0], 'g', 'q'); midSignals(g, X_CW[1], 'h', 'r'); jgSignals(g); }
 // 復興南路（簡化路段，不施作任何結構）：中央植栽分隔帶 7.3 m
@@ -1216,6 +1230,15 @@ function stairTower(g, X, sd) {
   const cap = new THREE.Mesh(BOX, M.roof); cap.scale.set(3.4, 0.4, 3.4); cap.position.set(0, 10.6, 0); eg.add(cap);
 }
 // ---- 現況 0：三處節點皆為號誌化斑馬線 ----
+function dividerTrees(g, o) {                       // 快慢車道劃分島行道樹（方案 B 箱體段由箱體取代）
+  const T = [], skipX = x => near(x, [X_FX], SL + 3) || near(x, [X_KL], 16) || near(x, X_CW, 6) || (o === 'B' && B_SEG.some(([a, b]) => x > a - 3 && x < b + 3));
+  SX.forEach((p, i) => {
+    if (i % 5 || skipX(p.x)) return;
+    [HS + DV / 2, -(HN + DV / 2)].forEach(d => { if (d < 0 && p.x > X_JG - 40 && p.x < X_M + 14) return; T.push([p.x + p.nx * d, 0.2, p.z + p.nz * d, 0.9]); });
+  });
+  tallTrees(g, T);
+}
+OPTS.forEach(o => dividerTrees(G[o], o));
 buildExpress('0'); atGradeCrossings(G['0']); fuxingMedian(G['0']);
 // ◎ 現況：節點 3 東側（復興南路口 T 字東臂）只有自行車穿越道、沒有行人穿越道（僅現況方案顯示）
 box(G['0'], lam(0x2f9e5b), X_FX + 24.8, X_FX + 26.0, 0.05, 0.065, -RD.N, RD.S);
@@ -1970,7 +1993,7 @@ const VIEWS = {
   keelung: { pos: [X_KL - 30, 150, -170], tgt: [X_KL + 25, 0, 5] },
   east: { pos: [210, 70, 95], tgt: [470, -5, 0] },
   section: { pos: [X_SEC + 70, 14, 40], tgt: [X_SEC, -3, -8] },
-  eye: { pos: [X_FX + 2, 1.7, 36], tgt: [X_FX - 14, 3.5, -30] }
+  eye: { pos: [X_FX + 9, 1.7, 36], tgt: [X_FX - 16, 3.5, -30] }
 };
 renderer.localClippingEnabled = true;
 let clipOn = null;
