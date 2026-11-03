@@ -5,509 +5,1309 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>辛亥路方案 3D 模擬</title>
 <style>
-  html, body { margin: 0; height: 100%; overflow: hidden; background: #cfe3f2;
-    font-family: "Microsoft JhengHei", "PingFang TC", "Noto Sans TC", sans-serif; }
-  #panel { position: absolute; top: 12px; left: 12px; width: min(350px, calc(100vw - 24px));
-    max-height: calc(100vh - 24px); overflow: auto; box-sizing: border-box; padding: 14px 16px;
-    background: rgba(255,255,255,.94); border-radius: 12px; box-shadow: 0 4px 18px rgba(0,0,0,.18);
-    color: #1f2933; font-size: 14px; line-height: 1.55; }
-  .head { display: flex; align-items: flex-start; gap: 8px; }
-  h1 { font-size: 17px; margin: 0; flex: 1; }
-  #fold { flex: none; width: 30px; padding: 2px 0; }
-  .sub { color: #5b6670; font-size: 12px; margin: 4px 0 8px; }
-  .step { font-weight: bold; margin-top: 10px; font-size: 13px; }
+  /* ===== 深色半透明主題（自訂 CSS，不使用外部框架） ===== */
+  :root {
+    --glass: rgba(15, 23, 42, .80); --glass2: rgba(30, 41, 59, .72); --border: rgba(148, 163, 184, .22);
+    --ink: #e5e7eb; --muted: #94a3b8; --accent: #60a5fa; --accent2: #3b82f6;
+    --good: #34d399; --warn: #fbbf24; --bad: #f87171; --track: rgba(148, 163, 184, .18);
+  }
+  html, body { margin: 0; height: 100%; overflow: hidden; background: #cfe3f2; color: var(--ink);
+    font-family: "Microsoft JhengHei", "PingFang TC", "Noto Sans TC", system-ui, sans-serif; }
+  canvas { display: block; }
+  .glass { position: absolute; background: var(--glass); border: 1px solid var(--border); border-radius: 14px;
+    box-shadow: 0 10px 30px rgba(2, 6, 23, .35); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    box-sizing: border-box; font-size: 13px; line-height: 1.5; }
+  .scroll { overflow: auto; scrollbar-width: thin; scrollbar-color: rgba(148,163,184,.4) transparent; }
+  #panel { top: 12px; left: 12px; width: min(330px, calc(100vw - 24px)); max-height: calc(100vh - 24px); padding: 12px 14px; }
+  .head { display: flex; align-items: center; gap: 6px; }
+  h1 { font-size: 15px; margin: 0; flex: 1; letter-spacing: .3px; }
+  .sub { color: var(--muted); font-size: 11.5px; margin: 6px 0 4px; }
+  .step { font-weight: bold; margin-top: 10px; font-size: 12px; color: var(--muted); letter-spacing: .5px; }
   .row { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0; }
-  button { flex: 1 1 90px; border: 1px solid #c5ccd3; background: #f4f6f8; color: #1f2933;
-    border-radius: 8px; padding: 8px 6px; font-size: 13px; font-family: inherit; cursor: pointer; line-height: 1.35; }
-  button:hover { background: #e6ebf0; }
-  button.on { background: #1f6feb; border-color: #1f6feb; color: #fff; }
-  #info { background: #f4f6f8; border-radius: 8px; padding: 8px 10px; font-size: 13px; }
-  #info b { color: #1f6feb; }
-  .legend { font-size: 12px; color: #5b6670; margin-top: 10px; }
-  .dot { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin: 0 3px 0 6px;
-    vertical-align: -1px; border: 1px solid rgba(0,0,0,.25); }
-  #loading { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
-    font-size: 18px; color: #1f2933; pointer-events: none; }
-  #err { display: none; position: absolute; inset: 0; background: #fff; padding: 40px; font-size: 16px; line-height: 1.9; color: #1f2933; }
+  button { flex: 1 1 64px; border: 1px solid var(--border); background: rgba(255,255,255,.06); color: var(--ink);
+    border-radius: 9px; padding: 7px 6px; font-size: 12.5px; font-family: inherit; cursor: pointer; line-height: 1.35;
+    transition: background .15s, border-color .15s; }
+  button:hover { background: rgba(255,255,255,.12); }
+  button.on { background: var(--accent2); border-color: var(--accent); color: #fff; }
+  button.mini { flex: none; padding: 3px 9px; font-size: 12px; }
+  #info { background: var(--glass2); border-radius: 10px; padding: 8px 10px; font-size: 12.5px; }
+  #info b { color: var(--accent); }
+  .legend, .models { font-size: 11px; color: var(--muted); margin-top: 8px; }
+  .dot { display: inline-block; width: 9px; height: 9px; border-radius: 2px; margin: 0 3px 0 6px; vertical-align: -1px; }
+
+  /* ===== 右側 CBA 儀表板 ===== */
+  #dash { top: 12px; right: 12px; bottom: 12px; width: min(390px, calc(100vw - 24px)); display: flex; flex-direction: column;
+    transition: transform .35s ease, opacity .35s ease; }
+  #dash.collapsed { transform: translateX(calc(100% + 24px)); opacity: 0; pointer-events: none; }
+  #dashHead { padding: 12px 14px 0; }
+  #dashHead h2 { font-size: 15px; margin: 0; flex: 1; }
+  .tabs { display: flex; gap: 4px; margin-top: 10px; border-bottom: 1px solid var(--border); }
+  .tabs button { flex: 1; border: none; border-radius: 8px 8px 0 0; background: transparent; color: var(--muted); padding: 8px 4px; }
+  .tabs button.on { background: var(--glass2); color: #fff; box-shadow: inset 0 -2px 0 var(--accent); }
+  #dashBody { flex: 1; padding: 10px 14px 14px; }
+  #pill { position: absolute; right: 0; top: 50%; transform: translateY(-50%); writing-mode: vertical-rl; flex: none;
+    border-radius: 10px 0 0 10px; padding: 14px 8px; background: var(--glass); color: #fff; font-weight: bold;
+    border: 1px solid var(--border); border-right: none; display: none; backdrop-filter: blur(12px); letter-spacing: 2px; }
+  #pill.show { display: block; }
+  .hero { display: flex; gap: 10px; align-items: flex-start; }
+  .hero .ttl { flex: 1; }
+  .hero .opt { font-size: 18px; font-weight: bold; }
+  .hero .tagline { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .badge { display: inline-block; font-size: 11px; font-weight: bold; border-radius: 999px; padding: 2px 9px; margin-top: 6px; }
+  .badge.good { background: rgba(52,211,153,.18); color: var(--good); border: 1px solid rgba(52,211,153,.45); }
+  .badge.warn { background: rgba(251,191,36,.16); color: var(--warn); border: 1px solid rgba(251,191,36,.45); }
+  .badge.bad { background: rgba(248,113,113,.16); color: var(--bad); border: 1px solid rgba(248,113,113,.45); }
+  .badge.neutral { background: rgba(148,163,184,.16); color: var(--muted); border: 1px solid var(--border); }
+  .note { font-size: 11px; color: var(--muted); margin-top: 6px; }
+  .sec { margin-top: 12px; background: var(--glass2); border-radius: 12px; padding: 10px 12px; }
+  .sec h3 { font-size: 12.5px; margin: 0 0 6px; display: flex; align-items: center; gap: 6px; }
+  .sec h3 .ico { width: 18px; height: 18px; border-radius: 5px; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; }
+  .metric { display: grid; grid-template-columns: 1fr 92px 46px; gap: 4px 8px; align-items: center; padding: 4px 0; }
+  .metric + .metric { border-top: 1px dashed rgba(148,163,184,.15); }
+  .metric .lbl { font-size: 12px; }
+  .metric .rank { grid-column: 1 / 4; font-size: 10.5px; color: var(--muted); margin-top: -2px; }
+  .meter { height: 7px; background: var(--track); border-radius: 4px; overflow: hidden; }
+  .meter i { display: block; height: 100%; border-radius: 4px; transition: width .45s ease; }
+  .meter.cost i { background: linear-gradient(90deg, #fbbf24, #f87171); }
+  .meter.ben i { background: linear-gradient(90deg, #22d3ee, #34d399); }
+  .tag { font-size: 10.5px; text-align: center; border-radius: 6px; padding: 1px 0; font-weight: bold; }
+  .tag.hi-cost, .tag.neg, .tag.lo-ben { color: var(--bad); background: rgba(248,113,113,.14); }
+  .tag.mid { color: var(--warn); background: rgba(251,191,36,.14); }
+  .tag.lo-cost, .tag.hi-ben { color: var(--good); background: rgba(52,211,153,.14); }
+  .tag.base { color: var(--muted); background: rgba(148,163,184,.14); }
+  .verdict { font-size: 12.5px; }
+  .chain { display: flex; flex-direction: column; gap: 5px; margin-top: 8px; }
+  .chain div { font-size: 11.5px; padding: 5px 8px; border-radius: 8px; background: rgba(255,255,255,.04); border-left: 3px solid var(--border); }
+  .chain div.hl { border-left-color: var(--accent); background: rgba(96,165,250,.12); color: #fff; }
+  .eff { display: flex; gap: 10px; align-items: center; }
+  .eff svg { flex: none; }
+  .simline { font-size: 11.5px; color: var(--ink); background: rgba(96,165,250,.10); border-radius: 8px; padding: 6px 8px; margin-top: 8px; }
+
+  /* 即時指標分頁 */
+  table { width: 100%; border-collapse: collapse; font-size: 11.5px; margin-top: 8px; }
+  th, td { padding: 5px 4px; text-align: right; border-bottom: 1px solid rgba(148,163,184,.15); }
+  th:first-child, td:first-child { text-align: left; }
+  th { color: var(--muted); font-weight: normal; font-size: 10.5px; }
+  tr.cur td { background: rgba(96,165,250,.14); font-weight: bold; color: #fff; }
+  #sig { display: flex; align-items: center; gap: 8px; background: var(--glass2); border-radius: 10px; padding: 8px 10px; font-size: 12px; }
+  .lamp { width: 12px; height: 12px; border-radius: 50%; flex: none; box-shadow: 0 0 8px currentColor; }
+
+  /* 載入畫面 */
+  #overlay { position: absolute; inset: 0; z-index: 20; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 12px; background: rgba(15,23,42,.72); backdrop-filter: blur(4px); transition: opacity .5s; text-align: center; padding: 16px; }
+  #overlay.hide { opacity: 0; pointer-events: none; }
+  .spinner { width: 54px; height: 54px; border: 5px solid rgba(96,165,250,.2); border-top-color: var(--accent); border-radius: 50%; animation: spin 1s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  #loadText { font-size: 17px; font-weight: bold; }
+  #loadSub { font-size: 12px; color: var(--muted); max-width: 520px; }
+  .bar { width: min(320px, 70vw); height: 6px; background: rgba(255,255,255,.12); border-radius: 3px; overflow: hidden; }
+  .bar > div { height: 100%; width: 0; background: var(--accent); transition: width .2s; }
+  #skipBtn { display: none; flex: none; padding: 8px 16px; }
+  #err { display: none; position: absolute; inset: 0; z-index: 30; background: #0f172a; padding: 40px; font-size: 16px; line-height: 1.9; }
+
+  @media (max-width: 760px) {
+    #panel { max-height: 46vh; }
+    #dash { top: auto; height: 48vh; }
+  }
 </style>
 </head>
 <body>
 
-<div id="panel">
+<!-- ===== 左側：控制面板 ===== -->
+<div id="panel" class="glass scroll">
   <div class="head">
-    <h1>辛亥路 Ueberlandpark 化：3D 方案模擬</h1>
-    <button id="fold" title="收合／展開面板">－</button>
+    <h1 data-i18n="title"></h1>
+    <button id="langBtn" class="mini">EN</button>
+    <button id="fold" class="mini">－</button>
   </div>
   <div id="panelBody">
-    <div class="sub">概念示意模型（1 格 = 1 公尺；示意路段長 400 m，實際約 1 km）<br>
-      滑鼠左鍵拖曳＝旋轉｜右鍵拖曳＝平移｜滾輪＝縮放</div>
-
-    <div class="step">① 選擇方案</div>
+    <div class="sub" data-i18n="sub"></div>
+    <div class="step" data-i18n="step1"></div>
     <div class="row">
-      <button data-opt="A">方案 A<br>明挖覆蓋地下化</button>
-      <button data-opt="B">方案 B<br>加罩＋屋頂公園</button>
-      <button data-opt="C">方案 C<br>下沉＋分段覆蓋</button>
+      <button data-opt="0" data-i18n="opt0"></button>
+      <button data-opt="A" data-i18n="optA"></button>
+      <button data-opt="B" data-i18n="optB"></button>
+      <button data-opt="C" data-i18n="optC"></button>
     </div>
     <div id="info"></div>
-
-    <div class="step">② 切換視角／控制</div>
+    <div class="step" data-i18n="step2"></div>
     <div class="row">
-      <button id="viewBtn">切換到：行人視角</button>
-      <button id="pauseBtn">暫停車流</button>
+      <button data-view="section" data-i18n="vSection"></button>
+      <button data-view="eye" data-i18n="vEye"></button>
+      <button data-view="bird" data-i18n="vBird"></button>
     </div>
-
-    <div class="legend">
-      車輛：<span class="dot" style="background:#f4f4f4"></span>白
-      <span class="dot" style="background:#d7263d"></span>紅
-      <span class="dot" style="background:#2e5eaa"></span>藍
-      <span class="dot" style="background:#f2c14e"></span>計程車
-      <span class="dot" style="background:#2a9d8f"></span>公車／貨車<br>
-      <span class="dot" style="background:#ff8a00"></span>行人
-      <span class="dot" style="background:#fff1b8"></span>隧道照明
-      <span class="dot" style="background:#6fae4f"></span>公園綠地
-      <span class="dot" style="background:#8b6b4a"></span>土層<br>
-      方位：南側＝台大校園（紅磚建築）；北側＝大安住宅區
+    <div class="step" data-i18n="step3"></div>
+    <div class="row">
+      <button data-speed="1">1×</button><button data-speed="2">2×</button><button data-speed="4">4×</button>
+      <button id="pauseBtn"></button>
     </div>
+    <div class="row"><button id="perfBtn"></button></div>
+    <div class="legend" data-i18n="legend"></div>
+    <div class="models" id="modelStatus"></div>
   </div>
 </div>
 
-<div id="loading">3D 模型載入中…</div>
-<div id="err">
-  <b>⚠ 無法載入 3D 引擎（Three.js）</b><br>
-  1. 請確認電腦已連上網路，然後按 <b>F5</b> 重新整理。<br>
-  2. 若必須在完全離線的環境展示，請參考使用說明中的「離線備案」：把 <code>three.min.js</code> 與
-  <code>OrbitControls.js</code> 兩個檔案放在與本 HTML 檔相同的資料夾即可。
+<!-- ===== 右側：CBA 儀表板 ===== -->
+<div id="dash" class="glass">
+  <div id="dashHead">
+    <div class="head"><h2 data-i18n="dashTitle"></h2><button id="dashHide" class="mini" title="收合">⟩</button></div>
+    <div class="tabs">
+      <button data-tab="cba" class="on" data-i18n="tabCBA"></button>
+      <button data-tab="live" data-i18n="tabLive"></button>
+    </div>
+  </div>
+  <div id="dashBody" class="scroll">
+    <div id="tab-cba"></div>
+    <div id="tab-live" style="display:none">
+      <div id="sig"></div>
+      <table id="kpiTable"></table>
+      <div class="note" data-i18n="kpiNote"></div>
+      <div class="row"><button id="resetBtn" data-i18n="reset"></button></div>
+    </div>
+  </div>
 </div>
+<button id="pill" data-i18n="pill"></button>
+
+<div id="overlay">
+  <div class="spinner"></div>
+  <div id="loadText" data-i18n="loading"></div>
+  <div class="bar"><div id="loadBar"></div></div>
+  <div id="loadSub" data-i18n="loadSub"></div>
+  <button id="skipBtn" data-i18n="skip"></button>
+</div>
+<div id="err" data-i18n="err"></div>
 
 <script>
-/* ============================================================
-   第 0 部分：載入 3D 引擎（先試網路 CDN，失敗則改用同資料夾的離線檔案）
-   ============================================================ */
-var THREE_SRC = [
-  'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js',
-  'https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js',
-  'three.min.js'
-];
-var ORBIT_SRC = [
-  'https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js',
-  'https://unpkg.com/three@0.128.0/examples/js/controls/OrbitControls.js',
-  'OrbitControls.js'
-];
-function loadScript(list, cb) {
-  var i = 0;
-  (function next() {
-    if (i >= list.length) { cb(false); return; }
-    var s = document.createElement('script');
-    s.src = list[i++];
-    s.onload = function () { cb(true); };
-    s.onerror = next;
-    document.head.appendChild(s);
-  })();
-}
-loadScript(THREE_SRC, function (ok) {
-  if (!ok) {
-    document.getElementById('loading').style.display = 'none';
-    document.getElementById('err').style.display = 'block';
-    return;
-  }
-  loadScript(ORBIT_SRC, function () { init(); });   // 旋轉控制載入失敗也照樣顯示模型
-});
-
-document.getElementById('fold').onclick = function () {
-  var b = document.getElementById('panelBody');
-  var hide = b.style.display !== 'none';
-  b.style.display = hide ? 'none' : 'block';
-  this.textContent = hide ? '＋' : '－';
+/* ==========================================================================
+   第 0 部分：設定（外部資源網址）— 皆為可跨網域（CORS）存取的公開來源
+   ========================================================================== */
+window.XH_CFG = {
+  // Three.js 函式庫（依序嘗試，第一個可用的就採用）
+  CDN_BASES: ['https://cdn.jsdelivr.net/npm/three@0.160.0/', 'https://unpkg.com/three@0.160.0/'],
+  // 外部 glTF 模型（依序嘗試；全部失敗則改用內建程序化模型）
+  MODELS: {
+    ped: [ // 行人：three.js 官方範例 Xbot（含 walk / idle 骨架動畫）
+      'https://raw.githubusercontent.com/mrdoob/three.js/r160/examples/models/gltf/Xbot.glb',
+      'https://threejs.org/examples/models/gltf/Xbot.glb'
+    ],
+    truck: [ // 公車／貨車：Khronos glTF 官方範例 CesiumMilkTruck（含車輪動畫）
+      'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/main/Models/CesiumMilkTruck/glTF-Binary/CesiumMilkTruck.glb',
+      'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/CesiumMilkTruck/glTF-Binary/CesiumMilkTruck.glb'
+    ]
+  },
+  MODEL_TIMEOUT: 25000
 };
 
-/* ============================================================
-   主程式
-   ============================================================ */
-function init() {
-  document.getElementById('loading').style.display = 'none';
-
-  /* ---------- 1. 場景、相機、燈光 ---------- */
-  const L = 400, HALF = L / 2;            // 示意路段長度 400 m（x 軸：西 → 東）
-  const SKY = 0xcfe3f2;
-  const scene = new THREE.Scene();
-  scene.background = new THREE.Color(SKY);
-  scene.fog = new THREE.Fog(SKY, 500, 1500);
-
-  const camera = new THREE.PerspectiveCamera(50, innerWidth / innerHeight, 0.5, 4000);
-  const renderer = new THREE.WebGLRenderer({ antialias: true });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-  renderer.setSize(innerWidth, innerHeight);
-  document.body.appendChild(renderer.domElement);
-
-  scene.add(new THREE.HemisphereLight(0xffffff, 0x8a7a66, 0.8));
-  const sun = new THREE.DirectionalLight(0xffffff, 0.65);
-  sun.position.set(150, 250, 100);
-  scene.add(sun);
-
-  /* ---------- 2. 共用材質（重複使用以節省效能） ---------- */
-  const lam = c => new THREE.MeshLambertMaterial({ color: c });
-  const M = {
-    soil: lam(0x8b6b4a), concrete: lam(0xbdbdb5), asphalt: lam(0x3b3b40), ground: lam(0xd2cdc3),
-    sidewalk: lam(0xe6e1d6), grass: lam(0x6fae4f), lawn: lam(0x86ba62), path: lam(0xe8d8b0),
-    res1: lam(0xdcd6cc), res2: lam(0xc4bdb2), brick: lam(0xc0805e),
-    trunk: lam(0x6b4a2b), crown: lam(0x3f8a3a), ramp: lam(0xa9b4bd), table: lam(0xb9c4cc),
-    ped: lam(0xff8a00), window: lam(0x26323c),
-    white: new THREE.MeshBasicMaterial({ color: 0xffffff }),
-    light: new THREE.MeshBasicMaterial({ color: 0xfff1b8 }),
-    glass: new THREE.MeshLambertMaterial({ color: 0x9fd3e6, transparent: true, opacity: 0.35, depthWrite: false })
-  };
-  const CAR_MATS = [0xf4f4f4, 0xd7263d, 0x2e5eaa, 0xf2c14e, 0xf4f4f4, 0x8d99ae].map(lam);
-  const TRUCK_MAT = lam(0x2a9d8f);
-
-  /* ---------- 3. 小工具 ---------- */
-  const BOX = new THREE.BoxGeometry(1, 1, 1);           // 所有方塊共用同一個幾何體
-  // 依「x 起迄、y 起迄、z 起迄」畫一個方塊
-  function box(parent, mat, x0, x1, y0, y1, z0, z1) {
-    const m = new THREE.Mesh(BOX, mat);
-    m.scale.set(x1 - x0, y1 - y0, z1 - z0);
-    m.position.set((x0 + x1) / 2, (y0 + y1) / 2, (z0 + z1) / 2);
-    parent.add(m);
-    return m;
+/* ==========================================================================
+   第 1 部分：雙語字典（預設繁體中文；可切換 English）
+   ========================================================================== */
+var I18N = {
+  zh: {
+    docTitle: '辛亥路方案 3D 模擬',
+    title: '辛亥路 Ueberlandpark 化：3D 方案模擬',
+    sub: '概念示意模型（1 格＝1 公尺；示意路段 400 m，實際約 1 km）<br>左鍵拖曳＝旋轉｜右鍵拖曳＝平移｜滾輪＝縮放',
+    step1: '① 選擇方案', step2: '② 視角', step3: '③ 模擬控制',
+    opt0: '現況 0<br>平面道路', optA: '方案 A<br>明挖地下化', optB: '方案 B<br>加罩屋頂公園', optC: '方案 C<br>下沉分段覆蓋',
+    vSection: '剖面', vEye: '行人視角', vBird: '鳥瞰',
+    pause: '暫停', resume: '繼續', perfOn: '效能模式：開（關閉陰影）', perfOff: '效能模式：關',
+    legend: '<span class="dot" style="background:#ff8a00"></span>行人：三股穿越需求（台大校門＋兩處巷弄）<br>' +
+            '<span class="dot" style="background:#2a9d8f"></span>公車／貨車<span class="dot" style="background:#f2c14e"></span>計程車' +
+            '<span class="dot" style="background:#6fae4f"></span>公園<span class="dot" style="background:#8b6b4a"></span>土層<br>' +
+            '方位：南側＝台大校園（紅磚）；北側＝大安住宅區',
+    dashTitle: '方案評估儀表板', tabCBA: 'CBA 評估', tabLive: '即時模擬指標', pill: 'CBA 儀表板',
+    kpiNote: '數值為本模擬即時量測的示意值（含繞行與等候），未經實地校估。切換方案後讓模擬跑幾分鐘（可用 4×）累積樣本。步行距離與爬升為三股需求的平均理論值。',
+    reset: '重設統計',
+    thOpt: '方案', thDist: '步行距離 (m)', thClimb: '爬升 (m)', thTime: '平均穿越 (s)', thWait: '平均等候 (s)', thN: '樣本', thSpd: '過境車速 (km/h)',
+    row0: '現況 0', rowA: 'A 地下化', rowB: 'B 加罩', rowC: 'C 下沉',
+    sigVG: '車輛綠燈｜行人紅燈', sigVY: '車輛黃燈｜行人紅燈', sigAR: '全紅（清道）', sigPG: '行人綠燈', sigPF: '行人綠燈閃爍（不可再起步）',
+    sigLeft: '剩 {s} 秒',
+    sigA: '本方案無行人號誌：過境車流在地下；在地道路採「行人優先抬高式穿越道」，車輛讓行人，行人不必等候。',
+    sigB: '本方案無平面穿越：箱體牆阻隔，行人必須繞到坡道、爬升 7.5 m 再下降。',
+    sigC: '本方案無行人號誌：行人走到最近的覆蓋版平面穿越，在地車輛讓行人。',
+    loading: '正在載入 3D 模型…', skip: '改用內建簡化模型，立即開始',
+    loadSub: '行人：Xbot（three.js 官方範例）｜公車／貨車：CesiumMilkTruck（Khronos glTF 範例）',
+    msPedG: '行人：外部 glTF 骨架動畫模型（Xbot）✓', msPedP: '行人：內建程序化模型（外部模型未載入）',
+    msTruckG: '公車／貨車：外部 glTF 模型（CesiumMilkTruck）✓', msTruckP: '公車／貨車：內建程序化模型（外部模型未載入）',
+    msCar: '小客車：內建低多邊形模型（考量效能）',
+    err: '<b>⚠ 無法載入 3D 引擎（Three.js）</b><br>請確認網路連線後按 F5 重新整理。<br><br><b>⚠ Failed to load the 3D engine (Three.js).</b><br>Please check your internet connection and press F5.',
+    lblNTU: '台大校園（南側）', lblRes: '大安住宅區（北側）', lblWest: '◀ 西：往復興南路', lblEast: '東：往基隆路／國3甲 ▶',
+    lblGate: '台大校門（示意）',
+    O_ground: '◀ 地面 ±0 m：過境＋在地車流', O_cw: '號誌化行人穿越道（需等候）',
+    A_park: '◀ 地面公園 ±0 m', A_road: '◀ 過境車道 −9 m（地下箱涵）',
+    B_roof: '◀ 屋頂公園 +7.5 m', B_road: '◀ 過境車道 ±0 m（加罩箱體）', B_ramp: '坡道：爬升 7.5 m',
+    C_ground: '◀ 地面 ±0 m（開口段＋隔音牆）', C_road: '◀ 過境車道 −6.5 m（U 型槽）', C_lid: '覆蓋版：行人平面穿越',
+    info0: '<b>現況（基準方案 0）</b><br>• 過境與在地車流全部在地面 ±0 m<br>• 行人只能走<b>號誌化穿越道</b>（示意設於台大校門），需等行人綠燈，可能在中央分隔島<b>二次等候</b><br>• 巷弄的穿越需求必須<b>繞行</b>到穿越道 → 呈現「都市阻隔效果」',
+    infoA: '<b>方案 A：明挖覆蓋地下化</b><br>• 過境車道：<b>−9 m</b> 地下箱涵（雙向 2+2）<br>• 地面：連續線性公園＋在地道路<br>• 行人：<b>任何位置都能平面直接穿越</b>；在地道路採行人優先抬高式穿越道，車輛讓行人',
+    infoB: '<b>方案 B：原地加罩＋屋頂公園（Einhausung）</b><br>• 過境車道：<b>±0 m</b>，外加結構箱體<br>• 屋頂公園：<b>+7.5 m</b>（最接近蘇黎世原型）<br>• 行人：平面被箱體牆阻隔，須<b>繞到坡道、爬升 7.5 m</b>',
+    infoC: '<b>方案 C：下沉路塹＋分段覆蓋</b><br>• 過境車道：<b>−6.5 m</b> 開口 U 型槽<br>• 地面：3 處綠色覆蓋版＋開口段透明隔音牆<br>• 行人：走到<b>最近的覆蓋版平面穿越</b>，不需等候',
+    /* ---- CBA 儀表板 ---- */
+    cbaSub: '依階段二比較框架之定性評等（相對現況 0；非實際金額）',
+    secCost: '成本', secInt: '內部效益', secExt: '外部效益', secVerdict: '綜合判讀／增量益本比',
+    cCons: '建造成本（開挖深度、結構）', cOM: '機電與營運維護（通風、照明、抽水）', cRisk: '風險預備金／樂觀偏誤',
+    iDelay: '旅行時間（路口延滯）', iPed: '行人穿越時間', iSafety: '交通安全',
+    eSev: '都市阻隔消除', eNoise: '噪音改善', eAir: '空氣品質', eCarbon: '淨碳排（含建材隱含碳）', eLand: '綠地與地價',
+    tagH: '高', tagM: '中', tagL: '低', tagNeg: '負效益', tagBase: '基準',
+    rankLbl: '三方案排序', rankCost: '（成本高→低）',
+    noteBdelay: '※ 若復興南路口須南北向穿越，B 的過境效益會打折',
+    effTitle: '定性效率象限', effX: '成本指數 →', effY: '效益指數 →',
+    effNote: '指數＝上列定性評等平均（0–5），只表示相對方向，不是 BCR 數值。',
+    simLine: '模擬佐證：平均步行 {d} m｜爬升 {c} m｜實測平均穿越 {t}',
+    simNA: '尚無樣本',
+    tag0: '基準方案（Do-Minimum）', tagA: '效益上限｜成本與風險最高', tagB: '成本下限｜未解決平面阻隔', tagC: '最平衡｜建議主方案',
+    badge0: '基準', badgeA: '效益上限・次佳', badgeB: '不建議作為主方案', badgeC: '★ 建議主方案',
+    verdict0: '現況＋號誌時制最佳化。所有效益與成本皆以此為零點計算，本身不產生增量效益；行人需等候號誌、巷弄需求需繞行，正是「都市阻隔」的基準狀態。',
+    verdictA: '平面完全縫合、綠地最多，旅行時間與阻隔消除效益最大；但深開挖、全段機械通風與最高樂觀偏誤使成本最高。關鍵在 <b>ΔBCR(C→A) 是否大於 1</b>，需以「阻隔效果單位價值」與「建造成本上修幅度」做轉換值分析。',
+    verdictB: '噪音、空污改善最佳，也最接近蘇黎世原型；但箱體牆讓平面無法穿越，行人須爬升 7.5 m，<b>行人時間可能為負效益</b>，阻隔問題反而沒有解決，削弱 BCR。不建議作為主方案。',
+    verdictC: '保留<b>平面直覺穿越</b>，避開深開挖與全段機械通風，營運維護成本最低，<b>最可能取得最高的 BCR／EIRR</b>。開口段的噪音外溢與豪雨抽水是主要風險，需以隔音牆、吸音襯板與大容量抽水站處理。',
+    chainTitle: '增量分析順序（依成本現值由低到高）',
+    chain0B: '0 → B：成本最低，但行人負效益使淨效益受限',
+    chainBC: 'B → C：ΔBCR 預期 > 1 ✓（多花的成本換到平面穿越與較低 O&M）',
+    chainCA: 'C → A：ΔBCR 不確定 ?（全段覆蓋的邊際效益 vs 深開挖與機電成本 → 轉換值分析）'
+  },
+  en: {
+    docTitle: 'Xinhai Rd 3D Option Simulation',
+    title: 'Xinhai Rd “Ueberlandpark”: 3D Simulation',
+    sub: 'Conceptual model (1 unit = 1 m; 400 m sample stretch, actual ≈ 1 km)<br>Left-drag = rotate | Right-drag = pan | Wheel = zoom',
+    step1: '① Choose option', step2: '② View', step3: '③ Simulation',
+    opt0: 'Base 0<br>At-grade road', optA: 'Option A<br>Cut-and-cover', optB: 'Option B<br>Einhausung', optC: 'Option C<br>Trough + lids',
+    vSection: 'Section', vEye: 'Pedestrian', vBird: 'Bird’s-eye',
+    pause: 'Pause', resume: 'Resume', perfOn: 'Performance mode: ON (no shadows)', perfOff: 'Performance mode: OFF',
+    legend: '<span class="dot" style="background:#ff8a00"></span>Pedestrians: 3 desire lines (NTU gate + 2 side lanes)<br>' +
+            '<span class="dot" style="background:#2a9d8f"></span>Bus / truck<span class="dot" style="background:#f2c14e"></span>Taxi' +
+            '<span class="dot" style="background:#6fae4f"></span>Park<span class="dot" style="background:#8b6b4a"></span>Soil<br>' +
+            'South = NTU campus (brick); North = Da’an residential',
+    dashTitle: 'Option Appraisal Dashboard', tabCBA: 'CBA', tabLive: 'Live simulation', pill: 'CBA Dashboard',
+    kpiNote: 'Indicative values measured live in this simulation (incl. detours and waiting); not field-calibrated. Let each option run a few minutes (try 4×). Walk distance and climb are theoretical averages over the 3 desire lines.',
+    reset: 'Reset stats',
+    thOpt: 'Option', thDist: 'Walk (m)', thClimb: 'Climb (m)', thTime: 'Avg. cross (s)', thWait: 'Avg. wait (s)', thN: 'n', thSpd: 'Through (km/h)',
+    row0: 'Base 0', rowA: 'A Tunnel', rowB: 'B Enclosure', rowC: 'C Trough',
+    sigVG: 'Vehicles green | Peds red', sigVY: 'Vehicles amber | Peds red', sigAR: 'All red (clearance)', sigPG: 'Pedestrian green', sigPF: 'Ped. green flashing (do not start)',
+    sigLeft: '{s} s left',
+    sigA: 'No pedestrian signal: through traffic is underground; local roads use raised priority crossings where cars yield.',
+    sigB: 'No at-grade crossing: the enclosure wall blocks the street; pedestrians must detour to a ramp and climb 7.5 m.',
+    sigC: 'No pedestrian signal: pedestrians walk to the nearest lid and cross at grade; local cars yield.',
+    loading: 'Loading 3D models…', skip: 'Use built-in simple models and start now',
+    loadSub: 'Pedestrians: Xbot (official three.js example) | Bus/truck: CesiumMilkTruck (Khronos glTF sample)',
+    msPedG: 'Pedestrians: external glTF skinned model (Xbot) ✓', msPedP: 'Pedestrians: built-in procedural model (external model not loaded)',
+    msTruckG: 'Bus/truck: external glTF model (CesiumMilkTruck) ✓', msTruckP: 'Bus/truck: built-in procedural model (external model not loaded)',
+    msCar: 'Cars: built-in low-poly model (for performance)',
+    err: '<b>⚠ Failed to load the 3D engine (Three.js).</b><br>Please check your internet connection and press F5.<br><br><b>⚠ 無法載入 3D 引擎（Three.js）</b><br>請確認網路連線後按 F5 重新整理。',
+    lblNTU: 'NTU campus (south)', lblRes: 'Da’an residential (north)', lblWest: '◀ West: to Fuxing S. Rd', lblEast: 'East: to Keelung Rd / Fwy 3A ▶',
+    lblGate: 'NTU gate (schematic)',
+    O_ground: '◀ Grade ±0 m: through + local traffic', O_cw: 'Signalised crosswalk (wait)',
+    A_park: '◀ Surface park ±0 m', A_road: '◀ Through lanes −9 m (tunnel box)',
+    B_roof: '◀ Roof park +7.5 m', B_road: '◀ Through lanes ±0 m (enclosure)', B_ramp: 'Ramp: climb 7.5 m',
+    C_ground: '◀ Grade ±0 m (open section + noise wall)', C_road: '◀ Through lanes −6.5 m (U-trough)', C_lid: 'Lid: at-grade crossing',
+    info0: '<b>Base case (Option 0)</b><br>• Through and local traffic all at grade (±0 m)<br>• Pedestrians may only use the <b>signalised crosswalk</b> (NTU gate), waiting for green and often a <b>second wait</b> on the median<br>• Side-lane desire lines must <b>detour</b> → the <b>barrier effect</b>',
+    infoA: '<b>Option A: Cut-and-cover tunnel</b><br>• Through lanes: <b>−9 m</b> tunnel box (2+2)<br>• Surface: continuous linear park + local roads<br>• Pedestrians: <b>cross at grade anywhere</b>; raised priority crossings, cars yield',
+    infoB: '<b>Option B: Einhausung + roof park</b><br>• Through lanes: <b>±0 m</b> inside a structural enclosure<br>• Roof park: <b>+7.5 m</b> (closest to the Zurich original)<br>• Pedestrians: blocked at grade; must <b>detour to a ramp and climb 7.5 m</b>',
+    infoC: '<b>Option C: Depressed trough + selective lids</b><br>• Through lanes: <b>−6.5 m</b> open U-trough<br>• Surface: 3 green lids + transparent noise walls<br>• Pedestrians: walk to the <b>nearest lid and cross at grade</b>, no waiting',
+    cbaSub: 'Qualitative ratings from the Stage 2 framework (relative to Base 0; not monetary totals)',
+    secCost: 'Costs', secInt: 'Internal benefits', secExt: 'External benefits', secVerdict: 'Verdict / incremental BCR',
+    cCons: 'Construction (depth, structure)', cOM: 'E&M and O&M (ventilation, lighting, pumping)', cRisk: 'Risk contingency / optimism bias',
+    iDelay: 'Travel time (junction delay)', iPed: 'Pedestrian crossing time', iSafety: 'Road safety',
+    eSev: 'Severance removal', eNoise: 'Noise reduction', eAir: 'Air quality', eCarbon: 'Net carbon (incl. embodied)', eLand: 'Green space & land value',
+    tagH: 'High', tagM: 'Med', tagL: 'Low', tagNeg: 'Negative', tagBase: 'Base',
+    rankLbl: 'Ranking', rankCost: '(cost high→low)',
+    noteBdelay: '※ If Fuxing S. Rd needs a N–S crossing, B’s through-traffic benefit is reduced',
+    effTitle: 'Qualitative efficiency map', effX: 'Cost index →', effY: 'Benefit index →',
+    effNote: 'Index = mean of the ratings above (0–5); shows direction only, not a BCR value.',
+    simLine: 'Simulation evidence: avg. walk {d} m | climb {c} m | measured avg. crossing {t}',
+    simNA: 'no samples yet',
+    tag0: 'Base case (Do-Minimum)', tagA: 'Benefit ceiling | highest cost & risk', tagB: 'Cost floor | severance unsolved', tagC: 'Best balance | recommended',
+    badge0: 'Reference', badgeA: 'Benefit ceiling · runner-up', badgeB: 'Not recommended', badgeC: '★ Recommended',
+    verdict0: 'Existing road + signal optimisation. All benefits and costs are measured against this zero point; pedestrians wait at signals and side-lane demand must detour — the reference state of urban severance.',
+    verdictA: 'Full surface stitching and the most green space give the largest travel-time and severance benefits, but deep excavation, full mechanical ventilation and the highest optimism bias make it the most expensive. The key question is <b>whether ΔBCR(C→A) exceeds 1</b> — test with switching values on severance value and cost overrun.',
+    verdictB: 'Best noise and air-quality gains and closest to the Zurich model, but the enclosure blocks at-grade crossing and forces a 7.5 m climb — <b>pedestrian time may be a disbenefit</b>, so severance is not solved and the BCR weakens. Not recommended as the preferred option.',
+    verdictC: 'Keeps <b>intuitive at-grade crossing</b> while avoiding deep excavation and full mechanical ventilation, with the lowest O&M — <b>most likely to achieve the highest BCR / EIRR</b>. Main risks are noise spill and storm pumping at the openings; mitigate with noise walls, absorptive linings and large pump stations.',
+    chainTitle: 'Incremental analysis order (by PV cost, low → high)',
+    chain0B: '0 → B: lowest cost, but pedestrian disbenefit limits net benefit',
+    chainBC: 'B → C: ΔBCR expected > 1 ✓ (extra cost buys at-grade crossing and lower O&M)',
+    chainCA: 'C → A: ΔBCR uncertain ? (marginal benefit of full cover vs deep excavation & E&M → switching values)'
   }
-  // 頂面一種材質、側面另一種材質（例如：頂面草地、剖面是土層）
-  const tmCache = {};
-  function topMat(top, side) {
-    side = side || M.soil;
-    const k = top.id + '_' + side.id;
-    return tmCache[k] || (tmCache[k] = [side, side, top, side, side, side]);
-  }
-  const TRUNK = new THREE.CylinderGeometry(0.25, 0.35, 3, 6);
-  const CROWN = new THREE.SphereGeometry(2.3, 8, 6);
-  function tree(parent, x, y, z, s) {
-    s = s || 1;
-    const t = new THREE.Mesh(TRUNK, M.trunk); t.scale.setScalar(s); t.position.set(x, y + 1.5 * s, z);
-    const c = new THREE.Mesh(CROWN, M.crown); c.scale.setScalar(s); c.position.set(x, y + 3.6 * s, z);
-    parent.add(t, c);
-  }
-  // 3D 文字標籤（用畫布繪字，不需外部檔案）
-  function label(parent, text, x, y, z, size, leftAnchor) {
-    const c = document.createElement('canvas'), ctx = c.getContext('2d');
-    const font = 'bold 48px "Microsoft JhengHei","PingFang TC","Noto Sans TC",sans-serif';
-    ctx.font = font;
-    c.width = Math.ceil(ctx.measureText(text).width) + 32; c.height = 76;
-    ctx.font = font;
-    ctx.fillStyle = 'rgba(255,255,255,0.88)'; ctx.fillRect(0, 0, c.width, c.height);
-    ctx.fillStyle = '#1f2933'; ctx.textBaseline = 'middle'; ctx.fillText(text, 16, c.height / 2 + 2);
-    const tex = new THREE.CanvasTexture(c); tex.minFilter = THREE.LinearFilter;
-    const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, depthTest: false, transparent: true }));
-    const s = 0.09 * (size || 1);
-    sp.scale.set(c.width * s, c.height * s, 1);
-    if (leftAnchor) sp.center.set(0, 0.5);
-    sp.position.set(x, y, z); sp.renderOrder = 10;
-    parent.add(sp);
-  }
-  // 固定亂數（每次開啟畫面都一樣）
-  let seed = 20261103;
-  function rnd() { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; }
-  // 取得「避開某些中心點」後剩下的區段（用於隔音牆、欄杆）
-  function gaps(centers, half) {
-    const out = []; let s = -HALF;
-    centers.slice().sort((a, b) => a - b).forEach(c => { if (c - half > s) out.push([s, c - half]); s = c + half; });
-    if (s < HALF) out.push([s, HALF]);
-    return out;
-  }
-
-  /* ---------- 4. 方案參數 ---------- */
-  const LEVEL = { A: -9, B: 0, C: -6.5 };               // 過境車道高程（m）
-  const PED_CFG = {                                     // 行人穿越位置與範圍
-    A: { xs: [-150, -90, -30, 30, 90, 150], range: 45 },  // 全段平面公園：到處都能穿越
-    B: { xs: [-40, 100], range: 72 },                     // 只能走坡道上屋頂
-    C: { xs: [-120, 0, 120], range: 45 }                  // 只能走覆蓋版
-  };
-  const INFO = {
-    A: '<b>方案 A：明挖覆蓋地下化</b><br>' +
-       '• 過境車道：<b>−9 m</b> 地下箱涵（雙向 2+2，全封閉）<br>' +
-       '• 地面：連續線性公園＋兩側在地道路<br>' +
-       '• 行人：<b>平面直接穿越</b>，不需上下樓梯<br>' +
-       '• 代價：洞口轉換段長、機械通風、開挖成本最高',
-    B: '<b>方案 B：原地加罩＋屋頂公園（Einhausung）</b><br>' +
-       '• 過境車道：<b>±0 m</b> 原地面，外加結構箱體罩住<br>' +
-       '• 屋頂公園：<b>+7.5 m</b>（最接近蘇黎世原型）<br>' +
-       '• 行人：經坡道（示意 2 處）<b>爬升 7.5 m</b> 跨越；平面被箱體牆阻隔<br>' +
-       '• 代價：行人直覺性最低、臨路出現約 7.5 m 高的量體',
-    C: '<b>方案 C：下沉路塹＋分段覆蓋</b><br>' +
-       '• 過境車道：<b>−6.5 m</b> 開口 U 型槽<br>' +
-       '• 地面：<b>3 處綠色覆蓋版</b>作為行人廊道；開口段設透明隔音牆<br>' +
-       '• 行人：在覆蓋版上<b>平面穿越</b><br>' +
-       '• 代價：開口段噪音外溢、豪雨抽水需求最高'
-  };
-
-  /* ---------- 5. 共同環境（三方案都有） ---------- */
-  const common = new THREE.Group(); scene.add(common);
-  box(common, M.table, -1500, 1500, -15.6, -15.5, -1500, 1500);         // 底座
-  [1, -1].forEach(s => {
-    const zz = (a, b) => (s > 0 ? [a, b] : [-b, -a]);
-    box(common, topMat(M.ground), -HALF, HALF, -15, 0, ...zz(12, 160));   // 兩側地塊（剖面可見土層）
-    box(common, M.sidewalk, -HALF, HALF, 0, 0.15, ...zz(12, 13.5));       // 路緣
-    box(common, M.asphalt, -HALF, HALF, 0, 0.04, ...zz(13.5, 20.5));      // 在地道路（側車道）
-    box(common, M.sidewalk, -HALF, HALF, 0, 0.15, ...zz(20.5, 24));       // 人行道
-  });
-  box(common, M.lawn, -HALF, HALF, 0, 0.05, 24, 160);                     // 台大校園草地（南側）
-
-  // 北側：大安住宅區
-  for (let x = -180; x <= 180; x += 30) {
-    [-45, -78, -112, -145].forEach(zc => {
-      const w = 16 + rnd() * 8, d = 16 + rnd() * 8, h = 12 + rnd() * 33;
-      box(common, rnd() < 0.5 ? M.res1 : M.res2, x - w / 2, x + w / 2, 0, h, zc - d / 2, zc + d / 2);
-    });
-  }
-  for (let x = -192; x <= 192; x += 16) tree(common, x, 0, -27, 0.9);
-
-  // 南側：台大校園（紅磚建築＋行道樹）
-  [[-165, 75], [-95, 75], [-25, 75], [45, 75], [115, 75], [175, 75],
-   [-140, 140], [-60, 140], [20, 140], [100, 140], [170, 140]].forEach(([x, zc]) => {
-    const w = 22 + rnd() * 14, d = 14 + rnd() * 6, h = 10 + rnd() * 10;
-    box(common, M.brick, x - w / 2, x + w / 2, 0, h, zc - d / 2, zc + d / 2);
-  });
-  for (let x = -195; x <= 195; x += 12) tree(common, x, 0.05, 27, 1.1);
-  for (let x = -190; x <= 190; x += 18) { tree(common, x, 0.05, 50, 1); tree(common, x + 9, 0.05, 108, 1); }
-
-  label(common, '台大校園（南側）', 0, 28, 95, 1);
-  label(common, '大安住宅區（北側）', 0, 55, -95, 1);
-  label(common, '◀ 西：往復興南路', -HALF, 20, 0, 0.8);
-  label(common, '東：往基隆路／國3甲 ▶', HALF, 34, 0, 0.8);
-
-  /* ---------- 6. 三個方案各自的結構 ---------- */
-  const G = { A: new THREE.Group(), B: new THREE.Group(), C: new THREE.Group() };
-  Object.keys(G).forEach(k => scene.add(G[k]));
-
-  // 過境車道路面（雙向 2+2、中央分隔、車道線）
-  function carriageway(g, y) {
-    box(g, M.asphalt, -HALF, HALF, y, y + 0.04, -11, 11);
-    box(g, M.concrete, -HALF, HALF, y, y + 0.9, -0.3, 0.3);                   // 中央紐澤西護欄
-    [-7.3, 7.3].forEach(z => box(g, M.white, -HALF, HALF, y + 0.04, y + 0.07, z - 0.1, z + 0.1));
-    for (let x = -HALF; x < HALF; x += 12)
-      [-3.65, 3.65].forEach(z => box(g, M.white, x, x + 3, y + 0.04, y + 0.07, z - 0.08, z + 0.08));
-  }
-  function tunnelLights(g, yCeil, x0, x1) {
-    [-4, 4].forEach(z => box(g, M.light, x0, x1, yCeil - 0.12, yCeil, z - 0.15, z + 0.15));
-  }
-  // 斑馬線（橫越兩側在地道路）
-  function zebras(g, xs) {
-    xs.forEach(x => [1, -1].forEach(s => {
-      for (let k = 0; k < 7; k++) {
-        const z0 = 13.7 + k;
-        const zz = s > 0 ? [z0, z0 + 0.5] : [-z0 - 0.5, -z0];
-        box(g, M.white, x - 2.5, x + 2.5, 0.04, 0.07, ...zz);
-      }
-    }));
-  }
-
-  // ===== 方案 A：明挖覆蓋地下化（車道 −9 m） =====
-  (function (g) {
-    box(g, M.soil, -HALF, HALF, -15, -10, -12, 12);                 // 下方土層
-    box(g, M.concrete, -HALF, HALF, -10, -9, -12, 12);              // 底版
-    box(g, M.concrete, -HALF, HALF, -9, -2.4, -12, -11);            // 北側牆
-    box(g, M.concrete, -HALF, HALF, -9, -2.4, 11, 12);              // 南側牆
-    box(g, M.concrete, -HALF, HALF, -3.4, -2.4, -11, 11);           // 頂版
-    box(g, topMat(M.grass), -HALF, HALF, -2.4, 0, -12, 12);         // 覆土＋地面公園
-    box(g, M.path, -HALF, HALF, 0, 0.05, -1.5, 1.5);                // 公園步道
-    carriageway(g, -9);
-    tunnelLights(g, -3.4, -HALF, HALF);
-    for (let x = -190, i = 0; x <= 190; x += 19, i++) tree(g, x, 0, i % 2 ? 6.5 : -6.5, 1);
-    zebras(g, PED_CFG.A.xs);
-    label(g, '◀ 地面公園 ±0 m', HALF + 2, 2, -14, 0.6, true);
-    label(g, '◀ 過境車道 −9 m（地下箱涵）', HALF + 2, -7.5, -14, 0.6, true);
-  })(G.A);
-
-  // ===== 方案 B：原地加罩＋屋頂公園（車道 ±0 m，屋頂 +7.5 m） =====
-  function ramp(g, x, s) {                                          // s = +1 南側、-1 北側
-    const run = 48, rise = 7.5, len = Math.hypot(run, rise), ang = Math.atan2(rise, run);
-    const m = new THREE.Mesh(BOX, M.ramp);
-    m.scale.set(4, 0.5, len);
-    m.position.set(x, rise / 2 - 0.25, s * (12 + run / 2));
-    m.rotation.x = s * ang;
-    g.add(m);
-    [26, 44].forEach(a => {                                         // 坡道橋墩
-      const h = rise * (60 - a) / 48 - 0.5;
-      box(g, M.concrete, x - 0.4, x + 0.4, 0, h, s * a - 0.4, s * a + 0.4);
-    });
-  }
-  (function (g) {
-    box(g, M.soil, -HALF, HALF, -15, 0, -12, 12);
-    carriageway(g, 0);
-    box(g, M.concrete, -HALF, HALF, 0, 6.6, -12, -11);              // 箱體側牆
-    box(g, M.concrete, -HALF, HALF, 0, 6.6, 11, 12);
-    box(g, M.concrete, -HALF, HALF, 5.6, 6.6, -11, 11);             // 屋頂版
-    box(g, topMat(M.grass, M.concrete), -HALF, HALF, 6.6, 7.5, -12, 12);  // 屋頂覆土＋公園
-    box(g, M.path, -HALF, HALF, 7.5, 7.55, -1.5, 1.5);
-    gaps(PED_CFG.B.xs, 2.5).forEach(([a, b]) => {                    // 屋頂玻璃欄杆（坡道處留開口）
-      box(g, M.glass, a, b, 7.5, 8.6, -12, -11.85);
-      box(g, M.glass, a, b, 7.5, 8.6, 11.85, 12);
-    });
-    tunnelLights(g, 5.6, -HALF, HALF);
-    for (let x = -190, i = 0; x <= 190; x += 19, i++) tree(g, x, 7.5, i % 2 ? 6.5 : -6.5, 1);
-    PED_CFG.B.xs.forEach(x => { ramp(g, x, 1); ramp(g, x, -1); });
-    label(g, '◀ 屋頂公園 +7.5 m', HALF + 2, 9.5, -14, 0.6, true);
-    label(g, '◀ 過境車道 ±0 m（加罩箱體）', HALF + 2, 2.5, -14, 0.6, true);
-    label(g, '坡道：行人需爬升 7.5 m', -40, 16, 40, 0.6);
-  })(G.B);
-
-  // ===== 方案 C：下沉路塹＋分段覆蓋（車道 −6.5 m） =====
-  (function (g) {
-    const LIDS = PED_CFG.C.xs;
-    box(g, M.soil, -HALF, HALF, -15, -7.5, -12, 12);
-    box(g, M.concrete, -HALF, HALF, -7.5, -6.5, -12, 12);           // U 型槽底版
-    box(g, M.concrete, -HALF, HALF, -6.5, 0, -12, -11);             // U 型槽側牆
-    box(g, M.concrete, -HALF, HALF, -6.5, 0, 11, 12);
-    carriageway(g, -6.5);
-    LIDS.forEach(x => {
-      box(g, topMat(M.grass, M.concrete), x - 20, x + 20, -1.2, 0, -11, 11);  // 覆蓋版（綠橋）
-      box(g, M.path, x - 3, x + 3, 0, 0.05, -11, 11);
-      [[-14, -6], [-14, 6], [14, -6], [14, 6]].forEach(([dx, dz]) => tree(g, x + dx, 0, dz, 0.9));
-      tunnelLights(g, -1.2, x - 20, x + 20);
-    });
-    gaps(LIDS, 20).forEach(([a, b]) => {                             // 開口段透明隔音牆
-      box(g, M.glass, a, b, 0, 2, -12, -11.7);
-      box(g, M.glass, a, b, 0, 2, 11.7, 12);
-    });
-    zebras(g, LIDS);
-    label(g, '◀ 地面 ±0 m（開口段＋隔音牆）', HALF + 2, 2.5, -14, 0.6, true);
-    label(g, '◀ 過境車道 −6.5 m（U 型槽）', HALF + 2, -5.5, -14, 0.6, true);
-    label(g, '覆蓋版：行人平面穿越', 0, 10, 0, 0.6);
-  })(G.C);
-
-  /* ---------- 7. 車輛（純方塊組成） ---------- */
-  const CAR = new THREE.BoxGeometry(4.4, 1.4, 1.9);
-  const CABIN = new THREE.BoxGeometry(2.2, 0.7, 1.7);
-  const cars = [];
-  let colorIdx = 0;
-  function makeCar(lane, i, through, baseY) {
-    const truck = (i % 4 === 3);
-    const m = new THREE.Mesh(CAR, truck ? TRUCK_MAT : CAR_MATS[(colorIdx++) % CAR_MATS.length]);
-    if (truck) m.scale.set(2.4, 1.9, 1.15);
-    else { const cab = new THREE.Mesh(CABIN, M.window); cab.position.set(-0.3, 1.05, 0); m.add(cab); }
-    m.userData = { v: lane.v, dir: lane.dir, through: through, h: truck ? 1.33 : 0.7 };
-    m.position.set(-HALF + (i + rnd() * 0.4) * L / lane.n, baseY + 0.04 + m.userData.h, lane.z);
-    scene.add(m); cars.push(m);
-  }
-  // 台灣靠右行駛：往東（+x）在南側（+z），往西（−x）在北側（−z）；速度單位 m/s
-  const THRU_LANES = [
-    { z: 1.9, dir: 1, v: 19, n: 8 }, { z: 5.4, dir: 1, v: 15, n: 8 },
-    { z: -1.9, dir: -1, v: 18, n: 8 }, { z: -5.4, dir: -1, v: 14, n: 8 }
-  ];
-  const LOCAL_LANES = [{ z: 17, dir: 1, v: 10, n: 6 }, { z: -17, dir: -1, v: 9, n: 6 }];
-  THRU_LANES.forEach(l => { for (let i = 0; i < l.n; i++) makeCar(l, i, true, 0); });
-  LOCAL_LANES.forEach(l => { for (let i = 0; i < l.n; i++) makeCar(l, i, false, 0); });
-
-  /* ---------- 8. 行人 ---------- */
-  const PED = new THREE.BoxGeometry(0.6, 1.75, 0.45);
-  const peds = [];
-  for (let i = 0; i < 18; i++) {
-    const p = new THREE.Mesh(PED, M.ped);
-    p.userData = { dir: i % 2 ? 1 : -1, v: 1.2 + (i % 5) * 0.12, z: 0 };
-    scene.add(p); peds.push(p);
-  }
-  let opt = 'A';
-  function pedY(z) {                                   // 行人所在高度（依方案）
-    const a = Math.abs(z);
-    if (opt === 'B') {
-      if (a <= 12) return 7.5;                         // 屋頂公園
-      if (a <= 60) return 7.5 * (60 - a) / 48;          // 坡道
-      return 0.05;
-    }
-    if ((a >= 12 && a <= 13.5) || (a >= 20.5 && a <= 24)) return 0.15;   // 人行道
-    return 0.05;
-  }
-
-  /* ---------- 9. 切換方案 ---------- */
-  function setOption(k) {
-    opt = k;
-    Object.keys(G).forEach(key => { G[key].visible = (key === k); });
-    cars.forEach(c => { if (c.userData.through) c.position.y = LEVEL[k] + 0.04 + c.userData.h; });
-    const cfg = PED_CFG[k];
-    peds.forEach((p, i) => {
-      const xs = cfg.xs;
-      p.position.x = xs[i % xs.length] + ((((i / xs.length) | 0) % 3) - 1) * 1.2;
-      p.userData.z = -cfg.range + ((i * 7) % 18) / 18 * 2 * cfg.range;
-      p.position.z = p.userData.z;
-      p.position.y = pedY(p.userData.z) + 0.875;
-    });
-    document.getElementById('info').innerHTML = INFO[k];
-    document.querySelectorAll('[data-opt]').forEach(b => b.classList.toggle('on', b.dataset.opt === k));
-  }
-  document.querySelectorAll('[data-opt]').forEach(b => { b.onclick = () => setOption(b.dataset.opt); });
-
-  /* ---------- 10. 相機與視角切換 ---------- */
-  let controls = null;
-  const target = new THREE.Vector3();
-  let camGoal = null;
-  if (THREE.OrbitControls) {
-    controls = new THREE.OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true; controls.dampingFactor = 0.08;
-    controls.minDistance = 2; controls.maxDistance = 900;
-    controls.addEventListener('start', () => { camGoal = null; });   // 使用者自己拖曳時停止自動移動
-  }
-  const tgt = controls ? controls.target : target;
-  const VIEWS = {
-    section: { pos: [262, 15, 38], tgt: [196, -3, -6] },  // 剖面視角：從東端斷面斜看
-    eye:     { pos: [-62, 1.7, 23], tgt: [-25, 3, -30] }  // 行人視角：站在台大側人行道（三方案同一點，方便比較）
-  };
-  function goView(name) {
-    const v = VIEWS[name];
-    camGoal = { p: new THREE.Vector3(...v.pos), t: new THREE.Vector3(...v.tgt) };
-  }
-  camera.position.set(...VIEWS.section.pos);
-  tgt.set(...VIEWS.section.tgt);
-  camera.lookAt(tgt);
-
-  let view = 'section';
-  const viewBtn = document.getElementById('viewBtn');
-  viewBtn.onclick = () => {
-    view = (view === 'section') ? 'eye' : 'section';
-    goView(view);
-    viewBtn.textContent = (view === 'section') ? '切換到：行人視角' : '切換到：剖面視角';
-  };
-  let paused = false;
-  const pauseBtn = document.getElementById('pauseBtn');
-  pauseBtn.onclick = () => { paused = !paused; pauseBtn.textContent = paused ? '繼續車流' : '暫停車流'; };
-
-  addEventListener('resize', () => {
-    camera.aspect = innerWidth / innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(innerWidth, innerHeight);
-  });
-
-  /* ---------- 11. 動畫迴圈（requestAnimationFrame） ---------- */
-  const clock = new THREE.Clock();
-  function tick() {
-    requestAnimationFrame(tick);
-    const dt = Math.min(clock.getDelta(), 0.05);
-    if (!paused) {
-      // 車輛前進；到路段盡頭就繞回起點，形成無限車流
-      cars.forEach(c => {
-        let x = c.position.x + c.userData.v * c.userData.dir * dt;
-        if (x > HALF) x -= L; else if (x < -HALF) x += L;
-        c.position.x = x;
-      });
-      // 行人來回穿越
-      const R = PED_CFG[opt].range;
-      peds.forEach(p => {
-        let z = p.userData.z + p.userData.v * p.userData.dir * dt;
-        if (z > R) z = -R; else if (z < -R) z = R;
-        p.userData.z = z; p.position.z = z;
-        p.position.y = pedY(z) + 0.875;
-      });
-    }
-    if (camGoal) {                                     // 平滑移動相機
-      const f = 1 - Math.pow(0.02, dt);
-      camera.position.lerp(camGoal.p, f);
-      tgt.lerp(camGoal.t, f);
-      if (camera.position.distanceTo(camGoal.p) < 0.05) camGoal = null;
-    }
-    if (controls) controls.update(); else camera.lookAt(tgt);
-    renderer.render(scene, camera);
-  }
-
-  setOption('A');
-  tick();
-  window.__sim = { setOption, goView };               // 供測試使用
+};
+var LANG = 'zh';
+try { var _s = localStorage.getItem('xh_lang'); if (_s === 'en' || _s === 'zh') LANG = _s; } catch (e) {}
+window.XH = {
+  t: function (k) { var d = I18N[LANG]; return (d && d[k] != null) ? d[k] : (I18N.zh[k] != null ? I18N.zh[k] : k); },
+  hooks: [],
+  lang: function () { return LANG; }
+};
+function applyLang() {
+  document.documentElement.lang = LANG === 'zh' ? 'zh-Hant-TW' : 'en';
+  document.title = XH.t('docTitle');
+  document.querySelectorAll('[data-i18n]').forEach(function (el) { el.innerHTML = XH.t(el.dataset.i18n); });
+  document.getElementById('langBtn').textContent = LANG === 'zh' ? 'EN' : '中文';
+  XH.hooks.forEach(function (f) { f(); });
 }
+document.getElementById('langBtn').onclick = function () {
+  LANG = LANG === 'zh' ? 'en' : 'zh';
+  try { localStorage.setItem('xh_lang', LANG); } catch (e) {}
+  applyLang();
+};
+document.getElementById('fold').onclick = function () {
+  var b = document.getElementById('panelBody'), hide = b.style.display !== 'none';
+  b.style.display = hide ? 'none' : 'block'; this.textContent = hide ? '＋' : '－';
+  XH.hooks.forEach(function (f) { f(); });
+};
+applyLang();
+
+/* ==========================================================================
+   第 2 部分：選擇可用的 CDN → 建立 import map → 啟動主程式（ES Module）
+   ========================================================================== */
+function showErr() {
+  document.getElementById('overlay').classList.add('hide');
+  document.getElementById('err').style.display = 'block';
+}
+(async function boot() {
+  var base = null;
+  for (var i = 0; i < XH_CFG.CDN_BASES.length && !base; i++) {
+    try {
+      var r = await fetch(XH_CFG.CDN_BASES[i] + 'build/three.module.js', { method: 'HEAD' });
+      if (r.ok) base = XH_CFG.CDN_BASES[i];
+    } catch (e) {}
+  }
+  if (!base) { showErr(); return; }
+  var im = document.createElement('script');
+  im.type = 'importmap';
+  im.textContent = JSON.stringify({ imports: { 'three': base + 'build/three.module.js', 'three/addons/': base + 'examples/jsm/' } });
+  document.head.appendChild(im);
+  var m = document.createElement('script');
+  m.type = 'module';
+  m.textContent = document.getElementById('main-src').textContent;
+  document.body.appendChild(m);
+  setTimeout(function () { if (!window.__xhStarted) showErr(); }, 30000);
+})();
+</script>
+
+<!-- ==========================================================================
+     第 3 部分：主程式（由上方啟動器以 ES Module 方式執行）
+     ========================================================================== -->
+<script type="text/plain" id="main-src">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import * as SkeletonUtils from 'three/addons/utils/SkeletonUtils.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+
+window.__xhStarted = true;
+const XH = window.XH, t = XH.t, CFG = window.XH_CFG;
+const $ = id => document.getElementById(id);
+
+/* ---------------- 1. 基本參數 ---------------- */
+const L = 400, HALF = L / 2, GROUND = 0.08;
+const LEVEL = { '0': 0, A: -9, B: 0, C: -6.5 };   // 過境車道高程
+const X_GATE = 0;                                  // 台大校門（示意）＝現況號誌化穿越道位置
+const STREAMS = [0, -70, 95];                      // 三股行人穿越需求（校門＋兩處巷弄）
+const RAMPS = [-40, 40];                           // 方案 B 坡道位置
+const LIDS = [-120, 0, 120];                       // 方案 C 覆蓋版位置
+const OPTS = ['0', 'A', 'B', 'C'];
+const near = (x, list, d) => list.some(v => Math.abs(x - v) < d);
+let opt = '0';
+
+/* ---------------- 2. 渲染器、場景、燈光 ---------------- */
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+renderer.setSize(innerWidth, innerHeight);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.05;
+document.body.prepend(renderer.domElement);
+
+const scene = new THREE.Scene();
+scene.background = (() => {                         // 漸層天空
+  const c = document.createElement('canvas'); c.width = 2; c.height = 256;
+  const g = c.getContext('2d'), gr = g.createLinearGradient(0, 0, 0, 256);
+  gr.addColorStop(0, '#6fa8de'); gr.addColorStop(0.62, '#cfe3f2'); gr.addColorStop(1, '#e6eef3');
+  g.fillStyle = gr; g.fillRect(0, 0, 2, 256);
+  const tx = new THREE.CanvasTexture(c); tx.colorSpace = THREE.SRGBColorSpace; return tx;
+})();
+scene.fog = new THREE.Fog(0xd8e6f0, 450, 1500);
+const pmrem = new THREE.PMREMGenerator(renderer);
+scene.environment = pmrem.fromScene(new RoomEnvironment(renderer), 0.04).texture;   // 讓車漆、模型有反光
+
+const camera = new THREE.PerspectiveCamera(50, innerWidth / innerHeight, 0.3, 4000);
+scene.add(new THREE.HemisphereLight(0xffffff, 0x9a8a76, 1.5));
+const sun = new THREE.DirectionalLight(0xfff2dc, 2.6);
+sun.position.set(-120, 220, 140);
+sun.castShadow = true;
+sun.shadow.mapSize.set(2048, 2048);
+Object.assign(sun.shadow.camera, { left: -260, right: 260, top: 260, bottom: -260, near: 10, far: 800 });
+sun.shadow.bias = -0.0005; sun.shadow.normalBias = 0.35;
+scene.add(sun);
+
+/* ---------------- 3. 材質與幾何小工具 ---------------- */
+const lam = (c, o) => new THREE.MeshLambertMaterial(Object.assign({ color: c }, o || {}));
+const basic = c => new THREE.MeshBasicMaterial({ color: c });
+const M = {
+  soil: lam(0x8b6b4a), concrete: lam(0xc4c4bc), asphalt: lam(0x44464c), ground: lam(0xd6d1c7),
+  sidewalk: lam(0xe8e3d8), grass: lam(0x6fae4f), lawn: lam(0x8cbf66), path: lam(0xe8d8b0),
+  trunk: lam(0x6b4a2b), ramp: lam(0xaab5be), table: lam(0xb9c4cc), raised: lam(0xc99a6e),
+  line: lam(0xf4f4f4), pole: lam(0x50565e), housing: lam(0x22262b),
+  roof: lam(0x9a958d), brickRoof: lam(0x8a5a44),
+  light: basic(0xfff1b8),
+  glass: new THREE.MeshLambertMaterial({ color: 0x9fd3e6, transparent: true, opacity: 0.35, depthWrite: false })
+};
+const CROWNS = [lam(0x3f8a3a, { flatShading: true }), lam(0x4f9a44, { flatShading: true }), lam(0x5c8f3b, { flatShading: true })];
+const BOX = new THREE.BoxGeometry(1, 1, 1);
+function box(parent, mat, x0, x1, y0, y1, z0, z1) {
+  const m = new THREE.Mesh(BOX, mat);
+  m.scale.set(x1 - x0, y1 - y0, z1 - z0);
+  m.position.set((x0 + x1) / 2, (y0 + y1) / 2, (z0 + z1) / 2);
+  parent.add(m); return m;
+}
+const tmCache = {};
+function topMat(top, side) {               // 頂面一種材質、側面（剖面）另一種
+  side = side || M.soil; const k = top.id + '_' + side.id;
+  return tmCache[k] || (tmCache[k] = [side, side, top, side, side, side]);
+}
+function gaps(centers, half) {             // 去掉指定中心點附近後剩下的區段
+  const out = []; let s = -HALF;
+  centers.slice().sort((a, b) => a - b).forEach(c => { if (c - half > s) out.push([s, c - half]); s = c + half; });
+  if (s < HALF) out.push([s, HALF]);
+  return out;
+}
+const _m4 = new THREE.Matrix4(), _q = new THREE.Quaternion(), _p = new THREE.Vector3(), _s = new THREE.Vector3();
+function stripes(parent, mat, list) {      // 大量標線用 InstancedMesh（省效能）
+  if (!list.length) return;
+  const im = new THREE.InstancedMesh(BOX, mat, list.length);
+  list.forEach((b, i) => {
+    _p.set((b[0] + b[1]) / 2, (b[2] + b[3]) / 2, (b[4] + b[5]) / 2);
+    _s.set(b[1] - b[0], b[3] - b[2], b[5] - b[4]);
+    im.setMatrixAt(i, _m4.compose(_p, _q, _s));
+  });
+  im.userData.noCast = true; parent.add(im);
+}
+function zebra(x, half, zRanges, y) {      // 斑馬線條紋（條紋長邊平行車道）
+  const out = [];
+  zRanges.forEach(([z0, z1]) => { for (let z = z0 + 0.3; z + 0.45 <= z1; z += 0.9) out.push([x - half, x + half, y, y + 0.03, z, z + 0.45]); });
+  return out;
+}
+const TRUNK = new THREE.CylinderGeometry(0.22, 0.32, 3, 6);
+const CROWN = new THREE.IcosahedronGeometry(2.4, 1);
+let treeSeed = 0;
+function tree(parent, x, y, z, s) {
+  s = s || 1;
+  const tr = new THREE.Mesh(TRUNK, M.trunk); tr.scale.setScalar(s); tr.position.set(x, y + 1.5 * s, z);
+  const cr = new THREE.Mesh(CROWN, CROWNS[treeSeed++ % 3]); cr.scale.set(s, s * 0.95, s); cr.position.set(x, y + 4.1 * s, z);
+  cr.rotation.y = treeSeed;
+  parent.add(tr, cr);
+}
+let seed = 20261103;
+const rnd = () => (seed = (seed * 16807) % 2147483647, (seed - 1) / 2147483646);
+
+// 建築立面窗戶貼圖（以程式繪製，不需外部圖檔）
+function windowTex(base, win, sill) {
+  const c = document.createElement('canvas'); c.width = 64; c.height = 64;
+  const g = c.getContext('2d');
+  g.fillStyle = base; g.fillRect(0, 0, 64, 64);
+  g.fillStyle = win; g.fillRect(12, 14, 40, 30);
+  g.fillStyle = sill; g.fillRect(10, 44, 44, 4);
+  const tx = new THREE.CanvasTexture(c);
+  tx.colorSpace = THREE.SRGBColorSpace; tx.wrapS = tx.wrapT = THREE.RepeatWrapping; tx.anisotropy = 4;
+  return tx;
+}
+const WALL = {
+  res1: lam(0xffffff, { map: windowTex('#e3ddd3', '#56707f', '#c9c2b6') }),
+  res2: lam(0xffffff, { map: windowTex('#cfc7bb', '#4e6472', '#b9b1a5') }),
+  brick: lam(0xffffff, { map: windowTex('#b8704f', '#3d4b55', '#a25f43') })
+};
+function building(parent, wall, roof, x0, x1, h, z0, z1) {
+  const w = x1 - x0, d = z1 - z0, geo = new THREE.BoxGeometry(w, h, d), uv = geo.attributes.uv;
+  for (let f = 0; f < 6; f++) {
+    if (f === 2 || f === 3) continue;
+    const sx = (f < 2 ? d : w) / 4, sy = h / 3.2;
+    for (let k = 0; k < 4; k++) { const i = f * 4 + k; uv.setXY(i, uv.getX(i) * sx, uv.getY(i) * sy); }
+  }
+  const m = new THREE.Mesh(geo, [wall, wall, roof, roof, wall, wall]);
+  m.position.set((x0 + x1) / 2, h / 2, (z0 + z1) / 2);
+  parent.add(m);
+}
+
+/* ---------------- 4. 3D 文字標籤（支援雙語切換） ---------------- */
+const labels = [];
+function drawLabel(e) {
+  const c = document.createElement('canvas'), ctx = c.getContext('2d');
+  const font = 'bold 48px "Microsoft JhengHei","PingFang TC","Noto Sans TC",sans-serif';
+  const text = t(e.key);
+  ctx.font = font; c.width = Math.ceil(ctx.measureText(text).width) + 32; c.height = 76;
+  ctx.font = font;
+  ctx.fillStyle = 'rgba(15,23,42,0.82)'; ctx.fillRect(0, 0, c.width, c.height);
+  ctx.fillStyle = '#ffffff'; ctx.textBaseline = 'middle'; ctx.fillText(text, 16, c.height / 2 + 2);
+  const tex = new THREE.CanvasTexture(c); tex.colorSpace = THREE.SRGBColorSpace; tex.minFilter = THREE.LinearFilter;
+  if (e.sp.material.map) e.sp.material.map.dispose();
+  e.sp.material.map = tex; e.sp.material.needsUpdate = true;
+  const s = 0.09 * e.size; e.sp.scale.set(c.width * s, c.height * s, 1);
+}
+function label(parent, key, x, y, z, size, left) {
+  const sp = new THREE.Sprite(new THREE.SpriteMaterial({ depthTest: false, transparent: true, toneMapped: false, fog: false }));
+  sp.renderOrder = 10; sp.position.set(x, y, z);
+  if (left) sp.center.set(0, 0.5);
+  const e = { sp, key, size: size || 1 }; drawLabel(e); parent.add(sp); labels.push(e);
+}
+
+/* ---------------- 5. 共同環境 ---------------- */
+const common = new THREE.Group(); scene.add(common);
+box(common, M.table, -1500, 1500, -15.6, -15.5, -1500, 1500).userData.noCast = true;
+[1, -1].forEach(s => {
+  const zz = (a, b) => (s > 0 ? [a, b] : [-b, -a]);
+  box(common, topMat(M.ground), -HALF, HALF, -15, 0, ...zz(12, 160));
+  box(common, M.sidewalk, -HALF, HALF, 0, 0.15, ...zz(12, 13.5));     // 分隔島
+  box(common, M.asphalt, -HALF, HALF, 0, 0.04, ...zz(13.5, 20.5));    // 在地道路
+  box(common, M.sidewalk, -HALF, HALF, 0, 0.15, ...zz(20.5, 24));     // 人行道
+});
+box(common, M.lawn, -HALF, HALF, 0, 0.05, 24, 160);                   // 台大校園草地
+
+// 北側住宅區（坡道落點附近留出廣場）
+for (let x = -180; x <= 180; x += 30) {
+  [-45, -78, -112, -145].forEach((zc, row) => {
+    const w = 16 + rnd() * 8, d = 16 + rnd() * 8, h = Math.max(4, Math.round((12 + rnd() * 33) / 3.2)) * 3.2, alt = rnd() < 0.5;
+    if (row === 0 && near(x, RAMPS, 16)) return;
+    building(common, alt ? WALL.res1 : WALL.res2, M.roof, x - w / 2, x + w / 2, h, zc - d / 2, zc + d / 2);
+  });
+}
+for (let x = -192; x <= 192; x += 16) if (!near(x, STREAMS, 4) && !near(x, RAMPS, 6)) tree(common, x, 0.15, -27, 0.9);
+// 南側台大校園
+[[-165, 75], [-95, 75], [-25, 75], [45, 75], [115, 75], [175, 75],
+ [-140, 140], [-60, 140], [20, 140], [100, 140], [170, 140]].forEach(([x, zc]) => {
+  const w = 22 + rnd() * 14, d = 14 + rnd() * 6, h = Math.round((10 + rnd() * 10) / 3.2) * 3.2;
+  building(common, WALL.brick, M.brickRoof, x - w / 2, x + w / 2, h, zc - d / 2, zc + d / 2);
+});
+for (let x = -195; x <= 195; x += 12) if (!near(x, STREAMS, 4) && !near(x, RAMPS, 6)) tree(common, x, 0.05, 27, 1.1);
+for (let x = -190; x <= 190; x += 18) {
+  if (!near(x, RAMPS, 8)) tree(common, x, 0.05, 50, 1);
+  tree(common, x + 9, 0.05, 108, 1);
+}
+label(common, 'lblNTU', 0, 28, 95, 1);
+label(common, 'lblRes', 0, 55, -95, 1);
+label(common, 'lblWest', -HALF, 20, 0, 0.8);
+label(common, 'lblEast', HALF, 34, 0, 0.8);
+label(common, 'lblGate', X_GATE, 9, 34, 0.6);
+
+/* ---------------- 6. 四個方案的結構 ---------------- */
+const G = {}; OPTS.forEach(k => { G[k] = new THREE.Group(); scene.add(G[k]); });
+
+function carriageway(g, y, gapAt) {         // 過境車道：雙向 2+2、中央護欄、車道線
+  box(g, M.asphalt, -HALF, HALF, y, y + 0.04, -11, 11);
+  gaps(gapAt || [], 3).forEach(([a, b]) => box(g, M.concrete, a, b, y, y + 0.85, -0.3, 0.3));
+  const list = [];
+  [-7.3, 7.3].forEach(z => list.push([-HALF, HALF, y + 0.04, y + 0.07, z - 0.1, z + 0.1]));
+  for (let x = -HALF; x < HALF; x += 12) {
+    if (gapAt && near(x + 1.5, gapAt, 6)) continue;
+    [-3.65, 3.65].forEach(z => list.push([x, x + 3, y + 0.04, y + 0.07, z - 0.08, z + 0.08]));
+  }
+  stripes(g, M.line, list);
+}
+function tunnelLights(g, yCeil, x0, x1) {
+  [-4, 4].forEach(z => box(g, M.light, x0, x1, yCeil - 0.12, yCeil, z - 0.15, z + 0.15));
+}
+function raisedCrossings(g, xs) {          // 行人優先抬高式穿越道（在地道路）
+  const list = [];
+  xs.forEach(x => [1, -1].forEach(s => {
+    const zz = s > 0 ? [13.5, 20.5] : [-20.5, -13.5];
+    box(g, M.raised, x - 3.5, x + 3.5, 0, 0.1, ...zz);
+    list.push(...zebra(x, 3, [zz], 0.1));
+  }));
+  stripes(g, M.line, list);
+}
+
+// ===== 現況 0：平面道路＋號誌化穿越道 =====
+const LAMP_ON = { vR: 0xff3b30, vY: 0xffc300, vG: 0x2bd96b, pR: 0xff3b30, pG: 0x2bd96b };
+const LAMP_OFF = { vR: 0x3a1414, vY: 0x3a3014, vG: 0x143a1e, pR: 0x3a1414, pG: 0x143a1e };
+const LAMP = {}; Object.keys(LAMP_ON).forEach(k => { LAMP[k] = basic(LAMP_OFF[k]); });
+const BULB = new THREE.SphereGeometry(0.13, 10, 8);
+function signalPole(g, x, z, vehFace, pedFace) {
+  const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.11, 5.2, 8), M.pole);
+  pole.position.set(x, 2.6, z); g.add(pole);
+  if (vehFace) {
+    box(g, M.housing, x + vehFace * 0.1, x + vehFace * 0.4, 4.0, 5.2, z - 0.2, z + 0.2);
+    [['vR', 4.95], ['vY', 4.6], ['vG', 4.25]].forEach(([k, y]) => {
+      const b = new THREE.Mesh(BULB, LAMP[k]); b.position.set(x + vehFace * 0.42, y, z); g.add(b);
+    });
+  }
+  if (pedFace) {
+    box(g, M.housing, x - 0.2, x + 0.2, 2.5, 3.3, z + pedFace * 0.1, z + pedFace * 0.4);
+    box(g, LAMP.pR, x - 0.12, x + 0.12, 3.0, 3.24, z + pedFace * 0.4, z + pedFace * 0.44);
+    box(g, LAMP.pG, x - 0.12, x + 0.12, 2.6, 2.84, z + pedFace * 0.4, z + pedFace * 0.44);
+  }
+}
+(function (g) {
+  box(g, M.soil, -HALF, HALF, -15, 0, -12, 12);
+  carriageway(g, 0, [X_GATE]);
+  box(g, M.sidewalk, -HALF, HALF, 0, 0.15, 11, 12);
+  box(g, M.sidewalk, -HALF, HALF, 0, 0.15, -12, -11);
+  box(g, M.sidewalk, X_GATE - 3, X_GATE + 3, 0, 0.15, -0.6, 0.6);      // 中央行人庇護島
+  const list = zebra(X_GATE, 2.5, [[-20.5, -13.5], [-11, 11], [13.5, 20.5]], 0.04);
+  [[0.3, 11], [13.5, 20.5]].forEach(([a, b]) => list.push([X_GATE - 4.6, X_GATE - 4.2, 0.04, 0.07, a, b]));       // 東行停止線
+  [[-11, -0.3], [-20.5, -13.5]].forEach(([a, b]) => list.push([X_GATE + 4.2, X_GATE + 4.6, 0.04, 0.07, a, b]));   // 西行停止線
+  stripes(g, M.line, list);
+  signalPole(g, X_GATE - 4.8, 22.4, -1, -1);
+  signalPole(g, X_GATE + 4.8, -22.4, 1, 1);
+  signalPole(g, X_GATE - 4.8, 0, -1, 0);
+  signalPole(g, X_GATE + 4.8, 0, 1, 0);
+  label(g, 'O_ground', HALF + 2, 2.5, -14, 0.6, true);
+  label(g, 'O_cw', X_GATE, 12, 0, 0.6);
+})(G['0']);
+
+// ===== 方案 A：明挖覆蓋地下化 =====
+(function (g) {
+  box(g, M.soil, -HALF, HALF, -15, -10, -12, 12);
+  box(g, M.concrete, -HALF, HALF, -10, -9, -12, 12);
+  box(g, M.concrete, -HALF, HALF, -9, -2.4, -12, -11);
+  box(g, M.concrete, -HALF, HALF, -9, -2.4, 11, 12);
+  box(g, M.concrete, -HALF, HALF, -3.4, -2.4, -11, 11);
+  box(g, topMat(M.grass), -HALF, HALF, -2.4, 0, -12, 12);
+  box(g, M.path, -HALF, HALF, 0, 0.05, -1.5, 1.5);
+  carriageway(g, -9);
+  tunnelLights(g, -3.4, -HALF, HALF);
+  for (let x = -190, i = 0; x <= 190; x += 19, i++) if (!near(x, STREAMS, 5)) tree(g, x, 0, i % 2 ? 6.5 : -6.5, 1);
+  raisedCrossings(g, STREAMS);
+  label(g, 'A_park', HALF + 2, 2, -14, 0.6, true);
+  label(g, 'A_road', HALF + 2, -7.5, -14, 0.6, true);
+})(G.A);
+
+// ===== 方案 B：原地加罩＋屋頂公園 =====
+function ramp(g, x, s) {                   // s = +1 南側、-1 北側；坡道 48 m 水平、爬升 7.5 m
+  const run = 48, rise = 7.5, len = Math.hypot(run, rise), ang = Math.atan2(rise, run);
+  const rg = new THREE.Group();
+  rg.position.set(x, rise / 2 - 0.25, s * (12 + run / 2));
+  rg.rotation.x = s * ang;
+  box(rg, M.ramp, -2, 2, -0.25, 0.25, -len / 2, len / 2);
+  box(rg, M.glass, -2, -1.94, 0.25, 1.3, -len / 2, len / 2);
+  box(rg, M.glass, 1.94, 2, 0.25, 1.3, -len / 2, len / 2);
+  g.add(rg);
+  [26, 44].forEach(a => {
+    const h = rise * (60 - a) / 48 - 0.5;
+    box(g, M.concrete, x - 0.4, x + 0.4, 0, h, s * a - 0.4, s * a + 0.4);
+  });
+}
+(function (g) {
+  box(g, M.soil, -HALF, HALF, -15, 0, -12, 12);
+  carriageway(g, 0);
+  box(g, M.concrete, -HALF, HALF, 0, 6.6, -12, -11);
+  box(g, M.concrete, -HALF, HALF, 0, 6.6, 11, 12);
+  box(g, M.concrete, -HALF, HALF, 5.6, 6.6, -11, 11);
+  box(g, topMat(M.grass, M.concrete), -HALF, HALF, 6.6, 7.5, -12, 12);
+  box(g, M.path, -HALF, HALF, 7.5, 7.55, -1.5, 1.5);
+  gaps(RAMPS, 2.5).forEach(([a, b]) => {
+    box(g, M.glass, a, b, 7.5, 8.6, -12, -11.85);
+    box(g, M.glass, a, b, 7.5, 8.6, 11.85, 12);
+  });
+  tunnelLights(g, 5.6, -HALF, HALF);
+  for (let x = -190, i = 0; x <= 190; x += 19, i++) if (!near(x, RAMPS, 6)) tree(g, x, 7.5, i % 2 ? 6.5 : -6.5, 1);
+  RAMPS.forEach(x => { ramp(g, x, 1); ramp(g, x, -1); });
+  label(g, 'B_roof', HALF + 2, 9.5, -14, 0.6, true);
+  label(g, 'B_road', HALF + 2, 2.5, -14, 0.6, true);
+  RAMPS.forEach(x => label(g, 'B_ramp', x, 16, 40, 0.55));
+})(G.B);
+
+// ===== 方案 C：下沉路塹＋分段覆蓋 =====
+(function (g) {
+  box(g, M.soil, -HALF, HALF, -15, -7.5, -12, 12);
+  box(g, M.concrete, -HALF, HALF, -7.5, -6.5, -12, 12);
+  box(g, M.concrete, -HALF, HALF, -6.5, 0, -12, -11);
+  box(g, M.concrete, -HALF, HALF, -6.5, 0, 11, 12);
+  carriageway(g, -6.5);
+  LIDS.forEach(x => {
+    box(g, topMat(M.grass, M.concrete), x - 20, x + 20, -1.2, 0, -11, 11);
+    box(g, M.path, x - 3, x + 3, 0, 0.05, -11, 11);
+    [[-14, -6], [-14, 6], [14, -6], [14, 6]].forEach(([dx, dz]) => tree(g, x + dx, 0, dz, 0.9));
+    tunnelLights(g, -1.2, x - 20, x + 20);
+  });
+  gaps(LIDS, 20).forEach(([a, b]) => {
+    box(g, M.glass, a, b, 0, 2, -12, -11.7);
+    box(g, M.glass, a, b, 0, 2, 11.7, 12);
+  });
+  raisedCrossings(g, LIDS);
+  label(g, 'C_ground', HALF + 2, 2.5, -14, 0.6, true);
+  label(g, 'C_road', HALF + 2, -5.5, -14, 0.6, true);
+  label(g, 'C_lid', 0, 10, 0, 0.6);
+})(G.C);
+
+/* ---------------- 7. 號誌（僅現況 0 使用） ---------------- */
+// 週期 95 秒：車綠 40、黃 3、全紅 2、行人綠 40、行人閃 8、全紅 2
+const PHASES = [['VG', 40], ['VY', 3], ['AR', 2], ['PG', 40], ['PF', 8], ['AR', 2]];
+const sig = { i: 0, t: 0 };
+const sigName = () => PHASES[sig.i][0];
+const sigLeft = () => PHASES[sig.i][1] - sig.t;
+function sigStep(dt) { sig.t += dt; while (sig.t >= PHASES[sig.i][1]) { sig.t -= PHASES[sig.i][1]; sig.i = (sig.i + 1) % PHASES.length; } }
+function pedWalkLeft() { const n = sigName(); return n === 'PG' ? sigLeft() + PHASES[4][1] : 0; }
+let simT = 0;
+function updateLamps() {
+  const n = sigName();
+  const on = { vR: n !== 'VG' && n !== 'VY', vY: n === 'VY', vG: n === 'VG',
+               pG: n === 'PG' || (n === 'PF' && Math.floor(simT * 2) % 2 === 0), pR: n !== 'PG' && n !== 'PF' };
+  Object.keys(LAMP).forEach(k => LAMP[k].color.setHex(on[k] ? LAMP_ON[k] : LAMP_OFF[k]));
+}
+
+/* ---------------- 8. 車輛模型 ---------------- */
+const std = (c, m, r) => new THREE.MeshStandardMaterial({ color: c, metalness: m, roughness: r });
+const PAINT = [std(0xf2f2f2, 0.35, 0.35), std(0xb9bec4, 0.6, 0.3), std(0xc0262f, 0.35, 0.35),
+               std(0x2a4f8f, 0.4, 0.35), std(0x1f2226, 0.45, 0.3), std(0xf2c14e, 0.3, 0.4)];
+const TAXI = PAINT[5];
+const CM = { glass: std(0x1e2a33, 0.3, 0.1), tire: lam(0x1b1b1d), hub: std(0xc2c6cc, 0.8, 0.3),
+             trim: lam(0x2a2d31), head: basic(0xfff6d8), tail: basic(0xd62828), sign: lam(0xffffff) };
+const CG = (() => {                         // 程序化小客車幾何（全部共用）
+  const body = new THREE.BoxGeometry(4.3, 0.62, 1.78); body.translate(0, 0.62, 0);
+  const sh = new THREE.Shape(); sh.moveTo(-1.45, 0); sh.lineTo(-0.95, 0.56); sh.lineTo(0.55, 0.56); sh.lineTo(1.2, 0); sh.closePath();
+  const cabin = new THREE.ExtrudeGeometry(sh, { depth: 1.6, bevelEnabled: false }); cabin.translate(-0.15, 0.93, -0.8);
+  const roof = new THREE.BoxGeometry(1.5, 0.06, 1.64); roof.translate(-0.35, 1.52, 0);
+  const bumper = new THREE.BoxGeometry(4.36, 0.2, 1.82); bumper.translate(0, 0.42, 0);
+  const wheel = new THREE.CylinderGeometry(0.33, 0.33, 0.24, 16); wheel.rotateX(Math.PI / 2);
+  const hub = new THREE.CylinderGeometry(0.17, 0.17, 0.26, 10); hub.rotateX(Math.PI / 2);
+  return { body, cabin, roof, bumper, wheel, hub,
+           head: new THREE.BoxGeometry(0.06, 0.14, 0.34), tail: new THREE.BoxGeometry(0.06, 0.12, 1.5),
+           sign: new THREE.BoxGeometry(0.55, 0.2, 0.28) };
+})();
+function mesh(geo, mat, parent, x, y, z) { const m = new THREE.Mesh(geo, mat); m.position.set(x || 0, y || 0, z || 0); parent.add(m); return m; }
+function makeCar(i) {                       // 程序化低多邊形小客車（車頭朝 +x）
+  const g = new THREE.Group(), paint = PAINT[i % PAINT.length];
+  mesh(CG.body, paint, g); mesh(CG.cabin, CM.glass, g); mesh(CG.roof, paint, g); mesh(CG.bumper, CM.trim, g);
+  const wheels = [];
+  [[1.35, 0.86], [1.35, -0.86], [-1.35, 0.86], [-1.35, -0.86]].forEach(([x, z]) => {
+    const w = mesh(CG.wheel, CM.tire, g, x, 0.33, z); mesh(CG.hub, CM.hub, w); wheels.push(w);
+  });
+  [0.6, -0.6].forEach(z => mesh(CG.head, CM.head, g, 2.16, 0.72, z));
+  mesh(CG.tail, CM.tail, g, -2.16, 0.75, 0);
+  if (paint === TAXI) mesh(CG.sign, CM.sign, g, -0.35, 1.65, 0);
+  return { obj: g, len: 4.4, wheels, r: 0.33 };
+}
+const BUS_MAT = lam(0x2a9d8f), BUS_GLASS = std(0x1e2a33, 0.3, 0.15);
+const BUS_WHEEL = new THREE.CylinderGeometry(0.5, 0.5, 0.3, 16); BUS_WHEEL.rotateX(Math.PI / 2);
+function makeBusProc() {                    // 程序化公車（外部模型失敗時使用）
+  const g = new THREE.Group();
+  box(g, BUS_MAT, -4.5, 4.5, 0.45, 3.0, -1.22, 1.22);
+  box(g, BUS_GLASS, -3.9, 4.52, 1.75, 2.6, -1.24, 1.24);
+  box(g, CM.head, 4.5, 4.55, 0.8, 1.0, -1.0, -0.6); box(g, CM.head, 4.5, 4.55, 0.8, 1.0, 0.6, 1.0);
+  const wheels = [];
+  [[3.0, 1.05], [3.0, -1.05], [-3.0, 1.05], [-3.0, -1.05]].forEach(([x, z]) => wheels.push(mesh(BUS_WHEEL, CM.tire, g, x, 0.5, z)));
+  return { obj: g, len: 9, wheels, r: 0.5 };
+}
+let truckTpl = null;                        // glTF 貨車樣板
+function prepTruck(gltf) {
+  const root = gltf.scene, wrap = new THREE.Group(); wrap.add(root);
+  const bb = new THREE.Box3().setFromObject(root), size = bb.getSize(new THREE.Vector3());
+  if (size.z > size.x) root.rotation.y = Math.PI / 2;     // 讓車身長邊沿 x 軸
+  root.updateMatrixWorld(true); bb.setFromObject(root); bb.getSize(size);
+  root.scale.multiplyScalar(7.2 / size.x);
+  root.updateMatrixWorld(true); bb.setFromObject(root);
+  const c = bb.getCenter(new THREE.Vector3());
+  root.position.x -= c.x; root.position.z -= c.z; root.position.y -= bb.min.y;
+  wrap.traverse(o => { if (o.isMesh && o.material) o.material.envMapIntensity = 0.7; });
+  return { wrap, clip: gltf.animations[0] || null };
+}
+function makeTruck() {
+  if (!truckTpl) return makeBusProc();
+  const obj = truckTpl.wrap.clone(true);
+  const mixer = truckTpl.clip ? new THREE.AnimationMixer(obj) : null;
+  if (mixer) mixer.clipAction(truckTpl.clip).play();
+  return { obj, len: 7.2, wheels: [], r: 0.5, mixer };
+}
+
+/* ---------------- 9. 車流模擬（IDM 跟車模型＋號誌／讓行人） ---------------- */
+// 台灣靠右：往東（+x）在南側（+z）；速度 m/s
+const LANES = [
+  { z: 1.9, dir: 1, v0: 16.7, n: 8, through: true }, { z: 5.4, dir: 1, v0: 13.9, n: 8, through: true },
+  { z: -1.9, dir: -1, v0: 16.7, n: 8, through: true }, { z: -5.4, dir: -1, v0: 13.9, n: 8, through: true },
+  { z: 17, dir: 1, v0: 11.1, n: 6, through: false }, { z: -17, dir: -1, v0: 11.1, n: 6, through: false }
+];
+const cars = [];
+function idm(v, v0, gap, dv) {
+  const a = 1.8, b = 2.5, s0 = 2.0, T = 1.1;
+  const ss = s0 + Math.max(0, v * T + v * dv / (2 * Math.sqrt(a * b)));
+  return a * (1 - Math.pow(v / v0, 4) - Math.pow(ss / Math.max(gap, 0.05), 2));
+}
+function crosswalksFor(o) {
+  if (o === '0') return [{ x: X_GATE, half: 2.5, signal: true, through: true, local: true }];
+  if (o === 'A') return STREAMS.map(x => ({ x, half: 3.5, local: true }));
+  if (o === 'C') return LIDS.map(x => ({ x, half: 3.5, local: true }));
+  return [];
+}
+let CW = crosswalksFor(opt);
+function cwBlocked(cw, lane, car, d) {
+  if (cw.signal) {
+    const n = sigName();
+    if (n === 'VY') { if (d > car.v * car.v / 6) return true; }
+    else if (n !== 'VG') return true;
+  }
+  for (const p of peds) {
+    if (p.active && p.onRoad && !p.waiting && Math.abs(p.pos.x - cw.x) < cw.half + 1.2 && Math.abs(p.pos.z - lane.z) < 4.5) return true;
+  }
+  return false;
+}
+function vehStep(dt) {
+  LANES.forEach(lane => {
+    const arr = lane.cars.slice().sort((a, b) => a.s - b.s), n = arr.length;
+    arr.forEach((car, i) => {
+      const lead = arr[(i + 1) % n];
+      let gap = (lead.s - lead.len / 2) - (car.s + car.len / 2);
+      if (i === n - 1) gap += L;
+      let acc = idm(car.v, car.v0, gap, car.v - lead.v);
+      for (const cw of CW) {
+        if (lane.through ? !cw.through : !cw.local) continue;
+        let d = lane.dir * cw.x - (cw.half + 1.7) - (car.s + car.len / 2);
+        if (d < -0.5) d += L;
+        if (d > 120) continue;
+        if (cwBlocked(cw, lane, car, d)) acc = Math.min(acc, idm(car.v, car.v0, Math.max(d, 0.05), car.v));
+      }
+      car.v = Math.max(0, car.v + Math.max(acc, -9) * dt);
+      car.s += car.v * dt;
+      if (car.s > HALF) car.s -= L;
+    });
+  });
+}
+
+/* ---------------- 10. 行人模型 ---------------- */
+const CLOTHES = [0x2b6cb0, 0xc53030, 0x2f855a, 0xd69e2e, 0x6b46c1, 0xdd6b20, 0x4a5568, 0xe2e8f0, 0x319795, 0xb83280];
+let pedTpl = null;                          // glTF 行人樣板（Xbot）
+function makePedGLTF(i) {
+  const obj = SkeletonUtils.clone(pedTpl.scene);
+  obj.traverse(o => {
+    if (o.isMesh) {
+      o.material = o.material.clone();
+      o.material.color.setHex(/Joints/i.test(o.material.name) ? 0x3a3f47 : CLOTHES[i % CLOTHES.length]);
+      o.castShadow = true;
+    }
+  });
+  const mixer = new THREE.AnimationMixer(obj);
+  const clip = name => pedTpl.animations.find(a => a.name === name);
+  const walk = mixer.clipAction(clip('walk')), idle = mixer.clipAction(clip('idle'));
+  walk.play(); idle.play(); idle.setEffectiveWeight(0);
+  let w = 1;
+  return {
+    obj,
+    animate(dt, moving, v) {
+      w += ((moving ? 1 : 0) - w) * Math.min(1, dt * 6);
+      walk.setEffectiveWeight(w); idle.setEffectiveWeight(1 - w);
+      walk.timeScale = v / 1.3;
+      mixer.update(dt);
+    }
+  };
+}
+const PG = {                                // 程序化行人（備援；會擺動四肢）
+  leg: (() => { const g = new THREE.BoxGeometry(0.15, 0.88, 0.17); g.translate(0, -0.44, 0); return g; })(),
+  arm: (() => { const g = new THREE.BoxGeometry(0.1, 0.62, 0.11); g.translate(0, -0.31, 0); return g; })(),
+  torso: new THREE.BoxGeometry(0.42, 0.62, 0.24), head: new THREE.SphereGeometry(0.12, 12, 10),
+  bag: new THREE.BoxGeometry(0.32, 0.4, 0.15)
+};
+const SKIN = lam(0xe0b394), PANTS = lam(0x2d3748), BAG = lam(0x3b4252);
+function makePedProc(i) {
+  const g = new THREE.Group(), shirt = lam(CLOTHES[i % CLOTHES.length]);
+  const legs = [-0.11, 0.11].map(x => { const p = new THREE.Group(); p.position.set(x, 0.92, 0); mesh(PG.leg, PANTS, p); g.add(p); return p; });
+  mesh(PG.torso, shirt, g, 0, 1.23, 0); mesh(PG.head, SKIN, g, 0, 1.68, 0);
+  const arms = [-0.27, 0.27].map(x => { const p = new THREE.Group(); p.position.set(x, 1.5, 0); mesh(PG.arm, shirt, p); g.add(p); return p; });
+  if (i % 2 === 0) mesh(PG.bag, BAG, g, 0, 1.28, -0.2);     // 學生背包
+  g.traverse(o => { if (o.isMesh) o.castShadow = true; });
+  let ph = Math.random() * 6, w = 1;
+  return {
+    obj: g,
+    animate(dt, moving, v) {
+      w += ((moving ? 1 : 0) - w) * Math.min(1, dt * 6);
+      ph += dt * v * 4.5;
+      const a = Math.sin(ph) * 0.55 * w;
+      legs[0].rotation.x = a; legs[1].rotation.x = -a; arms[0].rotation.x = -a * 0.8; arms[1].rotation.x = a * 0.8;
+    }
+  };
+}
+
+/* ---------------- 11. 行人路徑（依方案）與模擬 ---------------- */
+// 路徑一律以「南（台大）→ 北」建立；北 → 南時把 z 鏡射
+function buildRoute(o, x0, sgn, jitter) {
+  const off = jitter ? (Math.random() * 2 - 1) * 1.6 : 0, G0 = GROUND;
+  let P;
+  if (o === '0') {
+    const xc = X_GATE + off;
+    const wz = 21.2 + (jitter ? Math.random() * 1.2 : 0);
+    P = [[x0, G0, 29.5], [xc, G0, 29.5], [xc, G0, wz, { sig: 1, need: wz - 0.4 }],
+         [xc, G0, 0.4, { sig: 1, need: 20.8 }], [xc, G0, -21.2], [xc, G0, -29.5], [x0, G0, -29.5]];
+  } else if (o === 'A') {
+    P = [[x0 + off, G0, 29.5], [x0 + off, G0, -29.5]];
+  } else if (o === 'C') {
+    const xl = LIDS.reduce((a, b) => Math.abs(b - x0) < Math.abs(a - x0) ? b : a) + off;
+    P = [[x0, G0, 29.5], [xl, G0, 29.5], [xl, G0, -29.5], [x0, G0, -29.5]];
+  } else {
+    const xr = RAMPS.reduce((a, b) => Math.abs(b - x0) < Math.abs(a - x0) ? b : a);
+    const xw = xr + (x0 > xr ? 3 : -3), xp = xr + off * 0.6;
+    P = [[x0, G0, 29.5], [xw, G0, 29.5], [xw, G0, 61.5], [xp, G0, 61], [xp, 7.55, 12], [xp, 7.55, -12],
+         [xp, G0, -61], [xw, G0, -61.5], [xw, G0, -29.5], [x0, G0, -29.5]];
+  }
+  return P.map(p => Object.assign({ x: p[0], y: p[1], z: p[2] * sgn }, p[3] || {}));
+}
+function routeLen(r) { let d = 0; for (let i = 1; i < r.length; i++) d += Math.hypot(r[i].x - r[i - 1].x, r[i].y - r[i - 1].y, r[i].z - r[i - 1].z); return d; }
+const ROUTE_STATS = {};
+OPTS.forEach(o => {
+  const rs = STREAMS.map(x => buildRoute(o, x, 1, false));
+  ROUTE_STATS[o] = { dist: rs.reduce((s, r) => s + routeLen(r), 0) / rs.length, climb: Math.max(...rs.flat().map(p => p.y)) - GROUND };
+});
+
+const N_PEDS = 30, SPAWN_DT = 1.8;
+const peds = [];
+const stats = {}; const resetStats = () => OPTS.forEach(o => { stats[o] = { n: 0, T: 0, W: 0, vS: 0, vT: 0 }; }); resetStats();
+let spawnAcc = 0, spawnIdx = 0;
+
+function startTrip(p, x0, sgn, warm) {
+  p.route = buildRoute(opt, x0, sgn, true);
+  p.seg = 0; p.departed = false; p.waiting = false;
+  p.pos.set(p.route[0].x, p.route[0].y, p.route[0].z);
+  p.v = 1.15 + Math.random() * 0.35; p.t0 = simT; p.wait = 0; p.warm = !!warm; p.active = true;
+  p.vis.obj.visible = true;
+  if (warm) {                               // 切換方案時：把行人隨機放到路徑中途，畫面立即有人
+    let left = Math.random() * routeLen(p.route) * 0.85;
+    while (p.seg < p.route.length - 1) {
+      const a = p.route[p.seg], b = p.route[p.seg + 1];
+      const d = Math.hypot(b.x - a.x, b.y - a.y, b.z - a.z);
+      if (left < d) { const f = left / d; p.pos.set(a.x + (b.x - a.x) * f, a.y + (b.y - a.y) * f, a.z + (b.z - a.z) * f); p.departed = true; break; }
+      left -= d; p.seg++; p.pos.set(b.x, b.y, b.z);
+    }
+  }
+}
+function finishTrip(p) {
+  if (!p.warm) { const s = stats[opt]; s.n++; s.T += simT - p.t0; s.W += p.wait; }
+  p.active = false; p.vis.obj.visible = false;
+}
+function pedStep(p, dt) {
+  const r = p.route;
+  if (p.seg >= r.length - 1) { finishTrip(p); return; }
+  const a = r[p.seg], b = r[p.seg + 1];
+  if (!p.departed) {
+    if (a.sig && opt === '0' && pedWalkLeft() < a.need / p.v) {
+      p.waiting = true; p.wait += dt;
+      p.heading = Math.atan2(b.x - a.x, b.z - a.z);
+      return;
+    }
+    p.departed = true; p.waiting = false;
+  }
+  const dx = b.x - p.pos.x, dy = b.y - p.pos.y, dz = b.z - p.pos.z, dh = Math.hypot(dx, dz);
+  const slope = dh > 0.01 ? dy / dh : 0;
+  const v = p.v * (slope > 0.05 ? 0.78 : slope < -0.05 ? 0.92 : 1);   // 上坡變慢
+  p.vNow = v;
+  const step = v * dt;
+  if (step >= dh) { p.pos.set(b.x, b.y, b.z); p.seg++; p.departed = false; }
+  else { const f = step / dh; p.pos.x += dx * f; p.pos.y += dy * f; p.pos.z += dz * f; p.heading = Math.atan2(dx, dz); }
+  const az = Math.abs(p.pos.z);
+  p.onRoad = p.pos.y < 1 && ((az > 13.2 && az < 20.8) || (opt === '0' && az < 11.2));
+}
+function spawnStep(dt) {
+  spawnAcc += dt;
+  if (spawnAcc < SPAWN_DT) return;
+  spawnAcc -= SPAWN_DT;
+  const p = peds.find(q => !q.active); if (!p) return;
+  const si = spawnIdx % STREAMS.length, sgn = (Math.floor(spawnIdx / STREAMS.length) % 2) ? -1 : 1;
+  spawnIdx++;
+  startTrip(p, STREAMS[si], sgn, false);
+}
+function warmStart() {
+  peds.forEach(p => { p.active = false; p.vis.obj.visible = false; });
+  peds.slice(0, 14).forEach((p, i) => startTrip(p, STREAMS[i % 3], i % 2 ? -1 : 1, true));
+  spawnAcc = 0;
+}
+
+/* ---------------- 12. CBA 儀表板資料（摘自階段二比較框架；0–5 定性評等） ---------------- */
+// 成本列：數值越高＝成本越高；效益列：數值越高＝效益越大；-1＝負效益
+const CBA = {
+  cost: [
+    { k: 'cCons',  v: { A: 5, B: 3, C: 3 },   rank: 'A > C ≈ B' },
+    { k: 'cOM',    v: { A: 5, B: 4, C: 2 },   rank: 'A > B > C' },
+    { k: 'cRisk',  v: { A: 5, B: 3, C: 3 },   rank: 'A > B ≈ C' }
+  ],
+  int: [
+    { k: 'iDelay',  v: { A: 5, B: 3, C: 5 },   rank: 'A ≈ C > B', note: { B: 'noteBdelay' } },
+    { k: 'iPed',    v: { A: 5, B: -1, C: 4 },  rank: 'A ≈ C ≫ B' },
+    { k: 'iSafety', v: { A: 4, B: 3.5, C: 4.5 }, rank: 'C ≥ A > B' }
+  ],
+  ext: [
+    { k: 'eSev',    v: { A: 5, B: 2, C: 4 },     rank: 'A > C > B' },
+    { k: 'eNoise',  v: { A: 4.5, B: 5, C: 2.5 }, rank: 'B ≥ A > C' },
+    { k: 'eAir',    v: { A: 4, B: 4, C: 2.5 },   rank: 'B ≈ A > C' },
+    { k: 'eCarbon', v: { A: 2, B: 2.5, C: 4 },   rank: 'C > B ≳ A' },
+    { k: 'eLand',   v: { A: 5, B: 3.5, C: 3 },   rank: 'A > B ≈ C' }
+  ]
+};
+const BADGE_CLS = { '0': 'neutral', A: 'warn', B: 'bad', C: 'good' };
+function indexOf(o) {                       // 定性指數（只用於象限圖的相對位置）
+  if (o === '0') return { b: 0, c: 0 };
+  const avg = rows => rows.reduce((s, r) => s + Math.max(0, r.v[o]), 0) / rows.length;
+  return { b: avg([...CBA.int, ...CBA.ext]), c: avg(CBA.cost) };
+}
+function meter(v, kind) {
+  if (opt === '0') return `<div class="meter ${kind}"><i style="width:0"></i></div><span class="tag base">${t('tagBase')}</span>`;
+  if (v < 0) return `<div class="meter ${kind}"><i style="width:4%;background:#f87171"></i></div><span class="tag neg">${t('tagNeg')}</span>`;
+  const lvl = v >= 4 ? 'H' : v >= 2.5 ? 'M' : 'L';
+  const cls = lvl === 'M' ? 'mid' : kind === 'cost' ? (lvl === 'H' ? 'hi-cost' : 'lo-cost') : (lvl === 'H' ? 'hi-ben' : 'lo-ben');
+  return `<div class="meter ${kind}"><i style="width:${v / 5 * 100}%"></i></div><span class="tag ${cls}">${t('tag' + lvl)}</span>`;
+}
+function section(icon, color, titleKey, rows, kind) {
+  const body = rows.map(r => {
+    const note = (r.note && r.note[opt]) ? `<div class="rank" style="color:#fbbf24">${t(r.note[opt])}</div>` : '';
+    return `<div class="metric"><span class="lbl">${t(r.k)}</span>${meter(opt === '0' ? 0 : r.v[opt], kind)}` +
+      `<div class="rank">${t('rankLbl')}：${r.rank}${kind === 'cost' ? ' ' + t('rankCost') : ''}</div>${note}</div>`;
+  }).join('');
+  return `<div class="sec"><h3><span class="ico" style="background:${color}">${icon}</span>${t(titleKey)}</h3>${body}</div>`;
+}
+function effSVG() {                         // 定性效率象限圖（成本指數 × 效益指數）
+  const W = 150, H = 120, P = 18, X = v => P + v / 5 * (W - P - 6), Y = v => H - P - v / 5 * (H - P - 6);
+  const col = { '0': '#94a3b8', A: '#fbbf24', B: '#f87171', C: '#34d399' };
+  let s = `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img">`;
+  s += `<rect x="${P}" y="6" width="${W - P - 6}" height="${H - P - 6}" rx="6" fill="rgba(148,163,184,.08)" stroke="rgba(148,163,184,.25)"/>`;
+  s += `<line x1="${X(0)}" y1="${Y(0)}" x2="${X(5)}" y2="${Y(5)}" stroke="rgba(148,163,184,.35)" stroke-dasharray="3 3"/>`;
+  OPTS.forEach(o => {
+    const p = indexOf(o), cur = o === opt;
+    s += `<circle cx="${X(p.c)}" cy="${Y(p.b)}" r="${cur ? 7 : 5}" fill="${col[o]}" ${cur ? 'stroke="#fff" stroke-width="2"' : 'opacity=".75"'}/>`;
+    s += `<text x="${X(p.c) + 9}" y="${Y(p.b) + 4}" font-size="11" fill="#e5e7eb" font-weight="${cur ? 700 : 400}">${o}</text>`;
+  });
+  s += `<text x="${W - 6}" y="${H - 4}" font-size="9" fill="#94a3b8" text-anchor="end">${t('effX')}</text>`;
+  s += `<text x="10" y="${H - P}" font-size="9" fill="#94a3b8" transform="rotate(-90 10 ${H - P})">${t('effY')}</text>`;
+  return s + '</svg>';
+}
+function renderCBA() {
+  const s = stats[opt], rs = ROUTE_STATS[opt];
+  const sim = t('simLine').replace('{d}', rs.dist.toFixed(0)).replace('{c}', rs.climb.toFixed(1))
+    .replace('{t}', s.n ? (s.T / s.n).toFixed(1) + ' s' : t('simNA'));
+  const chain = [['0B', opt === 'B'], ['BC', opt === 'C' || opt === 'B'], ['CA', opt === 'A' || opt === 'C']]
+    .map(([k, hl]) => `<div class="${hl ? 'hl' : ''}">${t('chain' + k)}</div>`).join('');
+  $('tab-cba').innerHTML =
+    `<div class="hero"><div class="ttl"><div class="opt">${t('row' + opt)}</div><div class="tagline">${t('tag' + opt)}</div>` +
+    `<span class="badge ${BADGE_CLS[opt]}">${t('badge' + opt)}</span></div></div>` +
+    `<div class="note">${t('cbaSub')}</div>` +
+    section('$', 'rgba(251,191,36,.25)', 'secCost', CBA.cost, 'cost') +
+    section('⏱', 'rgba(34,211,238,.22)', 'secInt', CBA.int, 'ben') +
+    `<div class="simline">${sim}</div>` +
+    section('🌳', 'rgba(52,211,153,.22)', 'secExt', CBA.ext, 'ben') +
+    `<div class="sec"><h3><span class="ico" style="background:rgba(96,165,250,.25)">⚖</span>${t('secVerdict')}</h3>` +
+    `<div class="verdict">${t('verdict' + opt)}</div>` +
+    `<div class="eff" style="margin-top:10px">${effSVG()}<div><b style="font-size:12px">${t('effTitle')}</b><div class="note">${t('effNote')}</div></div></div>` +
+    `<div class="note" style="margin-top:10px"><b>${t('chainTitle')}</b></div><div class="chain">${chain}</div></div>`;
+}
+
+/* ---------------- 13. 切換方案／視角／介面 ---------------- */
+function setOption(k) {
+  opt = k; optT = 0;
+  OPTS.forEach(o => { G[o].visible = (o === k); });
+  CW = crosswalksFor(k);
+  if (ready) warmStart();
+  $('info').innerHTML = t('info' + k);
+  document.querySelectorAll('[data-opt]').forEach(b => b.classList.toggle('on', b.dataset.opt === k));
+  renderCBA(); renderKPI();
+}
+document.querySelectorAll('[data-opt]').forEach(b => { b.onclick = () => setOption(b.dataset.opt); });
+
+// 儀表板分頁與收合
+let tab = 'cba';
+document.querySelectorAll('[data-tab]').forEach(b => {
+  b.onclick = () => {
+    tab = b.dataset.tab;
+    document.querySelectorAll('[data-tab]').forEach(x => x.classList.toggle('on', x === b));
+    $('tab-cba').style.display = tab === 'cba' ? '' : 'none';
+    $('tab-live').style.display = tab === 'live' ? '' : 'none';
+  };
+});
+function setDash(open) {
+  $('dash').classList.toggle('collapsed', !open);
+  $('pill').classList.toggle('show', !open);
+  setTimeout(updateViewOffset, 380);
+}
+$('dashHide').onclick = () => setDash(false);
+$('pill').onclick = () => setDash(true);
+
+// 讓 3D 畫面中心落在兩側面板之間的空白區
+function updateViewOffset() {
+  const W = innerWidth, H = innerHeight;
+  if (W < 760) { camera.clearViewOffset(); return; }
+  const lw = $('panel').getBoundingClientRect().right;
+  const rw = $('dash').classList.contains('collapsed') ? 0 : W - $('dash').getBoundingClientRect().left;
+  camera.setViewOffset(W, H, -(lw - rw) / 2, 0, W, H);
+}
+
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true; controls.dampingFactor = 0.08; controls.minDistance = 2; controls.maxDistance = 900;
+let camGoal = null;
+controls.addEventListener('start', () => { camGoal = null; });
+const VIEWS = {
+  section: { pos: [266, 16, 26], tgt: [196, -3, -16] },
+  eye: { pos: [-7, 1.7, 31], tgt: [8, 2.2, -12] },
+  bird: { pos: [-150, 115, 150], tgt: [0, 0, 0] }
+};
+function setView(name) {
+  const v = VIEWS[name];
+  camGoal = { p: new THREE.Vector3(...v.pos), t: new THREE.Vector3(...v.tgt) };
+  labels.forEach(e => { e.sp.visible = name !== 'eye'; });   // 行人視角時隱藏 3D 標籤，避免遮擋
+  document.querySelectorAll('[data-view]').forEach(b => b.classList.toggle('on', b.dataset.view === name));
+}
+document.querySelectorAll('[data-view]').forEach(b => { b.onclick = () => setView(b.dataset.view); });
+camera.position.set(...VIEWS.section.pos); controls.target.set(...VIEWS.section.tgt);
+document.querySelector('[data-view="section"]').classList.add('on');
+
+let speed = 1, paused = false, perf = false;
+function setSpeed(s) { speed = s; document.querySelectorAll('[data-speed]').forEach(b => b.classList.toggle('on', +b.dataset.speed === s)); }
+document.querySelectorAll('[data-speed]').forEach(b => { b.onclick = () => setSpeed(+b.dataset.speed); });
+setSpeed(1);
+$('pauseBtn').onclick = () => { paused = !paused; $('pauseBtn').textContent = t(paused ? 'resume' : 'pause'); };
+function setPerf(on) {
+  perf = on; sun.castShadow = !perf;
+  renderer.setPixelRatio(perf ? 1 : Math.min(window.devicePixelRatio || 1, 2));
+  $('perfBtn').textContent = t(perf ? 'perfOn' : 'perfOff');
+}
+$('perfBtn').onclick = () => setPerf(!perf);
+$('resetBtn').onclick = () => { resetStats(); renderKPI(); renderCBA(); };
+
+const modelStatus = { ped: null, truck: null };
+function renderStatus() {
+  if (modelStatus.ped === null) { $('modelStatus').innerHTML = ''; return; }
+  $('modelStatus').innerHTML = [t(modelStatus.ped ? 'msPedG' : 'msPedP'), t(modelStatus.truck ? 'msTruckG' : 'msTruckP'), t('msCar')].join('<br>');
+}
+const fmt = (v, d) => (v == null || isNaN(v)) ? '—' : v.toFixed(d);
+function renderKPI() {
+  const head = ['thOpt', 'thDist', 'thClimb', 'thTime', 'thWait', 'thN', 'thSpd'].map(k => `<th>${t(k)}</th>`).join('');
+  const rows = OPTS.map(o => {
+    const s = stats[o], rs = ROUTE_STATS[o];
+    return `<tr class="${o === opt ? 'cur' : ''}"><td>${t('row' + o)}</td><td>${fmt(rs.dist, 0)}</td><td>${fmt(rs.climb, 1)}</td>` +
+      `<td>${s.n ? fmt(s.T / s.n, 1) : '—'}</td><td>${s.n ? fmt(s.W / s.n, 1) : '—'}</td><td>${s.n}</td>` +
+      `<td>${s.vT > 1 ? fmt(s.vS / s.vT * 3.6, 0) : '—'}</td></tr>`;
+  }).join('');
+  $('kpiTable').innerHTML = `<tr>${head}</tr>${rows}`;
+  renderSignal();
+}
+function renderSignal() {
+  if (opt !== '0') { $('sig').innerHTML = `<span>${t('sig' + opt)}</span>`; return; }
+  const n = sigName();
+  const col = { VG: '#2bd96b', VY: '#ffc300', AR: '#ff3b30', PG: '#2bd96b', PF: '#2bd96b' }[n];
+  const ped = (n === 'PG' || n === 'PF') ? '🚶' : '✋';
+  $('sig').innerHTML = `<span class="lamp" style="background:${col};color:${col}"></span><b>${ped} ${t('sig' + n)}</b>` +
+    `<span style="margin-left:auto">${t('sigLeft').replace('{s}', Math.ceil(sigLeft()))}</span>`;
+}
+XH.hooks.push(() => {
+  labels.forEach(drawLabel);
+  $('info').innerHTML = t('info' + opt);
+  $('pauseBtn').textContent = t(paused ? 'resume' : 'pause');
+  $('perfBtn').textContent = t(perf ? 'perfOn' : 'perfOff');
+  renderStatus(); renderKPI(); renderCBA(); updateViewOffset();
+});
+$('pauseBtn').textContent = t('pause'); $('perfBtn').textContent = t('perfOff');
+addEventListener('resize', () => {
+  camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth, innerHeight);
+  updateViewOffset();
+});
+
+/* ---------------- 14. 陰影設定 ---------------- */
+function shadowify(root) {
+  root.traverse(o => {
+    if (!o.isMesh) return;
+    const mats = Array.isArray(o.material) ? o.material : [o.material];
+    const flat = mats.some(m => m.isMeshBasicMaterial || m.transparent);
+    o.castShadow = !flat && !o.userData.noCast;
+    o.receiveShadow = !flat;
+  });
+}
+
+/* ---------------- 15. 主迴圈 ---------------- */
+let ready = false, uiAcc = 0, cbaAcc = 0, last = performance.now(), optT = 0;
+const THRU = () => cars.filter(c => c.lane.through);
+function simStep(h) {
+  simT += h; optT += h; sigStep(h); vehStep(h);
+  peds.forEach(p => { if (p.active) pedStep(p, h); });
+  spawnStep(h);
+  if (optT > 20) {                          // 排除切換方案後的暫態（例如號誌停等車隊消散）
+    const th = THRU(), st = stats[opt];
+    st.vS += th.reduce((s, c) => s + c.v, 0) / th.length * h; st.vT += h;
+  }
+}
+function frame(now) {
+  requestAnimationFrame(frame);
+  const dt = Math.min((now - last) / 1000, 0.1); last = now;
+  const simDt = (ready && !paused) ? dt * speed : 0;
+  let rem = simDt;
+  while (rem > 1e-6) {                      // 固定小步長模擬，倍速也穩定
+    const h = Math.min(rem, 0.05); rem -= h;
+    simStep(h);
+  }
+  if (ready) {
+    cars.forEach(c => {
+      c.obj.position.set(c.lane.dir * c.s, c.lane.through ? LEVEL[opt] + 0.04 : 0.04, c.lane.z);
+      c.wheels.forEach(w => { w.rotation.z -= c.v * simDt / c.r; });
+      if (c.mixer) c.mixer.update(simDt * c.v / 6);
+    });
+    peds.forEach(p => {
+      if (!p.active) return;
+      p.vis.obj.position.copy(p.pos);
+      p.vis.obj.rotation.y = p.heading || 0;
+      p.vis.animate(simDt, !p.waiting && simDt > 0, p.vNow || p.v);
+    });
+  }
+  updateLamps();
+  if (camGoal) {
+    const f = 1 - Math.pow(0.02, dt);
+    camera.position.lerp(camGoal.p, f); controls.target.lerp(camGoal.t, f);
+    if (camera.position.distanceTo(camGoal.p) < 0.05) camGoal = null;
+  }
+  controls.update();
+  renderer.render(scene, camera);
+  uiAcc += dt; cbaAcc += dt;
+  if (uiAcc > 0.4) { uiAcc = 0; if (tab === 'live') renderKPI(); }
+  if (cbaAcc > 3) { cbaAcc = 0; if (tab === 'cba') renderCBA(); }   // 更新「模擬佐證」一行
+}
+shadowify(scene);
+setOption('0');
+updateViewOffset();
+requestAnimationFrame(frame);
+
+/* ---------------- 16. 非同步載入外部模型（含進度條、逾時與備援） ---------------- */
+const gltfLoader = new GLTFLoader();
+function loadGLB(urls, onProg) {
+  return new Promise(resolve => {
+    let i = 0;
+    const next = () => {
+      if (i >= urls.length) { resolve(null); return; }
+      const url = urls[i++]; let done = false;
+      const to = setTimeout(() => { if (!done) { done = true; next(); } }, CFG.MODEL_TIMEOUT);
+      gltfLoader.load(url,
+        g => { if (done) return; done = true; clearTimeout(to); onProg(1); resolve(g); },
+        e => { if (e.total) onProg(e.loaded / e.total); },
+        () => { if (done) return; done = true; clearTimeout(to); next(); });
+    };
+    next();
+  });
+}
+const prog = { ped: 0, truck: 0 };
+const bar = () => { $('loadBar').style.width = Math.round((prog.ped * 0.88 + prog.truck * 0.12) * 100) + '%'; };
+let skip; const skipP = new Promise(r => { skip = r; });
+setTimeout(() => { $('skipBtn').style.display = 'inline-block'; }, 6000);
+$('skipBtn').onclick = () => skip('skip');
+const res = await Promise.race([
+  Promise.all([loadGLB(CFG.MODELS.ped, f => { prog.ped = f; bar(); }), loadGLB(CFG.MODELS.truck, f => { prog.truck = f; bar(); })]),
+  skipP
+]);
+const [pedG, truckG] = res === 'skip' ? [null, null] : res;
+if (pedG && pedG.animations.some(a => a.name === 'walk')) pedTpl = pedG;
+if (truckG) truckTpl = prepTruck(truckG);
+modelStatus.ped = !!pedTpl; modelStatus.truck = !!truckTpl;
+
+// 建立車隊
+let ci = 0;
+LANES.forEach(lane => {
+  lane.cars = [];
+  for (let i = 0; i < lane.n; i++) {
+    const big = lane.through ? i % 4 === 3 : i % 3 === 2;
+    const vis = big ? makeTruck() : makeCar(ci++);
+    const car = Object.assign(vis, { lane, s: -HALF + (i + rnd() * 0.4) * L / lane.n, v0: lane.v0 * (0.92 + rnd() * 0.16) });
+    car.v = car.v0 * 0.8;
+    car.obj.rotation.y = lane.dir > 0 ? 0 : Math.PI;
+    shadowify(car.obj); scene.add(car.obj);
+    lane.cars.push(car); cars.push(car);
+  }
+});
+// 建立行人
+for (let i = 0; i < N_PEDS; i++) {
+  const vis = pedTpl ? makePedGLTF(i) : makePedProc(i);
+  vis.obj.visible = false; scene.add(vis.obj);
+  peds.push({ vis, pos: new THREE.Vector3(), active: false, heading: 0 });
+}
+ready = true;
+warmStart();
+renderStatus(); renderKPI(); renderCBA();
+$('overlay').classList.add('hide');
+window.__sim = { setOption, setView, setSpeed, setPerf, setDash, stats, ROUTE_STATS, modelStatus, sig: () => sigName(),
+  ff: sec => { for (let k = 0; k < sec / 0.05; k++) simStep(0.05); } };   // 測試用：快轉模擬
 </script>
 </body>
 </html>
