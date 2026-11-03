@@ -173,7 +173,8 @@ window.XH_CFG = { CDN_BASES: ['https://cdn.jsdelivr.net/npm/three@0.160.0/', 'ht
 var I18N = {
   zh: {
     docTitle: '辛亥路方案 3D 模擬',
-    verifyHTML: '<div class="sec"><h3>✓ 已查證（公開資料）</h3><ul class="vl"><li>國道3甲台北端接辛亥路；目前以<b>辛亥路平面道路</b>與<b>穿越基隆路之車行地下道</b>與建國高架銜接。<a href="https://www.freeway.gov.tw/Publish.aspx?cnid=1906&p=4622" target="_blank">高公局交流道里程表</a>；維基百科「國道三號甲線」（搜尋摘要）</li><li>「辛亥」車行地下道位於辛亥路／基隆路口，長 452 m。<a href="https://www-ws.gov.taipei/001/Upload/456/relfile/18543/123453/255d96c9-c2d0-4794-b8eb-8dabcf8d985c.pdf" target="_blank">臺北市車行地下道一覽表</a></li><li>國3甲下辛亥路匝道於辛亥路／芳蘭路口併入平面車道。<a href="https://bote.gov.taipei/News_Content.aspx?n=512804BC5B3D57B0&sms=72544237BBE4C5F6&s=92CC77015D8B4D0F" target="_blank">臺北市交工處新聞稿</a></li><li>建國高架沿建國南北路全線，建國南北路止於辛亥路；行經辛亥路後經復興南路口、建國南路口上高架。<a href="https://en.wikipedia.org/wiki/Jianguo_Road_(Taipei)" target="_blank">Jianguo Road (Taipei)</a>；<a href="https://www.pttweb.cc/bbs/Map-Guide/M.1538310560.A.34F" target="_blank">PTT 用路經驗</a>（非官方）</li><li>辛亥路／復興南路口設有臺大校門，車輛可進入（校方文件稱後門）；該路口為四岔路口；臺大社科院位於路口旁。<a href="https://www.hss.ntu.edu.tw/Files/WebPartsFile/1389/%E5%9C%8B%E7%AB%8B%E8%87%BA%E7%81%A3%E5%A4%A7%E5%AD%B8%E6%B3%95%E5%BE%8B%E5%AD%B8%E9%99%A2%E9%9C%96%E6%BE%A4%E9%A4%A8%E4%BA%A4%E9%80%9A%E8%B3%87%E8%A8%8A.pdf" target="_blank">臺大法律學院交通資訊</a>；<a href="https://npa2019.olc.tw/cases/201909160703006e2864c3df43eec3b7a8297b124fda2c.html" target="_blank">交通事故資料站</a></li></ul></div><div class="sec"><h3>△ 假設／估計（待 GIS 或現場校正）</h3><ul class="vl"><li>建國高架匝道確切落地點、坡度、橋面高度：查無公開數據 → 假設 +10 m、約 5%、於建國南路中央落地</li><li>路口間距：建國南路–復興南路約 500 m、復興南路–基隆路約 700 m（依街廓推估）</li><li>斑馬線：查無官方標線圖 → 依號誌化路口標準配置於路口各臂；路段中段不設穿越設施</li><li>路權約 40 m；地下道路面 −6.5 m、以基隆路口為中心對稱</li><li>未建模：建國高架往西（辛亥路一、二段→羅斯福路車行地下道→汀州路）；國3甲主線與芳蘭路口位於模型東界外</li></ul></div><div class="sec"><h3>✗ 已更正</h3><ul class="vl"><li>前一版「國3甲高架於 +12 m 跨越基隆路」為錯誤假設，已改為既有辛亥車行地下道。</li><li>前一版的「校園側門」並無查證依據；現況改為不設出入口，僅在提案方案中新設。</li></ul></div><div class="note">本工作階段無法連線 OpenStreetMap 與中文維基百科；開放後可用 OSM 的道路中心線、橋梁／隧道分段與行人穿越點自動校正以上假設值。</div>',
+    lblG2: '臺大第二校門（體育館側）',
+    verifyHTML: '<div class="sec"><h3>✓ 已查證（公開資料）</h3><ul class="vl"><li>國道3甲台北端接辛亥路；目前以<b>辛亥路平面道路</b>與<b>穿越基隆路之車行地下道</b>與建國高架銜接。<a href="https://www.freeway.gov.tw/Publish.aspx?cnid=1906&p=4622" target="_blank">高公局交流道里程表</a>；維基百科「國道三號甲線」（搜尋摘要）</li><li>「辛亥」車行地下道位於辛亥路／基隆路口，長 452 m。<a href="https://www-ws.gov.taipei/001/Upload/456/relfile/18543/123453/255d96c9-c2d0-4794-b8eb-8dabcf8d985c.pdf" target="_blank">臺北市車行地下道一覽表</a></li><li>國3甲下辛亥路匝道於辛亥路／芳蘭路口併入平面車道。<a href="https://bote.gov.taipei/News_Content.aspx?n=512804BC5B3D57B0&sms=72544237BBE4C5F6&s=92CC77015D8B4D0F" target="_blank">臺北市交工處新聞稿</a></li><li>建國高架沿建國南北路全線，建國南北路止於辛亥路；行經辛亥路後經復興南路口、建國南路口上高架。<a href="https://en.wikipedia.org/wiki/Jianguo_Road_(Taipei)" target="_blank">Jianguo Road (Taipei)</a>；<a href="https://www.pttweb.cc/bbs/Map-Guide/M.1538310560.A.34F" target="_blank">PTT 用路經驗</a>（非官方）</li><li>辛亥路／復興南路口設有臺大校門，車輛可進入（校方文件稱後門）；該路口為四岔路口；臺大社科院位於路口旁。<a href="https://www.hss.ntu.edu.tw/Files/WebPartsFile/1389/%E5%9C%8B%E7%AB%8B%E8%87%BA%E7%81%A3%E5%A4%A7%E5%AD%B8%E6%B3%95%E5%BE%8B%E5%AD%B8%E9%99%A2%E9%9C%96%E6%BE%A4%E9%A4%A8%E4%BA%A4%E9%80%9A%E8%B3%87%E8%A8%8A.pdf" target="_blank">臺大法律學院交通資訊</a>；<a href="https://npa2019.olc.tw/cases/201909160703006e2864c3df43eec3b7a8297b124fda2c.html" target="_blank">交通事故資料站</a></li></ul></div><div class="sec"><h3>◎ 使用者提供之現地資訊（未經本工作階段公開資料查證）</h3><ul class="vl"><li>建國南路口以西，辛亥路平面道路向西南（左）彎；建國高架由北側以匝道曲線匯入，形成 Y 型匯流</li><li>臺大於本路段有兩處校門：復興南路口、以及其西側的體育館側校門（T 字路口）</li><li>辛亥路設有寬大的中央分隔島並植樹，於復興南路口開口供轉向</li></ul><div class="note">位置（如校門 2 距復興南路約 260 m、西段彎道半徑 280 m）為示意值。</div></div><div class="sec"><h3>△ 假設／估計（待 GIS 或現場校正）</h3><ul class="vl"><li>建國高架匝道確切落地點、坡度、橋面高度：查無公開數據 → 假設 +10 m、約 5%、於建國南路中央落地</li><li>路口間距：建國南路–復興南路約 500 m、復興南路–基隆路約 700 m（依街廓推估）</li><li>斑馬線：查無官方標線圖 → 依號誌化路口標準配置於路口各臂；路段中段不設穿越設施</li><li>路權約 40 m；地下道路面 −6.5 m、以基隆路口為中心對稱</li><li>未建模：建國高架往西（辛亥路一、二段→羅斯福路車行地下道→汀州路）；國3甲主線與芳蘭路口位於模型東界外</li></ul></div><div class="sec"><h3>✗ 已更正</h3><ul class="vl"><li>前一版「國3甲高架於 +12 m 跨越基隆路」為錯誤假設，已改為既有辛亥車行地下道。</li><li>前一版的「校園側門」並無查證依據；現況改為不設出入口，僅在提案方案中新設。</li></ul></div><div class="note">本工作階段無法連線 OpenStreetMap 與中文維基百科；開放後可用 OSM 的道路中心線、橋梁／隧道分段與行人穿越點自動校正以上假設值。</div>',
     lblUP: '既有辛亥車行地下道（穿越基隆路，長 452 m）',
     lblJGJ: '建國南路口',
     tabVer: '資料查證',
@@ -183,7 +184,7 @@ var I18N = {
     opt0: '現況 0<br>平面道路', optA: '方案 A<br>明挖地下化', optB: '方案 B<br>加罩屋頂公園', optC: '方案 C<br>下沉分段覆蓋',
     vBird: '全區鳥瞰', vWest: '建國高架端', vJunction: '復興南路口', vEast: '國3甲端', vSection: '剖面', vEye: '行人視角',
     pause: '暫停', resume: '繼續', perfOn: '效能模式：開（關閉陰影）', perfOff: '效能模式：關',
-    legend: '<span class="dot" style="background:#ff8a00"></span>行人：臺大校門（辛亥路／復興南路口）＋東側校園兩股需求<br><span class="dot" style="background:#2a9d8f"></span>公車／貨車<span class="dot" style="background:#f2c14e"></span>計程車<span class="dot" style="background:#6fae4f"></span>公園<span class="dot" style="background:#8b6b4a"></span>土層<br>西：建國南路口／中：復興南路口／東：基隆路口（既有車行地下道）<br>左鍵旋轉｜右鍵平移｜滾輪縮放',
+    legend: '<span class="dot" style="background:#ff8a00"></span>行人：臺大兩處校門（體育館側、復興南路口）＋東側校園<br><span class="dot" style="background:#2a9d8f"></span>公車／貨車<span class="dot" style="background:#f2c14e"></span>計程車<span class="dot" style="background:#7aa85a"></span>中央分隔島／植栽<span class="dot" style="background:#8b6b4a"></span>土層<br>西：建國南路口 Y 型匯流／中：復興南路口／東：基隆路口（既有地下道）<br>左鍵旋轉｜右鍵平移｜滾輪縮放',
     dashTitle: '方案評估儀表板', tabCBA: 'CBA 評估', tabLive: '即時模擬指標', pill: 'CBA 儀表板',
     kpiNote: '數值為本模擬即時量測的示意值（未經實地校估）。行人時間含繞行與等候；車速統計排除切換方案後 30 秒暫態。可用 4× 加速累積樣本。',
     reset: '重設統計',
@@ -196,14 +197,14 @@ var I18N = {
     loading: '正在載入 3D 引擎…',
     err: '<b>⚠ 無法載入 3D 引擎（Three.js）</b><br>請確認網路連線後按 F5 重新整理。<br><br><b>⚠ Failed to load the 3D engine (Three.js).</b><br>Please check your connection and press F5.',
     lblJG: '建國高架（沿建國南路）', lbl3A: '往芳蘭路口・國道3甲（台北聯絡線）▶', lblKL: '基隆路', lblFX: '復興南路（往北）',
-    lblGate: '臺大校門（辛亥路／復興南路口）', lblSide: '提案：東側校園出入口', lblNTU: '國立臺灣大學', lblXH: '◀ 辛亥路往西：羅斯福路／汀州路（未建模）',
+    lblGate: '臺大校門（辛亥路／復興南路口）', lblSide: '提案：東側校園出入口', lblNTU: '國立臺灣大學', lblXH: '◀ 辛亥路往西南：羅斯福路／汀州路',
     sec0: '◀ 快速＋在地車流皆在地面 ±0 m', secA1: '◀ 地面公園 ±0 m', secA2: '◀ 快速車道 −9 m（地下箱涵）',
     secB1: '◀ 屋頂公園 +7.5 m', secB2: '◀ 快速車道 ±0 m（加罩箱體）', secC1: '◀ 地面 ±0 m（開口段＋隔音牆）', secC2: '◀ 快速車道 −6.5 m（U 型槽）',
     lblRampB: '坡道：爬升 7.5 m', lblBreak: '箱體於路口中斷', lblLid: '覆蓋版：車流與行人平面通過',
-    info0: '<b>現況（基準方案 0）</b><br>• 建國高架沿建國南路降至地面，於<b>建國南路口</b>（號誌化）轉入辛亥路<br>• 快速與在地車流在<b>復興南路口</b>（四岔，南臂為臺大校門）平面交織<br>• 東端以<b>既有辛亥車行地下道</b>穿越基隆路，往芳蘭路口接國道3甲<br>• 行人只能在路口的行人時相穿越約 33 m 車道',
-    infoA: '<b>方案 A（提案）：明挖覆蓋地下化</b><br>• 建國高架以高架曲線轉入辛亥路，5% 坡道<b>潛入 −9 m 隧道</b>，從復興南路口下方穿越<br>• 隧道東端<b>銜接既有基隆路車行地下道</b>；地面自復興南路西側至基隆路為連續公園<br>• 行人走提案的優先穿越道，不必等號誌',
-    infoB: '<b>方案 B（提案）：原地加罩＋屋頂公園</b><br>• 沿用現況匝道降至地面、經建國南路口後進入箱體（屋頂 +7.5 m）<br>• <b>箱體在復興南路口中斷</b>：快速車流仍受號誌、人車衝突未解決<br>• 東端接既有車行地下道；東側校園需求須經坡道爬升 7.5 m',
-    infoC: '<b>方案 C（提案）：下沉路塹＋分段覆蓋</b><br>• 建國高架以高架曲線轉入辛亥路，5% 坡道<b>降入 −6.5 m U 型槽</b>，並與<b>既有基隆路車行地下道同高程直接銜接</b><br>• 復興南路口坐落於覆蓋版上，轉向車流與行人在 0 m 平面通過<br>• 東側校園另設行人覆蓋版（提案）',
+    info0: '<b>現況（基準方案 0）</b><br>• 建國高架沿建國南路降至地面，與向西南彎的辛亥路西段在<b>建國南路口 Y 型匯流</b>（號誌化）<br>• 快速與在地車流在<b>復興南路口</b>平面交織；臺大<b>兩處校門</b>（體育館側、復興南路口）皆需等號誌穿越<br>• 中央分隔島綠帶密植行道樹，於路口與穿越道開口<br>• 東端以既有辛亥車行地下道穿越基隆路',
+    infoA: '<b>方案 A（提案）：明挖覆蓋地下化</b><br>• 建國高架沿建國南路<b>直接潛入隧道</b>，辛亥路西段車流也下降，於地下 <b>Y 型匯流</b>（−9 m）<br>• 兩處校門與復興南路口上方為連續公園，中央樹列延續分隔島<br>• 隧道東端銜接既有基隆路車行地下道；行人走優先穿越道、不必等號誌',
+    infoB: '<b>方案 B（提案）：原地加罩＋屋頂公園</b><br>• 沿用現況匝道與建國南路口 Y 型匯流，之後進入箱體（屋頂 +7.5 m）<br>• <b>箱體在復興南路口中斷</b>：快速車流仍受號誌<br>• 體育館側校門與東側校園需經坡道爬升 7.5 m 跨越箱體',
+    infoC: '<b>方案 C（提案）：下沉路塹＋分段覆蓋</b><br>• 建國高架沿建國南路降入 −6.5 m，與辛亥路西段在<b>地下 Y 型匯流</b>，並與既有基隆路車行地下道同高程銜接<br>• <b>體育館側校門、復興南路口、東側校園</b>三處覆蓋版供車流與行人在 0 m 通過，覆蓋版上延續中央樹列',
     cbaSub: '依階段二比較框架之定性評等（相對現況 0；非實際金額）',
     secCost: '成本', secInt: '內部效益（延滯與安全）', secExt: '外部效益（阻隔、噪音、碳）', secVerdict: '綜合判讀／增量益本比',
     cCons: '建造成本（開挖深度、結構）', cOM: '機電與營運維護', cRisk: '風險預備金／樂觀偏誤',
@@ -228,7 +229,8 @@ var I18N = {
   },
   en: {
     docTitle: 'Xinhai Rd 3D Network Simulation',
-    verifyHTML: '<div class="sec"><h3>✓ Verified (public sources)</h3><ul class="vl"><li>Freeway 3A’s Taipei end connects to Xinhai Rd; it currently links to Jianguo Elevated via <b>surface Xinhai Rd</b> and the <b>vehicle underpass beneath Keelung Rd</b>. <a href="https://www.freeway.gov.tw/Publish.aspx?cnid=1906&p=4622" target="_blank">Freeway Bureau interchange list</a>; zh-Wikipedia (search summary)</li><li>The “Xinhai” vehicle underpass is at the Xinhai / Keelung junction, 452 m long. <a href="https://www-ws.gov.taipei/001/Upload/456/relfile/18543/123453/255d96c9-c2d0-4794-b8eb-8dabcf8d985c.pdf" target="_blank">Taipei underpass inventory</a></li><li>The Freeway 3A off-ramp merges into surface Xinhai Rd at the Xinhai / Fanglan Rd junction. <a href="https://bote.gov.taipei/News_Content.aspx?n=512804BC5B3D57B0&sms=72544237BBE4C5F6&s=92CC77015D8B4D0F" target="_blank">Taipei Traffic Engineering Office</a></li><li>Jianguo Elevated runs above the whole of Jianguo N./S. Rd, which ends at Xinhai Rd. <a href="https://en.wikipedia.org/wiki/Jianguo_Road_(Taipei)" target="_blank">Jianguo Road (Taipei)</a>; <a href="https://www.pttweb.cc/bbs/Map-Guide/M.1538310560.A.34F" target="_blank">PTT driver report</a> (unofficial)</li><li>An NTU gate with vehicle access sits at the Xinhai / Fuxing junction; the junction has four legs; NTU’s College of Social Sciences is beside it. <a href="https://www.hss.ntu.edu.tw/Files/WebPartsFile/1389/%E5%9C%8B%E7%AB%8B%E8%87%BA%E7%81%A3%E5%A4%A7%E5%AD%B8%E6%B3%95%E5%BE%8B%E5%AD%B8%E9%99%A2%E9%9C%96%E6%BE%A4%E9%A4%A8%E4%BA%A4%E9%80%9A%E8%B3%87%E8%A8%8A.pdf" target="_blank">NTU Law directions</a>; <a href="https://npa2019.olc.tw/cases/201909160703006e2864c3df43eec3b7a8297b124fda2c.html" target="_blank">crash record</a></li></ul></div><div class="sec"><h3>△ Assumptions (to calibrate with GIS / site survey)</h3><ul class="vl"><li>Exact ramp touchdown, grade and deck height of Jianguo Elevated: no public figures found → assumed +10 m, ≈5%, touchdown in the Jianguo S. Rd median</li><li>Junction spacing: Jianguo–Fuxing ≈500 m, Fuxing–Keelung ≈700 m (estimated from the street grid)</li><li>Crosswalks: no official marking plans found → placed on each junction leg per standard practice; no mid-block crossings</li><li>ROW ≈40 m; underpass road level −6.5 m, centred on the Keelung junction</li><li>Not modelled: Jianguo’s westward link (Xinhai Sec. 1–2 → Roosevelt underpass → Tingzhou Rd); Freeway 3A main line and Fanglan Rd lie beyond the east edge</li></ul></div><div class="sec"><h3>✗ Corrected</h3><ul class="vl"><li>The previous “Freeway 3A viaduct over Keelung Rd at +12 m” was a wrong assumption, now replaced by the existing underpass.</li><li>The previous “campus side gate” had no source; the base case now has no entrance there — it only appears in the proposals.</li></ul></div><div class="note">OpenStreetMap and zh-Wikipedia are not reachable from this session; once allowed, OSM centrelines, bridge/tunnel segments and crossing nodes can calibrate the assumptions above.</div>',
+    lblG2: 'NTU 2nd gate (Sports Center side)',
+    verifyHTML: '<div class="sec"><h3>✓ Verified (public sources)</h3><ul class="vl"><li>Freeway 3A’s Taipei end connects to Xinhai Rd; it currently links to Jianguo Elevated via <b>surface Xinhai Rd</b> and the <b>vehicle underpass beneath Keelung Rd</b>. <a href="https://www.freeway.gov.tw/Publish.aspx?cnid=1906&p=4622" target="_blank">Freeway Bureau interchange list</a>; zh-Wikipedia (search summary)</li><li>The “Xinhai” vehicle underpass is at the Xinhai / Keelung junction, 452 m long. <a href="https://www-ws.gov.taipei/001/Upload/456/relfile/18543/123453/255d96c9-c2d0-4794-b8eb-8dabcf8d985c.pdf" target="_blank">Taipei underpass inventory</a></li><li>The Freeway 3A off-ramp merges into surface Xinhai Rd at the Xinhai / Fanglan Rd junction. <a href="https://bote.gov.taipei/News_Content.aspx?n=512804BC5B3D57B0&sms=72544237BBE4C5F6&s=92CC77015D8B4D0F" target="_blank">Taipei Traffic Engineering Office</a></li><li>Jianguo Elevated runs above the whole of Jianguo N./S. Rd, which ends at Xinhai Rd. <a href="https://en.wikipedia.org/wiki/Jianguo_Road_(Taipei)" target="_blank">Jianguo Road (Taipei)</a>; <a href="https://www.pttweb.cc/bbs/Map-Guide/M.1538310560.A.34F" target="_blank">PTT driver report</a> (unofficial)</li><li>An NTU gate with vehicle access sits at the Xinhai / Fuxing junction; the junction has four legs; NTU’s College of Social Sciences is beside it. <a href="https://www.hss.ntu.edu.tw/Files/WebPartsFile/1389/%E5%9C%8B%E7%AB%8B%E8%87%BA%E7%81%A3%E5%A4%A7%E5%AD%B8%E6%B3%95%E5%BE%8B%E5%AD%B8%E9%99%A2%E9%9C%96%E6%BE%A4%E9%A4%A8%E4%BA%A4%E9%80%9A%E8%B3%87%E8%A8%8A.pdf" target="_blank">NTU Law directions</a>; <a href="https://npa2019.olc.tw/cases/201909160703006e2864c3df43eec3b7a8297b124fda2c.html" target="_blank">crash record</a></li></ul></div><div class="sec"><h3>◎ Site knowledge supplied by the user (not verified against public sources in this session)</h3><ul class="vl"><li>West of Jianguo S. Rd, surface Xinhai Rd curves south-west (to the left); Jianguo Elevated merges in from the north via a curved ramp, forming a Y-merge</li><li>NTU has two gates on this section: at Fuxing S. Rd and a Sports Center gate (T-junction) further west</li><li>Xinhai Rd has a wide planted central median that opens at Fuxing S. Rd for turning traffic</li></ul><div class="note">Positions (e.g. gate 2 ≈260 m west of Fuxing, 280 m curve radius) are schematic.</div></div><div class="sec"><h3>△ Assumptions (to calibrate with GIS / site survey)</h3><ul class="vl"><li>Exact ramp touchdown, grade and deck height of Jianguo Elevated: no public figures found → assumed +10 m, ≈5%, touchdown in the Jianguo S. Rd median</li><li>Junction spacing: Jianguo–Fuxing ≈500 m, Fuxing–Keelung ≈700 m (estimated from the street grid)</li><li>Crosswalks: no official marking plans found → placed on each junction leg per standard practice; no mid-block crossings</li><li>ROW ≈40 m; underpass road level −6.5 m, centred on the Keelung junction</li><li>Not modelled: Jianguo’s westward link (Xinhai Sec. 1–2 → Roosevelt underpass → Tingzhou Rd); Freeway 3A main line and Fanglan Rd lie beyond the east edge</li></ul></div><div class="sec"><h3>✗ Corrected</h3><ul class="vl"><li>The previous “Freeway 3A viaduct over Keelung Rd at +12 m” was a wrong assumption, now replaced by the existing underpass.</li><li>The previous “campus side gate” had no source; the base case now has no entrance there — it only appears in the proposals.</li></ul></div><div class="note">OpenStreetMap and zh-Wikipedia are not reachable from this session; once allowed, OSM centrelines, bridge/tunnel segments and crossing nodes can calibrate the assumptions above.</div>',
     lblUP: 'Existing Xinhai vehicle underpass (under Keelung Rd, 452 m)',
     lblJGJ: 'Jianguo S. Rd junction',
     tabVer: 'Sources',
@@ -238,7 +240,7 @@ var I18N = {
     opt0: 'Base 0<br>At-grade', optA: 'Option A<br>Cut-and-cover', optB: 'Option B<br>Einhausung', optC: 'Option C<br>Trough + lids',
     vBird: 'Overview', vWest: 'Jianguo end', vJunction: 'Fuxing junction', vEast: 'Fwy 3A end', vSection: 'Section', vEye: 'Pedestrian',
     pause: 'Pause', resume: 'Resume', perfOn: 'Performance mode: ON (no shadows)', perfOff: 'Performance mode: OFF',
-    legend: '<span class="dot" style="background:#ff8a00"></span>Pedestrians: NTU gate (Xinhai/Fuxing junction) + east campus<br><span class="dot" style="background:#2a9d8f"></span>Bus / truck<span class="dot" style="background:#f2c14e"></span>Taxi<span class="dot" style="background:#6fae4f"></span>Park<span class="dot" style="background:#8b6b4a"></span>Soil<br>West: Jianguo S. Rd junction / Centre: Fuxing S. Rd / East: Keelung Rd (existing underpass)<br>Left-drag rotate | right-drag pan | wheel zoom',
+    legend: '<span class="dot" style="background:#ff8a00"></span>Pedestrians: two NTU gates (Sports Center, Fuxing) + east campus<br><span class="dot" style="background:#2a9d8f"></span>Bus / truck<span class="dot" style="background:#f2c14e"></span>Taxi<span class="dot" style="background:#7aa85a"></span>Central median / planting<span class="dot" style="background:#8b6b4a"></span>Soil<br>West: Jianguo S. Rd Y-merge / Centre: Fuxing S. Rd / East: Keelung Rd (existing underpass)<br>Left-drag rotate | right-drag pan | wheel zoom',
     dashTitle: 'Option Appraisal Dashboard', tabCBA: 'CBA', tabLive: 'Live simulation', pill: 'CBA Dashboard',
     kpiNote: 'Indicative values measured live in this simulation (not field-calibrated). Pedestrian time includes detours and waiting; speeds exclude the first 30 s after switching. Use 4× to collect samples.',
     reset: 'Reset stats',
@@ -251,14 +253,14 @@ var I18N = {
     loading: 'Loading 3D engine…',
     err: '<b>⚠ Failed to load the 3D engine (Three.js).</b><br>Please check your connection and press F5.<br><br><b>⚠ 無法載入 3D 引擎（Three.js）</b><br>請確認網路連線後按 F5 重新整理。',
     lblJG: 'Jianguo Elevated (along Jianguo S. Rd)', lbl3A: 'To Fanglan Rd · Freeway 3A (Taipei Link) ▶', lblKL: 'Keelung Rd', lblFX: 'Fuxing S. Rd (north)',
-    lblGate: 'NTU gate (Xinhai / Fuxing junction)', lblSide: 'Proposal: east campus entrance', lblNTU: 'National Taiwan University', lblXH: '◀ Xinhai Rd west: Roosevelt / Tingzhou Rd (not modelled)',
+    lblGate: 'NTU gate (Xinhai / Fuxing junction)', lblSide: 'Proposal: east campus entrance', lblNTU: 'National Taiwan University', lblXH: '◀ Xinhai Rd to the south-west: Roosevelt / Tingzhou Rd',
     sec0: '◀ Express + local traffic all at grade ±0 m', secA1: '◀ Surface park ±0 m', secA2: '◀ Express lanes −9 m (tunnel box)',
     secB1: '◀ Roof park +7.5 m', secB2: '◀ Express lanes ±0 m (enclosure)', secC1: '◀ Grade ±0 m (open section + noise wall)', secC2: '◀ Express lanes −6.5 m (U-trough)',
     lblRampB: 'Ramp: climb 7.5 m', lblBreak: 'Enclosure breaks at junction', lblLid: 'Lid: traffic & pedestrians at grade',
-    info0: '<b>Base case (Option 0)</b><br>• Jianguo Elevated descends along Jianguo S. Rd and turns onto Xinhai Rd at the <b>signalised Jianguo S. Rd junction</b><br>• Express and local traffic weave at grade through the <b>Fuxing S. Rd junction</b> (4 legs; south leg = NTU gate)<br>• At the east end the <b>existing Xinhai vehicle underpass</b> passes under Keelung Rd towards Fanglan Rd / Freeway 3A<br>• Pedestrians cross ≈33 m of lanes only in the pedestrian phase',
-    infoA: '<b>Option A (proposal): Cut-and-cover tunnel</b><br>• Jianguo turns onto Xinhai Rd on an elevated curve and dives at 5% <b>into a −9 m tunnel</b> under the Fuxing junction<br>• The tunnel <b>joins the existing Keelung Rd underpass</b>; continuous surface park from west of Fuxing to Keelung Rd<br>• Pedestrians use proposed priority crossings, no signal wait',
-    infoB: '<b>Option B (proposal): Einhausung + roof park</b><br>• Uses the existing ramp to grade, then enters an enclosure east of the Jianguo S. Rd junction (roof +7.5 m)<br>• <b>The enclosure breaks at Fuxing S. Rd</b>: express traffic still faces signals and conflicts remain<br>• Joins the existing underpass in the east; east-campus demand must climb a 7.5 m ramp',
-    infoC: '<b>Option C (proposal): Depressed trough + lids</b><br>• Jianguo turns onto Xinhai Rd on an elevated curve and descends at 5% <b>into a −6.5 m U-trough</b> that <b>joins the existing Keelung Rd underpass at the same level</b><br>• The Fuxing junction sits on a lid: turning traffic and pedestrians pass at grade<br>• An extra pedestrian lid for the east campus (proposal)',
+    info0: '<b>Base case (Option 0)</b><br>• Jianguo Elevated descends along Jianguo S. Rd and meets the south-west-curving Xinhai Rd in a <b>signalised Y-merge</b> at Jianguo S. Rd<br>• Express and local traffic weave at grade at Fuxing S. Rd; <b>both NTU gates</b> (Sports Center side and Fuxing) require signal waits<br>• Planted central median with dense trees, opened at junctions and crossings<br>• Existing Xinhai underpass passes under Keelung Rd',
+    infoA: '<b>Option A (proposal): Cut-and-cover tunnel</b><br>• Jianguo <b>dives straight into the tunnel</b> along Jianguo S. Rd; west Xinhai traffic also descends and they <b>Y-merge underground</b> (−9 m)<br>• Continuous park over both gates and Fuxing; the central tree row continues the median<br>• Joins the existing Keelung underpass; priority crossings, no signal wait',
+    infoB: '<b>Option B (proposal): Einhausung + roof park</b><br>• Keeps the existing ramp and Y-merge, then enters the enclosure (roof +7.5 m)<br>• <b>The enclosure breaks at Fuxing S. Rd</b>: express traffic still faces signals<br>• Sports Center gate and east campus need 7.5 m ramps over the box',
+    infoC: '<b>Option C (proposal): Depressed trough + lids</b><br>• Jianguo descends to −6.5 m along Jianguo S. Rd and <b>Y-merges underground</b> with west Xinhai, joining the Keelung underpass at the same level<br>• Lids at the <b>Sports Center gate, Fuxing and east campus</b> carry traffic and pedestrians at grade, with the median tree row continued on top',
     cbaSub: 'Qualitative ratings from the Stage 2 framework (relative to Base 0; not monetary totals)',
     secCost: 'Costs', secInt: 'Internal benefits (delay & safety)', secExt: 'External benefits (severance, noise, carbon)', secVerdict: 'Verdict / incremental BCR',
     cCons: 'Construction (depth, structure)', cOM: 'E&M and O&M', cRisk: 'Risk contingency / optimism bias',
@@ -342,43 +344,52 @@ const $ = id => document.getElementById(id);
 
 /* =====================================================================
    1. 幾何參數（單位：公尺；x 西→東、z 北(−)→南(+)、y 高程）
-   ✓＝已查證的路網拓撲　△＝假設／估計值（詳見儀表板「資料查證」分頁）
+   ✓＝公開資料查證　◎＝使用者提供之現地資訊　△＝假設／估計值（詳見「資料查證」分頁）
    ===================================================================== */
-const X_JG = -500;                 // △ 建國南路（建國高架沿其上方；距復興南路約 500 m 為依街廓估計）
-const X_FX = 0;                    // ✓ 復興南路口（四岔路口，南臂為臺大校門）
-const X_KL = 700;                  // △ 基隆路口（距復興南路約 700 m 為估計）
-const X_D2 = 300;                  // 東側校園第二股穿越需求（現況無穿越設施；提案方案才新設）
+const X_JG = -500;                 // △ 建國南路（建國高架沿其上方）
+const X_G2 = -260;                 // ◎ 臺大第二校門（體育館側），位於復興南路口以西
+const X_FX = 0;                    // ✓ 復興南路口（四岔，南臂為臺大校門）
+const X_KL = 700;                  // △ 基隆路口
+const X_D2 = 300;                  // 東側校園穿越需求（現況無設施；提案才新設）
 const X_SEC = 150;                 // 剖面切面位置
-const UP_HALF = 226;               // ✓ 既有「辛亥」車行地下道長 452 m（△ 假設以基隆路口為中心）
+const UP_HALF = 226;               // ✓ 既有辛亥車行地下道長 452 m（△ 以基隆路口為中心）
 const UP_RAMP = 130, UP_D = -6.5;  // △ 地下道引道長、路面高程
 const UPW = X_KL - UP_HALF, UPE = X_KL + UP_HALF;
-const XMIN = X_JG - 160, XMAX = X_KL + 280, ZN = -560, ZS = 560;
+const XMIN = X_JG - 240, XMAX = X_KL + 280, ZN = -560, ZS = 560;
 const H_JG = 10;                   // △ 建國高架路面高程
-const EZ = 12.25, SL = 26, ZF = -21.5;   // 在地車道中心、復興南路口停止線、復興南路停止線
+const EZ = 12.25, SL = 26, ZF = -21.5;
+const LN = [3.3, 6.8];             // 快速車道中心偏移（中央分隔島寬 3 m）
 const OPTS = ['0', 'A', 'B', 'C'];
-const AT_GRADE = o => o === '0' || o === 'B';                 // 快速車流是否在地面通過復興南路口
-const R_OF = { '0': 30, B: 30, A: 90, C: 90 };               // 現況／B：匝道落地後於建國南路口平面轉彎；A、C（提案）：高架曲線直接轉入辛亥路
-const VC = 60;                                                // 豎曲線長度（移動平均形成拋物線過渡）
-function makePlan(R) {                                        // 快速車道中心線：建國南路南下 → 轉入辛亥路 → 往東至地下道
+const AT_GRADE = o => o === '0' || o === 'B';
+const PROP = o => o === 'A' || o === 'C';
+const R_OF = { '0': 30, B: 30, A: 90, C: 90 };     // 建國高架轉入辛亥路的曲線半徑（A、C 為地下曲線）
+const M_OF = { '0': X_JG + 40, B: X_JG + 40, A: X_JG + 100, C: X_JG + 100 };   // Y 型匯流點（建國高架 × 辛亥路西段）
+const X_W0 = X_JG - 16, R_W = 280; // ◎ 建國南路口以西，辛亥路向西南（左）彎
+const VC = 60;
+function makePlan(R) {                                        // 建國高架中心線：建國南路南下 → 轉入辛亥路 → 往東
   const p = [];
-  for (let z = ZN; z < -R; z += 2) p.push({ x: X_JG, z, st: false });
+  for (let z = ZN; z < -R; z += 2) p.push({ x: X_JG, z, st: false, leg: true });
   for (let i = 0; i <= 60; i++) { const th = i / 60 * Math.PI / 2; p.push({ x: X_JG + R - R * Math.cos(th), z: -R + R * Math.sin(th), st: false }); }
   for (let x = X_JG + R + 2; x <= XMAX; x += 2) p.push({ x, z: 0, st: true });
+  return finishPath(p, R);
+}
+function finishPath(p, R) {
   let s = 0;
   p.forEach((q, i) => {
     if (i) s += Math.hypot(q.x - p[i - 1].x, q.z - p[i - 1].z);
     q.s = s;
     const a = p[Math.max(i - 1, 0)], b = p[Math.min(i + 1, p.length - 1)]; let tx = b.x - a.x, tz = b.z - a.z; const l = Math.hypot(tx, tz); q.tx = tx / l; q.tz = tz / l;
   });
+  if (R == null) return p;
   const xce = X_JG + R, sArc = p.find(q => q.st).s - 2;
   return { p, len: s, xce, sArc, sx: x => sArc + (x - xce), sz: z => z - ZN };
 }
 const PLANS = {}; OPTS.forEach(o => { PLANS[o] = makePlan(R_OF[o]); });
 function knots(o) {                                           // 縱斷面控制點（沿路徑距離 s；坡度約 5%）
   const P = PLANS[o], sx = P.sx, sz = P.sz, tail = [[sx(UPE - UP_RAMP), UP_D], [sx(UPE), 0], [P.len + 100, 0]];
-  if (AT_GRADE(o)) return [[-100, H_JG], [sz(-330), H_JG], [sz(-120), 0], [sx(UPW), 0], [sx(UPW + UP_RAMP), UP_D], ...tail];
-  if (o === 'A') return [[-100, H_JG], [sx(-400), H_JG], [sx(-20), -9], [sx(UPW + 30), -9], [sx(UPW + 80), UP_D], ...tail];
-  return [[-100, H_JG], [sx(-400), H_JG], [sx(-70), UP_D], ...tail];       // C：直接與既有地下道同高程銜接
+  if (AT_GRADE(o)) return [[-100, H_JG], [sz(-330), H_JG], [sz(-130), 0], [sx(UPW), 0], [sx(UPW + UP_RAMP), UP_D], ...tail];
+  if (o === 'A') return [[-100, H_JG], [sz(-430), H_JG], [sz(-98), -6.6], [sz(-98) + 48, -9], [sx(UPW + 30), -9], [sx(UPW + 80), UP_D], ...tail];
+  return [[-100, H_JG], [sz(-430), H_JG], [sz(-100), UP_D], ...tail];
 }
 function makeProfile(k) {
   const f = s => { if (s <= k[0][0]) return k[0][1]; for (let i = 1; i < k.length; i++) if (s <= k[i][0]) { const [s0, y0] = k[i - 1], [s1, y1] = k[i]; return y0 + (y1 - y0) * (s - s0) / (s1 - s0); } return k[k.length - 1][1]; };
@@ -388,12 +399,26 @@ function makeProfile(k) {
   return s => { const c = (s - s0) * 4, a = Math.max(0, Math.round(c - h)), b = Math.min(n, Math.round(c + h)); return (P[b] - P[a]) / (b - a); };
 }
 const profS = {}; OPTS.forEach(o => { profS[o] = makeProfile(knots(o)); });
-const yX = (o, x) => profS[o](PLANS[o].sx(x));               // 辛亥路直線段的快速車道高程
+const yX = (o, x) => profS[o](PLANS[o].sx(x));
 const scanX = (o, test, from, to, step) => { for (let x = from; step > 0 ? x <= to : x >= to; x += step) if (test(yX(o, x))) return x; return null; };
-const A_PW = scanX('A', y => y <= -6.6, -400, 300, 1);        // A 隧道西洞口
-const B_W = X_JG + 60, B_E = UPW - 6;                         // B 箱體範圍（建國南路口以東至既有地下道洞口）
-const C_LIDS = [[X_FX - 40, X_FX + 40], [X_D2 - 15, X_D2 + 15]];
-const KL_COVER = [X_KL - 40, X_KL + 40];                      // 既有地下道於基隆路口下方的覆蓋段
+const A_PW = scanX('A', y => y <= -6.6, X_JG + R_OF.A, 300, 1);
+const B_W = M_OF.B + 20, B_E = UPW - 6;
+const C_LIDS = [[X_G2 - 15, X_G2 + 15], [X_FX - 40, X_FX + 40], [X_D2 - 15, X_D2 + 15]];
+const KL_COVER = [X_KL - 40, X_KL + 40];
+// ◎ 辛亥路西段中心線：自西南方以半徑 280 m 曲線接至建國南路口（東行方向）
+const WEST = (() => {
+  const p = [], th1 = Math.asin(Math.min(0.95, (X_W0 - XMIN + 20) / R_W));
+  for (let i = 60; i >= 1; i--) { const th = th1 * i / 60; p.push({ x: X_W0 - R_W * Math.sin(th), z: R_W - R_W * Math.cos(th), cv: true }); }
+  for (let x = X_W0; x <= X_JG + 140; x += 2) p.push({ x, z: 0, cv: false });
+  return finishPath(p);
+})();
+const profW = {};
+OPTS.forEach(o => {
+  if (AT_GRADE(o)) { profW[o] = () => 0; return; }
+  const M = M_OF[o], sM = WEST.find(p => !p.cv && p.x >= M).s, yM = yX(o, M), L = Math.abs(yM) / 0.05;
+  profW[o] = makeProfile([[-100, 0], [sM - L, 0], [sM, yM], [sM + 200, yM]]);         // 提案：辛亥路西段車流亦下降至地下匯流
+});
+const distW = (x, z) => WEST.reduce((m, p) => Math.min(m, Math.hypot(p.x - x, p.z - z)), 1e9);
 /* =====================================================================
    2. 渲染器、場景、燈光
    ===================================================================== */
@@ -536,11 +561,16 @@ function bez(p0, d0, p3, d3, k) {            // 三次貝茲曲線轉向路徑�
   return out;
 }
 const yAt = (o, p) => profS[o](p.s);
-function lanePts(o, d, reverse) {            // 偏移 d（以東行方向右側為正）的車道線
-  const pts = PLANS[o].p.map(p => ({ x: p.x - p.tz * d, y: yAt(o, p), z: p.z + p.tx * d }));
+function exPts(o, d) {                       // 建國高架車道（偏移 d，東行右側為正）：[北段＝建國高架→匯流點, 南段＝匯流點→東]
+  const P = PLANS[o].p, M = M_OF[o];
+  const all = P.map(p => ({ x: p.x - p.tz * d, y: yAt(o, p), z: p.z + p.tx * d, st: p.st, cx: p.x }));
+  const i = all.findIndex(q => q.st && q.cx >= M);
+  return [all.slice(0, i + 1), all.slice(i)];
+}
+function westPts(o, d, reverse) {            // 辛亥路西段中央車道（至匯流點）
+  const M = M_OF[o], pts = WEST.filter(p => p.x <= M + 0.01).map(p => ({ x: p.x - p.tz * d, y: profW[o](p.s), z: p.z + p.tx * d }));
   return reverse ? pts.reverse() : pts;
 }
-// 斷面掃掠：沿中心線把 2D 斷面多邊形 [d, fy(sample)] 拉成 3D 結構
 function sweep(parent, mat, samples, poly, pred) {
   const pos = [];
   for (let i = 0; i < samples.length - 1; i++) {
@@ -557,32 +587,47 @@ function sweep(parent, mat, samples, poly, pred) {
   const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.computeVertexNormals();
   const m = new THREE.Mesh(g, mat); parent.add(m); return m;
 }
-function samplesFor(o) {                     // 每 4 m 一個斷面樣本
+const samp = (p, y) => ({ x: p.x, z: p.z, y, nx: -p.tz, nz: p.tx, st: p.st, leg: p.leg, cv: p.cv, tx: p.tx, tz: p.tz });
+function samplesFor(o) {                     // 建國高架／快速道路斷面樣本（每 4 m）
   const P = PLANS[o].p, out = [];
-  for (let i = 0; i < P.length; i += 2) { const p = P[i]; out.push({ x: p.x, z: p.z, y: yAt(o, p), nx: -p.tz, nz: p.tx, st: p.st, tx: p.tx, tz: p.tz }); }
-  const l = P[P.length - 1]; if (out[out.length - 1].x !== l.x) out.push({ x: l.x, z: l.z, y: yAt(o, l), nx: -l.tz, nz: l.tx, st: true, tx: l.tx, tz: l.tz });
+  for (let i = 0; i < P.length; i += 2) out.push(samp(P[i], yAt(o, P[i])));
+  const l = P[P.length - 1]; if (out[out.length - 1].x !== l.x) out.push(samp(l, yAt(o, l)));
+  return out;
+}
+function samplesW(o) {                       // 辛亥路西段中央車道斷面樣本（至匯流點）
+  const M = M_OF[o], P = WEST.filter(p => p.x <= M + 0.01), out = [];
+  for (let i = 0; i < P.length; i += 2) out.push(samp(P[i], profW[o](P[i].s)));
+  const l = P[P.length - 1]; if (out[out.length - 1].x !== l.x) out.push(samp(l, profW[o](l.s)));
   return out;
 }
 
 /* =====================================================================
-   5. 共同環境（地形、在地車道、建國南路、復興南路、基隆路、臺大、建築）
+   5. 共同環境（地形、辛亥路兩側、西段曲線、建國南路、復興南路、基隆路、臺大兩處校門、建築）
    ===================================================================== */
 const common = new THREE.Group(); scene.add(common);
 box(common, M.table, -3000, 3000, -15.6, -15.5, -3000, 3000).userData.noCast = true;
-box(common, topMat(M.ground), XMIN, XMAX, -15, 0, ZN, -20);           // 北側地塊
-box(common, topMat(M.ground), XMIN, XMAX, -15, 0, 20, ZS);            // 南側地塊
-const XING = [[X_FX - 39, X_FX - 33], [X_FX + 33, X_FX + 39], [X_D2 - 3, X_D2 + 3]];   // 提案穿越道（A、B、C 用；現況僅為綠帶）
-[1, -1].forEach(s => {                                                  // 辛亥路兩側（|z| 10–20）
+const WCURVE = WEST.filter(p => p.cv || Math.abs(p.x - X_W0) < 0.01).map(p => samp(p, 0));   // 西段曲線部分（至建國南路口西緣）
+// 地塊：建國南路口以東為矩形地塊；以西沿曲線掃掠
+box(common, topMat(M.ground), X_W0, X_JG - 14, -15, 0, ZN, -20);
+box(common, topMat(M.ground), X_JG + 14, XMAX, -15, 0, ZN, -20);
+box(common, topMat(M.ground), X_W0, XMAX, -15, 0, 20, ZS);
+sweep(common, M.ground, WCURVE, [[-560, () => -15], [-10, () => -15], [-10, () => 0], [-560, () => 0]]);
+sweep(common, M.ground, WCURVE, [[10, () => -15], [250, () => -15], [250, () => 0], [10, () => 0]]);
+const XING = [[X_G2 - 3, X_G2 + 3], [X_FX - 39, X_FX - 33], [X_FX + 33, X_FX + 39], [X_D2 - 3, X_D2 + 3]];   // 提案穿越道（A、C）
+const XC = XING.map(h => (h[0] + h[1]) / 2);
+[1, -1].forEach(s => {                                                  // 辛亥路兩側（|z| 10–20），建國南路口以東
   const zz = (a, b) => (s > 0 ? [a, b] : [-b, -a]);
-  box(common, M.soil, XMIN, XMAX, -15, 0, ...zz(10, 20));
+  box(common, M.soil, X_W0, XMAX, -15, 0, ...zz(10, 20));
   const jg = s < 0 ? [[X_JG - 14, X_JG + 36]] : [];
-  gaps(XMIN, XMAX, [[X_FX - SL, X_FX + SL], ...XING, [X_KL - 12, X_KL + 12], ...jg]).forEach(([a, b]) => box(common, M.sidewalk, a, b, 0, 0.15, ...zz(10, 10.5)));
-  box(common, M.asphalt, XMIN, XMAX, 0, 0.04, ...zz(10.5, 14));        // 在地車道（慢車道）
+  gaps(X_W0, XMAX, [[X_FX - SL, X_FX + SL], ...XING, [X_KL - 12, X_KL + 12], ...jg]).forEach(([a, b]) => box(common, M.sidewalk, a, b, 0, 0.15, ...zz(10, 10.5)));
+  box(common, M.asphalt, X_W0, XMAX, 0, 0.04, ...zz(10.5, 14));
   const roadHoles = s < 0 ? [[X_JG - 14, X_JG + 36], [X_FX - 14, X_FX + 14], [X_KL - 12, X_KL + 12]] : [[X_FX - 14, X_FX + 14], [X_KL - 12, X_KL + 12]];
-  gaps(XMIN, XMAX, [...roadHoles, ...XING]).forEach(([a, b]) => box(common, M.planting, a, b, 0, 0.12, ...zz(14, 16.5)));
-  gaps(XMIN, XMAX, roadHoles.filter(h => s < 0 || h[0] !== X_FX - 14)).forEach(([a, b]) => box(common, M.sidewalk, a, b, 0, 0.15, ...zz(16.5, 20)));
+  gaps(X_W0, XMAX, [...roadHoles, ...XING]).forEach(([a, b]) => box(common, M.planting, a, b, 0, 0.12, ...zz(14, 16.5)));
+  gaps(X_W0, XMAX, roadHoles.filter(h => s < 0 || h[0] !== X_FX - 14)).forEach(([a, b]) => box(common, M.sidewalk, a, b, 0, 0.15, ...zz(16.5, 20)));
+  // ◎ 西段曲線：路緣、在地車道、植栽帶、人行道沿曲線掃掠
+  const band = (mat, d0, d1, h) => sweep(common, mat, WCURVE, [[s * d0, () => 0], [s * d1, () => 0], [s * d1, () => h], [s * d0, () => h]]);
+  band(M.sidewalk, 10, 10.5, 0.15); band(M.asphalt, 10.5, 14, 0.04); band(M.planting, 14, 16.5, 0.12); band(M.sidewalk, 16.5, 20, 0.15);
 });
-box(common, topMat(M.asphalt), XMIN, X_JG + 30, -15, 0, -10, 10);    // 建國南路口以西的辛亥路（往羅斯福路，平面）
 const LINES = [];
 LINES.push([X_FX - SL - 0.4, X_FX - SL, 0.04, 0.07, 10.5, 14], [X_FX + SL, X_FX + SL + 0.4, 0.04, 0.07, -14, -10.5]);
 LINES.push([X_KL - 14.4, X_KL - 14, 0.04, 0.07, 10.5, 14], [X_KL + 14, X_KL + 14.4, 0.04, 0.07, -14, -10.5]);
@@ -593,113 +638,138 @@ box(common, M.concrete, X_FX - 0.3, X_FX + 0.3, 0, 0.8, ZN, -30);
 for (let z = ZN; z < -30; z += 12) [-3.65, 3.65, -7.3, 7.3].forEach(x => LINES.push([X_FX + x - 0.08, X_FX + x + 0.08, 0.045, 0.07, z, z + 3]));
 LINES.push([X_FX - 7.3, X_FX - 0.3, 0.045, 0.07, ZF - 0.4, ZF]);
 box(common, M.asphalt, X_FX - 14, X_FX + 14, 0, 0.045, -20, -10);
-// 南臂：臺大校門（行人為主，少量車輛進出）
-box(common, M.plaza, X_FX - 14, X_FX + 14, 0, 0.16, 16.5, 45);
+box(common, M.plaza, X_FX - 14, X_FX + 14, 0, 0.16, 16.5, 45);       // 校門 1 前廣場
 box(common, M.asphalt, X_FX - 4, X_FX + 4, 0, 0.17, 20.8, 80);
-// 建國南路（建國高架沿其上方）
-box(common, M.asphalt, X_JG - 14, X_JG + 14, 0, 0.045, ZN, -20);
-box(common, M.asphalt, X_JG - 14, X_JG + 36, 0, 0.045, -20, -10);
-// 基隆路（南北向平面道路；辛亥路快速車流以既有車行地下道從其下方穿越）
+box(common, M.plaza, X_G2 - 10, X_G2 + 10, 0, 0.16, 16.5, 40);       // ◎ 校門 2（體育館側）前廣場
+box(common, M.asphalt, X_JG - 14, X_JG + 36, 0, 0.045, -20, -10);   // 建國南路口北側銜接面
+// 基隆路（平面）與既有地下道頂版
 box(common, M.asphalt, X_KL - 12, X_KL + 12, 0, 0.045, ZN, ZS);
 for (let z = ZN; z < ZS; z += 12) if (Math.abs(z) > 24) LINES.push([X_KL - 0.08, X_KL + 0.08, 0.045, 0.07, z, z + 3]);
 LINES.push([X_KL - 12, X_KL, 0.045, 0.07, -22.4, -22], [X_KL, X_KL + 12, 0.045, 0.07, 22, 22.4]);
-box(common, M.concrete, KL_COVER[0], KL_COVER[1], -1.2, -0.02, -9.2, 9.2);       // 既有地下道頂版
+box(common, M.concrete, KL_COVER[0], KL_COVER[1], -1.2, -0.02, -9.2, 9.2);
 box(common, M.asphalt, KL_COVER[0], KL_COVER[1], -0.02, 0.03, -10, 10);
-// 臺大校園：圍牆、校門、草地、紅磚建築
-const NTU_W = X_FX - 160, NTU_E = X_KL - 12;
+// 臺大校園：圍牆、兩處校門、草地、建築
+const NTU_W = X_JG + 40, NTU_E = X_KL - 12;
 box(common, M.lawn, NTU_W, NTU_E, 0, 0.05, 20.8, ZS);
-gaps(NTU_W, NTU_E, [[X_FX - 8, X_FX + 8], [X_D2 - 3, X_D2 + 3]]).forEach(([a, b]) => box(common, M.brickWall, a, b, 0, 2.4, 20.4, 20.8));
-[X_FX - 8, X_FX + 8].forEach(x => box(common, M.brickWall, x - 0.7, x + 0.7, 0, 3.6, 19.9, 21.3));
+gaps(NTU_W, NTU_E, [[X_G2 - 7, X_G2 + 7], [X_FX - 8, X_FX + 8], [X_D2 - 3, X_D2 + 3]]).forEach(([a, b]) => box(common, M.brickWall, a, b, 0, 2.4, 20.4, 20.8));
+[X_G2 - 7, X_G2 + 7, X_FX - 8, X_FX + 8].forEach(x => box(common, M.brickWall, x - 0.7, x + 0.7, 0, 3.6, 19.9, 21.3));   // 校門門柱
 box(common, M.path, X_FX - 6, X_FX + 6, 0, 0.07, 80, 150);
-[[-110, 95], [-90, 175], [110, 92], [220, 150], [340, 95], [460, 150], [580, 95], [60, 235], [300, 250], [520, 240], [-40, 265]].forEach(([x, zc]) => {
+box(common, M.path, X_G2 - 4, X_G2 + 4, 0, 0.07, 40, 110);
+building(common, WALL.brick, M.brickRoof, X_G2 - 40, X_G2 + 40, 22.4, 110, 165);                 // 體育館（示意量體）
+[[-420, 95], [-380, 210], [-130, 92], [-100, 180], [110, 92], [220, 150], [340, 95], [460, 150], [580, 95], [60, 235], [300, 250], [520, 240], [-40, 265], [-250, 260]].forEach(([x, zc]) => {
   const w = 30 + rnd() * 20, d = 18 + rnd() * 8, h = Math.round((12 + rnd() * 10) / 3.2) * 3.2;
-  if (Math.abs(x - X_FX) < 30 + w / 2 && zc < 130) return;
+  if ((Math.abs(x - X_FX) < 30 + w / 2 || Math.abs(x - X_G2) < 45 + w / 2) && zc < 175) return;
   building(common, WALL.brick, M.brickRoof, x - w / 2, x + w / 2, h, zc - d / 2, zc + d / 2);
 });
 for (let x = XMIN + 20; x <= XMAX - 20; x += 32) {                     // 北側住宅
   [-48, -84, -122, -160, -205, -250].forEach(zc => {
     const w = 18 + rnd() * 9, d = 18 + rnd() * 9, h = Math.max(4, Math.round((14 + rnd() * 40) / 3.2)) * 3.2, alt = rnd() < 0.5;
-    if (Math.abs(x - X_JG) < 28 + w / 2 || Math.abs(x - X_FX) < 22 + w / 2 || Math.abs(x - X_KL) < 18 + w / 2 || Math.abs(x - X_D2) < 6 + w / 2) return;
+    if (Math.abs(x - X_JG) < 28 + w / 2 || Math.abs(x - X_FX) < 22 + w / 2 || Math.abs(x - X_KL) < 18 + w / 2 || Math.abs(x - X_D2) < 6 + w / 2 || Math.abs(x - X_G2) < 6 + w / 2) return;
     if (x > X_JG - 30 && x < X_JG + 120 && zc > -130) return;
+    if (x < X_W0 && distW(x, zc) < 26 + Math.max(w, d) / 2) return;
     building(common, alt ? WALL.res1 : WALL.res2, M.roof, x - w / 2, x + w / 2, h, zc - d / 2, zc + d / 2);
   });
 }
 for (let x = XMIN + 20; x <= XMAX - 20; x += 34) {                     // 南側（臺大以外）
   if (x > NTU_W - 20 && x < NTU_E + 30) continue;
-  [48, 86, 126].forEach(zc => {
+  [48, 86, 126, 170, 215].forEach(zc => {
     const w = 18 + rnd() * 8, d = 18 + rnd() * 8, h = Math.max(4, Math.round((12 + rnd() * 30) / 3.2)) * 3.2;
     if (Math.abs(x - X_KL) < 18 + w / 2) return;
+    if (x < NTU_W && distW(x, zc) < 45 + Math.max(w, d) / 2) return;
+    if (x < NTU_W && x > X_W0 - 10) return;
     building(common, rnd() < 0.5 ? WALL.res1 : WALL.res2, M.roof, x - w / 2, x + w / 2, h, zc - d / 2, zc + d / 2);
   });
 }
 {
   const T = [];
-  for (let x = XMIN + 6; x < XMAX; x += 14) [15.25, -15.25].forEach(z => {
-    if (near(x, [X_FX], z < 0 ? 18 : 16) || near(x, [X_KL], 16) || near(x, XING.map(h => (h[0] + h[1]) / 2), 6) || (z < 0 && x > X_JG - 18 && x < X_JG + 40)) return;
+  for (let x = X_W0 + 6; x < XMAX; x += 14) [15.25, -15.25].forEach(z => {      // 兩側植栽帶
+    if (near(x, [X_FX], z < 0 ? 18 : 16) || near(x, [X_KL], 16) || near(x, XC, 6) || (z < 0 && x > X_JG - 18 && x < X_JG + 40) || (z > 0 && near(x, [X_G2], 12))) return;
     T.push([x, 0.12, z, 0.95]);
   });
-  for (let x = NTU_W + 10; x < NTU_E; x += 18) [32, 52].forEach(z => { if (!near(x, [X_FX], 14) && !near(x, [X_D2], 8)) T.push([x + (z > 40 ? 9 : 0), 0.05, z, 1.05]); });
-  for (let i = 0; i < 90; i++) { const x = NTU_W + rnd() * (NTU_E - NTU_W), z = 60 + rnd() * 460; if (!near(x, [X_FX], 10)) T.push([x, 0.05, z, 0.9 + rnd() * 0.4]); }
+  WCURVE.forEach((p, i) => { if (i % 3 === 0) [15.25, -15.25].forEach(d => T.push([p.x + p.nx * d, 0.12, p.z + p.nz * d, 0.95])); });   // 西段曲線植栽帶
+  for (let x = NTU_W + 10; x < NTU_E; x += 18) [32, 52].forEach(z => { if (!near(x, [X_FX], 14) && !near(x, [X_D2], 8) && !near(x, [X_G2], 14)) T.push([x + (z > 40 ? 9 : 0), 0.05, z, 1.05]); });
+  for (let i = 0; i < 110; i++) { const x = NTU_W + rnd() * (NTU_E - NTU_W), z = 60 + rnd() * 460; if (!near(x, [X_FX], 10) && !(near(x, [X_G2], 48) && z < 175)) T.push([x, 0.05, z, 0.9 + rnd() * 0.4]); }
   trees(common, T);
 }
+const WL = WCURVE[8];
 label(common, 'lblJG', X_JG, 26, -430, 1.1);
 label(common, 'lblJGJ', X_JG, 12, -34, 0.7);
-label(common, 'lblXH', XMIN + 70, 10, 0, 0.7);
+label(common, 'lblXH', WL.x, 10, WL.z, 0.7);
 label(common, 'lblFX', X_FX, 10, -240, 0.9);
 label(common, 'lblGate', X_FX, 9, 32, 0.7);
+label(common, 'lblG2', X_G2, 9, 30, 0.7);
 label(common, 'lblNTU', 300, 32, 200, 1.1);
 label(common, 'lblKL', X_KL, 10, -230, 0.9);
 label(common, 'lblUP', X_KL, 14, 0, 0.75);
 label(common, 'lbl3A', XMAX - 50, 14, 0, 0.8);
 
 /* =====================================================================
-   6. 四個方案的快速道路結構
+   6. 四個方案的快速道路結構（建國高架＋辛亥路西段的 Y 型匯流、中央分隔島）
    ===================================================================== */
 const G = {}; OPTS.forEach(k => { G[k] = new THREE.Group(); G[k].name = k; scene.add(G[k]); });
 const CAPS = {}, LINES_O = {}; OPTS.forEach(o => { LINES_O[o] = []; });
-function coveredX(o, x) {
-  if (x >= KL_COVER[0] && x <= KL_COVER[1]) return true;
-  if (o === 'A') return x >= A_PW && x <= KL_COVER[0];
-  if (o === 'C') return C_LIDS.some(([a, b]) => x >= a && x <= b);
+function coveredX(o, a) {
+  if (a.st && a.x >= KL_COVER[0] && a.x <= KL_COVER[1]) return true;
+  if (a.cv === undefined && !a.st && !a.leg && PROP(o) && a.y <= -6.4) return true;           // A、C 地下曲線段（隧道）
+  if (o === 'A') return a.st && a.x >= A_PW && a.x <= KL_COVER[0];
+  if (o === 'C') return a.st && C_LIDS.some(([p, q]) => a.x >= p && a.x <= q);
   return false;
 }
-function buildExpress(o) {
-  const g = G[o], S = samplesFor(o), r = s => s.y, lo = s => Math.min(s.y - 1.3, 0);
-  const inJct = s => s.st && Math.abs(s.x - X_FX) < SL + 1;
-  const open = (a, b) => a.st && a.y < -0.6 && b.y < -0.6 && !coveredX(o, a.x) && !coveredX(o, b.x);
-  const prop = o === 'A' || o === 'C';
-  sweep(g, M.concrete, S, [[-10, s => r(s) - 1.3], [10, s => r(s) - 1.3], [10, r], [-10, r]]);                            // 橋面版／底版
+const MED_BREAK = [[X_JG - 24, X_JG + 112], [X_G2 - 4, X_G2 + 4], [X_FX - SL - 1, X_FX + SL + 1]];   // 中央分隔島開口
+function buildCorridor(o, S, kind) {          // kind：'x' 建國高架／快速道路；'w' 辛亥路西段中央車道
+  const g = G[o], r = s => s.y, lo = s => Math.min(s.y - 1.3, 0), prop = PROP(o);
+  const onGround = a => kind === 'w' || a.st || (a.leg && prop);
+  const open = (a, b) => onGround(a) && a.y < -0.6 && b.y < -0.6 && !coveredX(o, a) && !coveredX(o, b);
+  const inBox = a => o === 'B' && a.st && ((a.x > B_W && a.x < X_FX - SL - 1) || (a.x > X_FX + SL + 1 && a.x < B_E));
+  const atGrade = (a, b) => Math.abs(a.y) < 0.3 && Math.abs(b.y) < 0.3 && (a.st || kind === 'w') && !inBox(a) && !MED_BREAK.some(([p, q]) => a.x > p && a.x < q);
+  sweep(g, M.concrete, S, [[-10, s => r(s) - 1.3], [10, s => r(s) - 1.3], [10, r], [-10, r]]);
   sweep(g, M.asphalt, S, [[-9, s => r(s) + 0.01], [9, s => r(s) + 0.01], [9, s => r(s) + 0.05], [-9, s => r(s) + 0.05]]);
-  sweep(g, M.soil, S, [[-10, () => -15], [10, () => -15], [10, s => Math.min(lo(s), -0.05)], [-10, s => Math.min(lo(s), -0.05)]], a => a.st);
-  sweep(g, M.ground, S, [[-10, () => 0], [10, () => 0], [10, () => 0.02], [-10, () => 0.02]], (a, b) => a.st && a.y > 1.4 && b.y > 1.4);
+  sweep(g, M.soil, S, [[-10, () => -15], [10, () => -15], [10, s => Math.min(lo(s), -0.05)], [-10, s => Math.min(lo(s), -0.05)]], a => onGround(a));
+  sweep(g, M.ground, S, [[-10, () => 0], [10, () => 0], [10, () => 0.02], [-10, () => 0.02]], (a, b) => onGround(a) && a.y > 1.4 && b.y > 1.4);
   [1, -1].forEach(sd => {
-    sweep(g, M.concrete, S, [[sd * 9.2, lo], [sd * 10, lo], [sd * 10, () => 0], [sd * 9.2, () => 0]], a => a.st);           // 擋土牆
+    sweep(g, M.concrete, S, [[sd * 9.2, lo], [sd * 10, lo], [sd * 10, () => 0], [sd * 9.2, () => 0]], a => onGround(a));
     const ph = s => r(s) + 1.1 * clamp((r(s) - 0.4) / 1.2, 0, 1);
-    sweep(g, M.concrete, S, [[sd * 9.5, r], [sd * 10, r], [sd * 10, ph], [sd * 9.5, ph]]);                                    // 高架護欄
+    sweep(g, M.concrete, S, [[sd * 9.5, r], [sd * 10, r], [sd * 10, ph], [sd * 9.5, ph]]);
     sweep(g, M.line, S, [[sd * 8.5, s => r(s) + 0.055], [sd * 8.7, s => r(s) + 0.055], [sd * 8.7, s => r(s) + 0.07], [sd * 8.5, s => r(s) + 0.07]]);
-    sweep(g, M.line, S, [[sd * 3.57, s => r(s) + 0.055], [sd * 3.73, s => r(s) + 0.055], [sd * 3.73, s => r(s) + 0.07], [sd * 3.57, s => r(s) + 0.07]], (a, b, i) => i % 3 === 0);
-    if (prop) sweep(g, M.glass, S, [[sd * 9.6, () => 0], [sd * 9.75, () => 0], [sd * 9.75, () => 2.2], [sd * 9.6, () => 2.2]], (a, b) => open(a, b) && b.x < UPW);   // 提案：開口段隔音牆
-    sweep(g, M.concrete, S, [[sd * 9.6, () => 0], [sd * 9.9, () => 0], [sd * 9.9, () => 1.1], [sd * 9.6, () => 1.1]], (a, b) => open(a, b) && (!prop || a.x >= UPW));   // 既有地下道引道護欄
+    sweep(g, M.line, S, [[sd * 4.97, s => r(s) + 0.055], [sd * 5.13, s => r(s) + 0.055], [sd * 5.13, s => r(s) + 0.07], [sd * 4.97, s => r(s) + 0.07]], (a, b, i) => i % 3 === 0);
+    if (prop) sweep(g, M.glass, S, [[sd * 9.6, () => 0], [sd * 9.75, () => 0], [sd * 9.75, () => 2.2], [sd * 9.6, () => 2.2]], (a, b) => open(a, b) && (kind === 'w' || !a.st || b.x < UPW));
+    sweep(g, M.concrete, S, [[sd * 9.6, () => 0], [sd * 9.9, () => 0], [sd * 9.9, () => 1.1], [sd * 9.6, () => 1.1]], (a, b) => open(a, b) && kind === 'x' && a.st && (!prop || a.x >= UPW));
   });
-  sweep(g, M.concrete, S, [[-0.3, r], [0.3, r], [0.2, s => r(s) + 0.85], [-0.2, s => r(s) + 0.85]], (a, b) => !(AT_GRADE(o) && (inJct(a) || inJct(b))));
-  let last = -1e9;                                                                                                       // 橋墩
+  // ◎ 中央分隔島：平面段為 3 m 綠帶＋密植行道樹；高架／地下段為混凝土護欄
+  sweep(g, M.planting, S, [[-1.5, s => r(s)], [1.5, s => r(s)], [1.5, s => r(s) + 0.25], [-1.5, s => r(s) + 0.25]], atGrade);
+  sweep(g, M.concrete, S, [[-1.5, s => r(s)], [-1.3, s => r(s)], [-1.3, s => r(s) + 0.3], [-1.5, s => r(s) + 0.3]], atGrade);
+  sweep(g, M.concrete, S, [[1.3, s => r(s)], [1.5, s => r(s)], [1.5, s => r(s) + 0.3], [1.3, s => r(s) + 0.3]], atGrade);
+  sweep(g, M.concrete, S, [[-0.3, r], [0.3, r], [0.2, s => r(s) + 0.85], [-0.2, s => r(s) + 0.85]], (a, b) => !atGrade(a, b) && !(AT_GRADE(o) && MED_BREAK.some(([p, q]) => a.x > p && a.x < q) && (a.st || kind === 'w') && Math.abs(a.y) < 0.3));
+  const T = [];
+  for (let i = 0; i < S.length - 1; i += 2) if (atGrade(S[i], S[i + 1])) T.push([S[i].x, S[i].y + 0.25, S[i].z, 0.85]);
+  trees(g, T);
+  let last = -1e9;                                                                                                   // 橋墩
   S.forEach(s => {
     const along = s.st ? s.x : s.z;
     if (s.y < 3.2 || Math.abs(along - last) < 32) return; last = along;
     const col = new THREE.Mesh(BOX, M.concreteDark); col.scale.set(2.4, s.y - 2.3, 2.4); col.position.set(s.x, (s.y - 2.3) / 2, s.z); g.add(col);
     const cap = new THREE.Mesh(BOX, M.concreteDark); cap.scale.set(2.2, 1.0, 15); cap.position.set(s.x, s.y - 1.8, s.z); cap.rotation.y = Math.atan2(-s.tz, s.tx); g.add(cap);
   });
-  if (prop) box(g, topMat(M.asphalt), X_JG + 30, X_JG + R_OF[o], -15, 0, -10, 10);   // 高架曲線下方的辛亥路平面
-  const cap = new THREE.Group(); cap.visible = false; g.add(cap); CAPS[o] = cap;       // 剖面填色
+}
+function buildExpress(o) {
+  buildCorridor(o, samplesFor(o), 'x');
+  buildCorridor(o, samplesW(o), 'w');
+  const g = G[o];
+  if (AT_GRADE(o)) box(g, topMat(M.asphalt, M.soil), X_JG - 14, X_JG + 14, -15, 0, ZN, -20);   // 建國南路（含匝道落地段）
+  else {
+    [[X_JG - 14, X_JG - 10], [X_JG + 10, X_JG + 14]].forEach(([a, b]) => box(g, topMat(M.asphalt, M.soil), a, b, -15, 0, ZN, -20));
+    box(g, topMat(M.asphalt, M.concrete), X_JG - 10, X_JG + 10, -0.4, 0, -96, -20);                // 隧道段上方的建國南路路面
+  }
+  const cap = new THREE.Group(); cap.visible = false; g.add(cap); CAPS[o] = cap;                 // 剖面填色
   const rs = yX(o, X_SEC), x0 = X_SEC - 0.14, x1 = X_SEC - 0.04;
   box(cap, M.soil, x0, x1, -15, Math.min(rs - 1.3, -0.02), -10, 10);
   box(cap, M.concrete, x0, x1, rs - 1.3, rs, -9.2, 9.2);
   [1, -1].forEach(sd => { box(cap, M.concrete, x0, x1, Math.min(rs - 1.3, 0), 0, ...(sd > 0 ? [9.2, 10] : [-10, -9.2])); box(cap, M.soil, x0, x1, -15, 0, ...(sd > 0 ? [10, 160] : [-160, -10])); });
-  return S;
 }
-function junctionCrossings(g) {                     // 現況／B：路口各臂斑馬線（△ 依號誌化路口標準配置）
-  [-22, 22].forEach(dx => { for (let z = -16.2; z + 0.45 <= 16.5; z += 0.9) LINES_O[g.name].push([X_FX + dx - 2.5, X_FX + dx + 2.5, 0.05, 0.08, z, z + 0.45]); });
-  for (let x = X_FX - 13.7; x + 0.45 <= X_FX + 14; x += 0.9) LINES_O[g.name].push([x, x + 0.45, 0.05, 0.08, -26, -23]);          // 復興南路北臂
+function zebraAt(g, x) { for (let z = -16.2; z + 0.45 <= 16.5; z += 0.9) LINES_O[g.name].push([x - 2.5, x + 2.5, 0.05, 0.08, z, z + 0.45]); }
+function junctionCrossings(g) {                     // 現況／B：復興南路口各臂斑馬線（△ 標準配置）
+  [-22, 22].forEach(dx => zebraAt(g, X_FX + dx));
+  for (let x = X_FX - 13.7; x + 0.45 <= X_FX + 14; x += 0.9) LINES_O[g.name].push([x, x + 0.45, 0.05, 0.08, -26, -23]);
   [[-1, X_FX - SL - 0.4, X_FX - SL], [1, X_FX + SL, X_FX + SL + 0.4]].forEach(([sd, a, b]) => LINES_O[g.name].push([a, b, 0.06, 0.09, sd > 0 ? -9 : 0.3, sd > 0 ? -0.3 : 9]));
 }
 function priorityCrossings(g, xs) {                 // 提案：行人優先抬高式穿越道
@@ -709,8 +779,9 @@ function priorityCrossings(g, xs) {                 // 提案：行人優先抬�
     for (let z = zz[0] + 0.25; z + 0.45 <= zz[1]; z += 0.9) LINES_O[g.name].push([x - 2.6, x + 2.6, 0.1, 0.12, z, z + 0.45]);
   }));
 }
-const LAMP_ON = { xR: 0xff3b30, xY: 0xffc300, xG: 0x2bd96b, fR: 0xff3b30, fY: 0xffc300, fG: 0x2bd96b, jR: 0xff3b30, jY: 0xffc300, jG: 0x2bd96b, eR: 0xff3b30, eY: 0xffc300, eG: 0x2bd96b, pR: 0xff3b30, pG: 0x2bd96b };
-const LAMP_OFF = { xR: 0x3a1414, xY: 0x3a3014, xG: 0x143a1e, fR: 0x3a1414, fY: 0x3a3014, fG: 0x143a1e, jR: 0x3a1414, jY: 0x3a3014, jG: 0x143a1e, eR: 0x3a1414, eY: 0x3a3014, eG: 0x143a1e, pR: 0x3a1414, pG: 0x143a1e };
+const LAMP_ON = {}, LAMP_OFF = {};
+['x', 'f', 'j', 'e', 'g'].forEach(p => { LAMP_ON[p + 'R'] = 0xff3b30; LAMP_ON[p + 'Y'] = 0xffc300; LAMP_ON[p + 'G'] = 0x2bd96b; LAMP_OFF[p + 'R'] = 0x3a1414; LAMP_OFF[p + 'Y'] = 0x3a3014; LAMP_OFF[p + 'G'] = 0x143a1e; });
+['p', 'q'].forEach(p => { LAMP_ON[p + 'R'] = 0xff3b30; LAMP_ON[p + 'G'] = 0x2bd96b; LAMP_OFF[p + 'R'] = 0x3a1414; LAMP_OFF[p + 'G'] = 0x143a1e; });
 const LAMP = {}; Object.keys(LAMP_ON).forEach(k => { LAMP[k] = basic(LAMP_OFF[k]); });
 const BULB = new THREE.SphereGeometry(0.15, 10, 8);
 function signalPole(g, x, z, face, pre) {
@@ -719,42 +790,58 @@ function signalPole(g, x, z, face, pre) {
   box(g, M.housing, x - 0.25, x + 0.25, 4.6, 6.0, z - 0.25, z + 0.25);
   [['R', 5.65], ['Y', 5.3], ['G', 4.95]].forEach(([k, y]) => { const b = new THREE.Mesh(BULB, LAMP[pre + k]); b.position.set(x + dir[0] * 0.3, y, z + dir[1] * 0.3); g.add(b); });
 }
-function pedHead(g, x, z, face) {
+function pedHead(g, x, z, face, pre) {
   const dir = face === 'z+' ? 1 : -1;
   box(g, M.housing, x - 0.2, x + 0.2, 2.6, 3.4, z - 0.2, z + 0.2);
-  box(g, LAMP.pR, x - 0.13, x + 0.13, 3.05, 3.3, z + dir * 0.2, z + dir * 0.24);
-  box(g, LAMP.pG, x - 0.13, x + 0.13, 2.7, 2.95, z + dir * 0.2, z + dir * 0.24);
+  box(g, LAMP[pre + 'R'], x - 0.13, x + 0.13, 3.05, 3.3, z + dir * 0.2, z + dir * 0.24);
+  box(g, LAMP[pre + 'G'], x - 0.13, x + 0.13, 2.7, 2.95, z + dir * 0.2, z + dir * 0.24);
   const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.1, 3.4, 8), M.pole); pole.position.set(x, 1.7, z - dir * 0.3); g.add(pole);
 }
 function junctionSignals(g, peds) {
   signalPole(g, X_FX - SL - 2, 17.5, 'x-', 'x'); signalPole(g, X_FX + SL + 2, -17.5, 'x+', 'x');
   signalPole(g, X_FX - SL - 2, 0, 'x-', 'x'); signalPole(g, X_FX + SL + 2, 0, 'x+', 'x');
   signalPole(g, X_FX - 16.5, -24, 'z-', 'f');
-  if (peds) [[X_FX - 22, 17.8, 'z-'], [X_FX + 22, 17.8, 'z-'], [X_FX - 22, -17.8, 'z+'], [X_FX + 22, -17.8, 'z+']].forEach(([x, z, f]) => pedHead(g, x, z, f));
+  if (peds) [[X_FX - 22, 17.8, 'z-'], [X_FX + 22, 17.8, 'z-'], [X_FX - 22, -17.8, 'z+'], [X_FX + 22, -17.8, 'z+']].forEach(([x, z, f]) => pedHead(g, x, z, f, 'p'));
 }
-function jgSignals(g) {                             // 現況／B：建國南路口（匝道車流 vs 辛亥路在地車流）
-  signalPole(g, X_JG - 22, 17.5, 'x-', 'j'); signalPole(g, X_JG + 40, -17.5, 'x+', 'j');
-  signalPole(g, X_JG - 16, -24, 'z-', 'e'); signalPole(g, X_JG + 40, 0, 'x+', 'e');
+function jgSignals(g) {                             // 現況／B：建國南路口 Y 型匯流號誌
+  signalPole(g, X_JG - 22, 17.5, 'x-', 'j'); signalPole(g, X_JG + 44, -17.5, 'x+', 'j');
+  signalPole(g, X_JG - 22, 0, 'x-', 'j'); signalPole(g, X_JG - 16, -24, 'z-', 'e'); signalPole(g, X_JG + 44, 0, 'x+', 'e');
+}
+function gate2Signals(g) {                          // 現況：校門 2 號誌化行人穿越道
+  zebraAt(g, X_G2);
+  LINES_O[g.name].push([X_G2 - 4.9, X_G2 - 4.5, 0.06, 0.09, 1.6, 14], [X_G2 + 4.5, X_G2 + 4.9, 0.06, 0.09, -14, -1.6]);
+  signalPole(g, X_G2 - 6, 17.5, 'x-', 'g'); signalPole(g, X_G2 + 6, -17.5, 'x+', 'g');
+  pedHead(g, X_G2, 17.8, 'z-', 'q'); pedHead(g, X_G2, -17.8, 'z+', 'q');
+}
+function rampPair(g, x) {                           // B：跨越箱體的行人坡道（水平 48 m、爬升 7.5 m）
+  [1, -1].forEach(s => {
+    const run = 48, rise = 7.5, len = Math.hypot(run, rise), rg = new THREE.Group();
+    rg.position.set(x, rise / 2 - 0.25, s * (10 + run / 2)); rg.rotation.x = s * Math.atan2(rise, run);
+    box(rg, M.ramp, -2, 2, -0.25, 0.25, -len / 2, len / 2); box(rg, M.glass, -2, -1.94, 0.25, 1.3, -len / 2, len / 2); box(rg, M.glass, 1.94, 2, 0.25, 1.3, -len / 2, len / 2);
+    g.add(rg);
+    [26, 44].forEach(a => box(g, M.concrete, x - 0.4, x + 0.4, 0, rise * (58 - a) / 48 - 0.5, s * a - 0.4, s * a + 0.4));
+  });
+  label(g, 'lblRampB', x, 16, 40, 0.55);
 }
 // ---- 現況 0 ----
 buildExpress('0');
-junctionCrossings(G['0']); junctionSignals(G['0'], true); jgSignals(G['0']);
-box(G['0'], M.brickWall, X_D2 - 3, X_D2 + 3, 0, 2.4, 20.4, 20.8);               // 現況：東側校園此處無出入口
+junctionCrossings(G['0']); junctionSignals(G['0'], true); jgSignals(G['0']); gate2Signals(G['0']);
+box(G['0'], M.brickWall, X_D2 - 3, X_D2 + 3, 0, 2.4, 20.4, 20.8);
 label(G['0'], 'sec0', X_SEC - 0.5, 3, -22, 0.6, true, true);
 // ---- 方案 A ----
 buildExpress('A');
 (g => {
   const S = samplesFor('A'), inCov = (a, b) => a.st && a.x >= A_PW && b.x <= KL_COVER[0];
-  sweep(g, M.concrete, S, [[-9.2, s => s.y + 5.4], [9.2, s => s.y + 5.4], [9.2, s => s.y + 6.2], [-9.2, s => s.y + 6.2]], inCov);     // 隧道頂版
+  sweep(g, M.concrete, S, [[-9.2, s => s.y + 5.4], [9.2, s => s.y + 5.4], [9.2, s => s.y + 6.2], [-9.2, s => s.y + 6.2]], inCov);
   sweep(g, M.soil, S, [[-9.2, s => Math.min(s.y + 6.2, -0.4)], [9.2, s => Math.min(s.y + 6.2, -0.4)], [9.2, () => -0.4], [-9.2, () => -0.4]], inCov);
   [-4, 4].forEach(d => sweep(g, M.light, S, [[d - 0.15, s => s.y + 5.25], [d + 0.15, s => s.y + 5.25], [d + 0.15, s => s.y + 5.4], [d - 0.15, s => s.y + 5.4]], inCov));
-  box(g, topMat(M.grass), A_PW, KL_COVER[0], -0.4, 0, -9.2, 9.2);                // 地面公園（復興南路西側至基隆路）
+  box(g, topMat(M.grass), A_PW, KL_COVER[0], -0.4, 0, -9.2, 9.2);
   box(g, M.asphalt, X_FX - SL, X_FX + SL, 0, 0.05, -9.2, 9.2);
-  box(g, M.path, A_PW, X_FX - SL, 0, 0.06, -1.5, 1.5); box(g, M.path, X_FX + SL, KL_COVER[0], 0, 0.06, -1.5, 1.5);
+  [-5, 5].forEach(z => { box(g, M.path, A_PW, X_FX - SL, 0, 0.06, z - 1.2, z + 1.2); box(g, M.path, X_FX + SL, KL_COVER[0], 0, 0.06, z - 1.2, z + 1.2); });
   XING.forEach(([a, b]) => box(g, M.path, a + 0.5, b - 0.5, 0, 0.065, -9.2, 9.2));
-  const T = []; for (let x = A_PW + 8; x < KL_COVER[0] - 4; x += 16) if (!near(x, [X_FX], SL + 4) && !near(x, XING.map(h => (h[0] + h[1]) / 2), 6)) T.push([x, 0, (T.length % 2 ? 5.5 : -5.5), 1]);
+  const T = []; for (let x = A_PW + 6; x < KL_COVER[0] - 4; x += 8) if (!near(x, [X_FX], SL + 3) && !near(x, XC, 5)) T.push([x, 0, 0, 0.95]);   // 公園中央密植樹列（延續分隔島）
   trees(g, T);
-  priorityCrossings(g, XING.map(h => (h[0] + h[1]) / 2)); junctionSignals(g, false);
+  priorityCrossings(g, XC); junctionSignals(g, false);
   label(g, 'lblSide', X_D2, 7, 30, 0.55);
   label(g, 'secA1', X_SEC - 0.5, 2, -22, 0.6, true, true); label(g, 'secA2', X_SEC - 0.5, -7, -22, 0.6, true, true);
   const rs = yX('A', X_SEC);
@@ -769,21 +856,15 @@ buildExpress('B');
     [1, -1].forEach(sd => box(g, M.concrete, a, b, 0, 6.6, ...(sd > 0 ? [9.2, 10] : [-10, -9.2])));
     box(g, M.concrete, a, b, 5.6, 6.6, -9.2, 9.2);
     box(g, topMat(M.grass, M.concrete), a, b, 6.6, 7.5, -10, 10);
-    box(g, M.path, a, b, 7.5, 7.55, -1.5, 1.5);
-    gaps(a, b, [[X_D2 - 2.5, X_D2 + 2.5]]).forEach(([p, q]) => { box(g, M.glass, p, q, 7.5, 8.6, -10, -9.85); box(g, M.glass, p, q, 7.5, 8.6, 9.85, 10); });
+    [-5, 5].forEach(z => box(g, M.path, a, b, 7.5, 7.55, z - 1.2, z + 1.2));
+    gaps(a, b, [[X_G2 - 2.5, X_G2 + 2.5], [X_D2 - 2.5, X_D2 + 2.5]]).forEach(([p, q]) => { box(g, M.glass, p, q, 7.5, 8.6, -10, -9.85); box(g, M.glass, p, q, 7.5, 8.6, 9.85, 10); });
     [-4, 4].forEach(z => box(g, M.light, a, b, 5.45, 5.6, z - 0.15, z + 0.15));
     [a, b].forEach(x => box(g, M.concreteDark, x - 0.5, x + 0.5, 5.6, 7.6, -10, 10));
   });
-  const T = []; segs.forEach(([a, b]) => { for (let x = a + 8; x < b - 4; x += 16) if (!near(x, [X_D2], 6)) T.push([x, 7.5, (T.length % 2 ? 5.5 : -5.5), 1]); }); trees(g, T);
-  [1, -1].forEach(s => {                                                           // 提案：東側校園坡道（水平 48 m、爬升 7.5 m）
-    const run = 48, rise = 7.5, len = Math.hypot(run, rise), rg = new THREE.Group();
-    rg.position.set(X_D2, rise / 2 - 0.25, s * (10 + run / 2)); rg.rotation.x = s * Math.atan2(rise, run);
-    box(rg, M.ramp, -2, 2, -0.25, 0.25, -len / 2, len / 2); box(rg, M.glass, -2, -1.94, 0.25, 1.3, -len / 2, len / 2); box(rg, M.glass, 1.94, 2, 0.25, 1.3, -len / 2, len / 2);
-    g.add(rg);
-    [26, 44].forEach(a => box(g, M.concrete, X_D2 - 0.4, X_D2 + 0.4, 0, rise * (58 - a) / 48 - 0.5, s * a - 0.4, s * a + 0.4));
-  });
+  const T = []; segs.forEach(([a, b]) => { for (let x = a + 6; x < b - 4; x += 8) if (!near(x, [X_G2, X_D2], 5)) T.push([x, 7.5, 0, 0.95]); }); trees(g, T);   // 屋頂公園中央樹列
+  rampPair(g, X_G2); rampPair(g, X_D2);
   junctionCrossings(g); junctionSignals(g, true); jgSignals(g);
-  label(g, 'lblRampB', X_D2, 16, 40, 0.55); label(g, 'lblBreak', X_FX, 14, 0, 0.6);
+  label(g, 'lblBreak', X_FX, 14, 0, 0.6);
   label(g, 'secB1', X_SEC - 0.5, 9.5, -22, 0.6, true, true); label(g, 'secB2', X_SEC - 0.5, 2.5, -22, 0.6, true, true);
   box(CAPS.B, M.concrete, X_SEC - 0.14, X_SEC - 0.04, 5.6, 6.6, -9.2, 9.2); box(CAPS.B, M.grass, X_SEC - 0.14, X_SEC - 0.04, 6.6, 7.5, -10, 10);
   [1, -1].forEach(sd => box(CAPS.B, M.concrete, X_SEC - 0.14, X_SEC - 0.04, 0, 6.6, ...(sd > 0 ? [9.2, 10] : [-10, -9.2])));
@@ -792,16 +873,16 @@ buildExpress('B');
 buildExpress('C');
 (g => {
   C_LIDS.forEach(([a, b], k) => {
-    if (k === 0) {                                                               // 路口覆蓋版：中間為路口鋪面
+    if (k === 1) {
       box(g, M.asphalt, X_FX - SL, X_FX + SL, -1.2, 0.05, -9.2, 9.2);
       [[a, X_FX - SL], [X_FX + SL, b]].forEach(([p, q]) => box(g, topMat(M.grass, M.concrete), p, q, -1.2, 0, -9.2, 9.2));
     } else box(g, topMat(M.grass, M.concrete), a, b, -1.2, 0, -9.2, 9.2);
     [-4, 4].forEach(z => box(g, M.light, a, b, -1.35, -1.2, z - 0.15, z + 0.15));
   });
   XING.forEach(([a, b]) => box(g, M.path, a + 0.5, b - 0.5, 0, 0.065, -9.2, 9.2));
-  const T = []; [[X_FX - 40, X_FX - SL], [X_FX + SL, X_FX + 40], C_LIDS[1]].forEach(([a, b]) => [a + 3, b - 3].forEach(x => { if (!near(x, XING.map(h => (h[0] + h[1]) / 2), 4)) [-6, 6].forEach(z => T.push([x, 0, z, 0.85])); }));
+  const T = []; [[X_G2 - 15, X_G2 + 15], [X_FX - 40, X_FX - SL], [X_FX + SL, X_FX + 40], [X_D2 - 15, X_D2 + 15]].forEach(([a, b]) => { for (let x = a + 3; x < b - 2; x += 6) if (!near(x, XC, 4)) T.push([x, 0, 0, 0.85]); });
   trees(g, T);
-  priorityCrossings(g, XING.map(h => (h[0] + h[1]) / 2)); junctionSignals(g, false);
+  priorityCrossings(g, XC); junctionSignals(g, false);
   label(g, 'lblSide', X_D2, 7, 30, 0.55); label(g, 'lblLid', X_FX, 14, 0, 0.6);
   label(g, 'secC1', X_SEC - 0.5, 3, -22, 0.6, true, true); label(g, 'secC2', X_SEC - 0.5, -5.5, -22, 0.6, true, true);
 })(G.C);
@@ -831,13 +912,16 @@ const PLAN_F = {
 };
 const sigF = new Signal(PLAN_F.long);
 const sigK = new Signal([{ g: ['KX'], d: 30 }, { g: ['KN'], d: 25 }]);       // 基隆路口（平面在地車流）
-const sigJ = new Signal([{ g: ['JX'], d: 32 }, { g: ['JE'], d: 28 }]);       // 建國南路口（現況／B）
+const sigJ = new Signal([{ g: ['JX'], d: 26 }, { g: ['JE'], d: 34 }]);       // 建國南路口 Y 型匯流（現況／B）
+const sigG = new Signal([{ g: ['GV'], d: 50 }, { g: ['GP'], d: 24 }]);       // 校門 2 行人穿越（現況）
 function updateLamps() {
   const set = (pre, st) => { LAMP[pre + 'R'].color.setHex(st === 'R' ? LAMP_ON[pre + 'R'] : LAMP_OFF[pre + 'R']); LAMP[pre + 'Y'].color.setHex(st === 'Y' ? LAMP_ON[pre + 'Y'] : LAMP_OFF[pre + 'Y']); LAMP[pre + 'G'].color.setHex(st === 'G' ? LAMP_ON[pre + 'G'] : LAMP_OFF[pre + 'G']); };
   set('x', sigF.st('EBT')); set('f', sigF.st('SBL')); set('j', sigJ.st('JX')); set('e', sigJ.st('JE'));
-  const p = sigF.st('PED');
-  LAMP.pG.color.setHex(p === 'G' || (p === 'Y' && Math.floor(simT * 2) % 2 === 0) ? LAMP_ON.pG : LAMP_OFF.pG);
-  LAMP.pR.color.setHex(p === 'R' ? LAMP_ON.pR : LAMP_OFF.pR);
+  set('g', sigG.st('GV'));
+  [['p', sigF.st('PED')], ['q', sigG.st('GP')]].forEach(([k, p]) => {
+    LAMP[k + 'G'].color.setHex(p === 'G' || (p === 'Y' && Math.floor(simT * 2) % 2 === 0) ? LAMP_ON[k + 'G'] : LAMP_OFF[k + 'G']);
+    LAMP[k + 'R'].color.setHex(p === 'R' ? LAMP_ON[k + 'R'] : LAMP_OFF[k + 'R']);
+  });
 }
 
 /* =====================================================================
@@ -856,53 +940,69 @@ class Edge {
 }
 const E = {};
 const addE = (id, pts) => { E[id] = new Edge(id, pts); };
-// 快速車流（建國高架 ↔ 既有地下道 ↔ 往國3甲）：東行兩車道、西行兩車道
-addE('XE0', lanePts('0', 1.9, false)); addE('XE1', lanePts('0', 5.4, false));
-addE('XW0', lanePts('0', -1.9, true)); addE('XW1', lanePts('0', -5.4, true));
-// 辛亥路在地車道（慢車道）
-addE('LEW', line(XMIN, EZ, X_FX - SL, EZ)); addE('LEJ', line(X_FX - SL, EZ, X_FX + SL, EZ)); addE('LEE', line(X_FX + SL, EZ, XMAX, EZ));
-addE('LWE', line(XMAX, -EZ, X_FX + SL, -EZ)); addE('LWJ', line(X_FX + SL, -EZ, X_FX - SL, -EZ)); addE('LWW', line(X_FX - SL, -EZ, XMIN, -EZ));
-// 復興南路（北臂）與臺大校門（南臂，少量車輛）
+// 快速車流：XN＝建國高架→匯流點、XS＝匯流點→東（東行）；YS＝東→分流點、YN＝分流點→建國高架（西行）
+// ◎ Y 型匯流：CE＝辛亥路西段→匯流點（東行）、CW＝分流點→辛亥路西段（西行）
+LN.forEach((d, k) => {
+  const [nE, sE] = exPts('0', d), [nW, sW] = exPts('0', -d);
+  addE('XN' + k, nE); addE('XS' + k, sE); addE('YS' + k, sW.slice().reverse()); addE('YN' + k, nW.slice().reverse());
+  addE('CE' + k, westPts('0', d, false)); addE('CW' + k, westPts('0', -d, true));
+});
+// 辛亥路在地車道（慢車道）：西段沿曲線
+const localW = d => WEST.filter(p => p.x <= X_W0 + 0.01).map(p => ({ x: p.x - p.tz * d, y: 0, z: p.z + p.tx * d }));
+addE('LEW', [...localW(EZ), { x: X_FX - SL, y: 0, z: EZ }]); addE('LEJ', line(X_FX - SL, EZ, X_FX + SL, EZ)); addE('LEE', line(X_FX + SL, EZ, XMAX, EZ));
+addE('LWE', line(XMAX, -EZ, X_FX + SL, -EZ)); addE('LWJ', line(X_FX + SL, -EZ, X_FX - SL, -EZ)); addE('LWW', [{ x: X_FX - SL, y: 0, z: -EZ }, ...localW(-EZ).reverse()]);
+// 復興南路（北臂）與臺大校門 1（南臂，少量車輛）
 addE('FS1', line(X_FX - 1.9, ZN, X_FX - 1.9, ZF)); addE('FS2', line(X_FX - 5.4, ZN, X_FX - 5.4, ZF));
 addE('FN1', line(X_FX + 1.9, ZF, X_FX + 1.9, ZN)); addE('FN2', line(X_FX + 5.4, ZF, X_FX + 5.4, ZN));
 addE('TWR', bez({ x: X_FX + SL, z: -EZ }, { x: -1, z: 0 }, { x: X_FX + 5.4, z: ZF }, { x: 0, z: -1 }, 9));
 addE('TSL', bez({ x: X_FX - 1.9, z: ZF }, { x: 0, z: 1 }, { x: X_FX + SL, z: EZ }, { x: 1, z: 0 }, 18));
 addE('TSR', bez({ x: X_FX - 5.4, z: ZF }, { x: 0, z: 1 }, { x: X_FX - SL, z: -EZ }, { x: -1, z: 0 }, 9));
 addE('TSG', line(X_FX - 1.9, ZF, X_FX - 1.9, 75)); addE('GN', line(X_FX + 1.9, 75, X_FX + 1.9, ZF));
-// 基隆路
 addE('KS', line(X_KL - 3.5, ZN, X_KL - 3.5, ZS)); addE('KN', line(X_KL + 3.5, ZS, X_KL + 3.5, ZN));
 const EDGES = Object.values(E);
 const ROUTES = [
-  { e: ['XE0'], rate: 820, v0: 16.7, mv: 'EBT', kind: 'x' }, { e: ['XE1'], rate: 700, v0: 15, mv: 'EBT', kind: 'x' },
-  { e: ['XW0'], rate: 820, v0: 16.7, mv: 'WBT', kind: 'x' }, { e: ['XW1'], rate: 700, v0: 15, mv: 'WBT', kind: 'x' },
-  { e: ['LEW', 'LEJ', 'LEE'], rate: 320, v0: 11, mv: 'EBT', kind: 'l' },                // 東行左轉進復興南路：禁止（示意簡化）
-  { e: ['LWE', 'LWJ', 'LWW'], rate: 260, v0: 11, mv: 'WBT', kind: 'l' }, { e: ['LWE', 'TWR', 'FN2'], rate: 240, v0: 11, mv: 'WBR', kind: 'l' },
+  { e: ['XN0', 'XS0'], rate: 600, v0: 16.7, mv: 'EBT', jm: 'JE', kind: 'x' }, { e: ['XN1', 'XS1'], rate: 520, v0: 15, mv: 'EBT', jm: 'JE', kind: 'x' },
+  { e: ['CE0', 'XS0'], rate: 240, v0: 15, mv: 'EBT', jm: 'JX', kind: 'x' }, { e: ['CE1', 'XS1'], rate: 200, v0: 14, mv: 'EBT', jm: 'JX', kind: 'x' },
+  { e: ['YS1', 'YN1'], rate: 760, v0: 15, mv: 'WBT', jm: 'JE', kind: 'x' },              // 西行外側車道：右轉上建國高架
+  { e: ['YS0', 'CW0'], rate: 400, v0: 15, mv: 'WBT', jm: 'JX', kind: 'x' },              // 西行內側車道：續行辛亥路西段
+  { e: ['LEW', 'LEJ', 'LEE'], rate: 300, v0: 11, mv: 'EBT', jm: 'JX', kind: 'l' },
+  { e: ['LWE', 'LWJ', 'LWW'], rate: 260, v0: 11, mv: 'WBT', jm: 'JX', kind: 'l' }, { e: ['LWE', 'TWR', 'FN2'], rate: 240, v0: 11, mv: 'WBR', kind: 'l' },
   { e: ['FS1', 'TSL', 'LEE'], rate: 380, v0: 12.5, mv: 'SBL', kind: 'f' }, { e: ['FS2', 'TSR', 'LWW'], rate: 380, v0: 12.5, mv: 'SBR', kind: 'f' },
-  { e: ['FS1', 'TSG'], rate: 20, v0: 8, mv: 'SBL', kind: 'g' }, { e: ['GN', 'FN1'], rate: 20, v0: 8, mv: 'NTU', kind: 'g' },   // 臺大校門進出（極少量）
+  { e: ['FS1', 'TSG'], rate: 20, v0: 8, mv: 'SBL', kind: 'g' }, { e: ['GN', 'FN1'], rate: 20, v0: 8, mv: 'NTU', kind: 'g' },
   { e: ['KS'], rate: 450, v0: 12.5, kind: 'k' }, { e: ['KN'], rate: 450, v0: 12.5, kind: 'k' }
 ];
 ROUTES.forEach(r => { r.E = r.e.map(id => E[id]); r.acc = Math.random(); });
-const CWS = {                                       // 行人穿越道（現況／B：路口兩臂；A、C：提案穿越道）
-  '0': [[X_FX - 24.5, X_FX - 19.5], [X_FX + 19.5, X_FX + 24.5]],
+const CWS = {                                       // 行人穿越道（車輛讓行人／清道）
+  '0': [[X_G2 - 2.5, X_G2 + 2.5], [X_FX - 24.5, X_FX - 19.5], [X_FX + 19.5, X_FX + 24.5]],
+  B: [[X_FX - 24.5, X_FX - 19.5], [X_FX + 19.5, X_FX + 24.5]],
   A: XING.map(([a, b]) => [a, b])
 };
-CWS.B = CWS['0']; CWS.C = CWS.A;
+CWS.C = CWS.A;
 let opt = '0';
 function rebuildNetwork() {
-  [['XE0', 1.9, false], ['XE1', 5.4, false], ['XW0', -1.9, true], ['XW1', -5.4, true]].forEach(([id, d, rev]) => E[id].set(lanePts(opt, d, rev)));
+  LN.forEach((d, k) => {
+    const [nE, sE] = exPts(opt, d), [nW, sW] = exPts(opt, -d);
+    E['XN' + k].set(nE); E['XS' + k].set(sE); E['YS' + k].set(sW.slice().reverse()); E['YN' + k].set(nW.slice().reverse());
+    E['CE' + k].set(westPts(opt, d, false)); E['CW' + k].set(westPts(opt, -d, true));
+  });
   EDGES.forEach(e => { e.stops = []; });
   ['LEW', 'LWE', 'FS1', 'FS2', 'GN'].forEach(id => E[id].stops.push({ s: E[id].len - 0.5, k: 'F' }));
+  LN.forEach((d, k) => {
+    if (AT_GRADE(opt)) {
+      E['XN' + k].stops.push({ s: E['XN' + k].sWhere((x, y, z) => z >= -24), k: 'J', g: 'JE' });          // 建國南路口：建國高架車流
+      E['CE' + k].stops.push({ s: E['CE' + k].sWhere(x => x >= X_JG - 22), k: 'J', g: 'JX' });            // 建國南路口：辛亥路西段車流
+      E['YS' + k].stops.push({ s: E['YS' + k].len - 0.5, k: 'J', g: null });                                 // 分流點：依路線決定時相
+      E['XS' + k].stops.push({ s: E['XS' + k].sWhere(x => x >= X_FX - SL), k: 'F' });
+      E['YS' + k].stops.push({ s: E['YS' + k].sWhere(x => x <= X_FX + SL), k: 'F' });
+    } else E['CE' + k].stops.push({ s: E['CE' + k].len - 0.5, k: 'M', o: E['XN' + k] });                     // 提案：地下匯流，西段車流讓建國高架車流
+  });
   if (AT_GRADE(opt)) {
-    ['XE0', 'XE1'].forEach(id => {
-      E[id].stops.push({ s: E[id].sWhere((x, y, z) => z >= -24 && x < X_JG + 10), k: 'J', g: 'JE' });          // 建國南路口（匝道車流）
-      E[id].stops.push({ s: E[id].sWhere((x, y, z) => z > -1 && x >= X_FX - SL), k: 'F' });
-    });
-    ['XW0', 'XW1'].forEach(id => {
-      E[id].stops.push({ s: E[id].sWhere(x => x <= X_FX + SL), k: 'F' });
-      E[id].stops.push({ s: E[id].sWhere(x => x <= X_JG + 40), k: 'J', g: 'JE' });
-    });
     E.LEW.stops.push({ s: E.LEW.sWhere(x => x >= X_JG - 24), k: 'J', g: 'JX' });
-    E.LWW.stops.push({ s: E.LWW.sWhere(x => x <= X_JG + 42), k: 'J', g: 'JX' });
+    E.LWW.stops.push({ s: E.LWW.sWhere(x => x <= X_JG + 44), k: 'J', g: 'JX' });
+  }
+  if (opt === '0') {                                                                                       // 校門 2 行人號誌
+    ['XS0', 'XS1', 'LEW'].forEach(id => E[id].stops.push({ s: E[id].sWhere(x => x >= X_G2 - 4.5), k: 'G' }));
+    ['YS0', 'YS1', 'LWW'].forEach(id => E[id].stops.push({ s: E[id].sWhere(x => x <= X_G2 + 4.5), k: 'G' }));
   }
   E.LEE.stops.push({ s: E.LEE.sWhere(x => x >= X_KL - 14.5), k: 'K', g: 'KX' });
   E.LWE.stops.push({ s: E.LWE.sWhere(x => x <= X_KL + 14.5), k: 'K', g: 'KX' });
@@ -912,7 +1012,7 @@ function rebuildNetwork() {
     const i = e.sWhere((x, y, z) => x >= x0 && x <= x1 && Math.abs(z) <= 16.5 && Math.abs(y) < 1);
     if (i >= 0) e.stops.push({ s: Math.max(0.5, i - 1.5), k: 'Y', x0, x1, z: e.Z[i] });
   }));
-  EDGES.forEach(e => e.stops.sort((a, b) => a.s - b.s));
+  EDGES.forEach(e => { e.stops = e.stops.filter(st => st.s >= 0); e.stops.sort((a, b) => a.s - b.s); });
 }
 
 /* =====================================================================
@@ -964,7 +1064,8 @@ function yieldBlocked(st) {
 }
 function stopActive(st, c, d) {
   if (st.k === 'Y') return yieldBlocked(st);
-  const s = st.k === 'F' ? sigF.st(c.r.mv) : st.k === 'J' ? sigJ.st(st.g) : sigK.st(st.g);
+  if (st.k === 'M') return st.o.cars.some(q => q.pos > st.o.len - 40);          // 地下匯流：讓主線車流
+  const s = st.k === 'F' ? sigF.st(c.r.mv) : st.k === 'J' ? sigJ.st(st.g || c.r.jm) : st.k === 'G' ? sigG.st('GV') : sigK.st(st.g);
   if (s === 'G') return false;
   if (s === 'Y') return d > c.v * c.v / 7;
   return true;
@@ -1026,20 +1127,20 @@ function drawCars() {
    10. 行人（InstancedMesh，四肢擺動）與路徑
    ===================================================================== */
 const GY = 0.12;
-const PED_LINES = [{ id: 'D1a', rate: 320 }, { id: 'D1b', rate: 320 }, { id: 'D2', rate: 200 }];
-function pedRoute(o, id, off) {              // 以「南（臺大）→ 北」建立；f[k]＝第 k 段需等行人時相
+const PED_LINES = [{ id: 'D1a', rate: 300 }, { id: 'D1b', rate: 300 }, { id: 'D2', rate: 150 }, { id: 'D3', rate: 300 }];
+function pedRoute(o, id, off) {              // 以「南（臺大）→ 北」建立；f[k]：1＝復興南路口行人時相、2＝校門 2 行人時相
   const P = [], F = [];
-  const add = (x, z, y, sig) => { P.push([x, y == null ? GY : y, z]); if (P.length > 1) F.push(sig ? 1 : 0); };
-  const sd = id === 'D1b' ? 1 : -1, back = Math.random() * 1.4, prop = o === 'A' || o === 'C';
-  if (id === 'D2') {                         // 東側校園 ↔ 北側住宅
+  const add = (x, z, y, sig) => { P.push([x, y == null ? GY : y, z]); if (P.length > 1) F.push(sig || 0); };
+  const sd = id === 'D1b' ? 1 : -1, back = Math.random() * 1.4, prop = PROP(o);
+  const viaRamp = x => { add(x, 45); add(x + 3, 46); add(x + 3, 59.5); add(x + off * 0.6, 59); add(x + off * 0.6, 10, 7.6); add(x + off * 0.6, -10, 7.6); add(x + off * 0.6, -58); add(x, -70); };
+  if (id === 'D3') {                         // ◎ 校門 2（體育館側）↔ 北側
+    if (prop) { add(X_G2 + off, 45); add(X_G2 + off, 21.5); add(X_G2 + off, -18.6); add(X_G2, -70); }
+    else if (o === 'B') viaRamp(X_G2);
+    else { add(X_G2 + off * 0.5, 45); add(X_G2 + off * 0.5, 21.5); add(X_G2 + off, 18.6 + back); add(X_G2 + off, -18.6, null, 2); add(X_G2 + off * 0.4, -70); }
+  } else if (id === 'D2') {                  // 東側校園 ↔ 北側住宅
     if (prop) { add(X_D2 + off, 45); add(X_D2 + off, 21.5); add(X_D2 + off, -18.6); add(X_D2, -70); }
-    else if (o === 'B') {
-      add(X_D2, 45); add(X_D2 + 3, 46); add(X_D2 + 3, 59.5); add(X_D2 + off * 0.6, 59);
-      add(X_D2 + off * 0.6, 10, 7.6); add(X_D2 + off * 0.6, -10, 7.6); add(X_D2 + off * 0.6, -58); add(X_D2, -70);
-    } else {                                 // 現況：校園內走到校門，在復興南路口東臂穿越，再沿人行道走回
-      add(X_D2 + off, 45); add(X_FX + 12, 30); add(X_FX + 5, 21.5); add(X_FX + 22 + off, 18.6 + back);
-      add(X_FX + 22 + off, -18.6, null, 1); add(X_D2 + off, -18.6); add(X_D2, -70);
-    }
+    else if (o === 'B') viaRamp(X_D2);
+    else { add(X_D2 + off, 45); add(X_FX + 12, 30); add(X_FX + 5, 21.5); add(X_FX + 22 + off, 18.6 + back); add(X_FX + 22 + off, -18.6, null, 1); add(X_D2 + off, -18.6); add(X_D2, -70); }
   } else if (prop) {
     add(X_FX + off * 0.5, 45); add(X_FX + off * 0.5, 21.5); add(X_FX + sd * 36 + off, 18.6); add(X_FX + sd * 36 + off, -18.6); add(X_FX + sd * 16, -23); add(X_FX + sd * 16, -130);
   } else {
@@ -1063,7 +1164,7 @@ Object.values(IP).forEach(m => { m.castShadow = true; m.frustumCulled = false; m
 IP.torso.setColorAt(0, new THREE.Color()); IP.arm.setColorAt(0, new THREE.Color());
 const CLOTHES = [0x2b6cb0, 0xc53030, 0x2f855a, 0xd69e2e, 0x6b46c1, 0xdd6b20, 0x4a5568, 0xe2e8f0, 0x319795, 0xb83280].map(h => new THREE.Color(h));
 const stats = {}; const resetStats = () => OPTS.forEach(o => { stats[o] = { n: 0, T: 0, W: 0, xS: 0, xT: 0, fS: 0, fT: 0 }; }); resetStats();
-let pedAcc = [0, 0, 0], pedDir = [1, -1, 1], simT = 0, optT = 0;
+let pedAcc = [0, 0, 0, 0], pedDir = [1, -1, 1, -1], simT = 0, optT = 0;
 function spawnPed(line, k, warm) {
   let p = peds.find(q => !q.on); if (!p) { if (peds.length >= MAXP) return; p = { pos: new THREE.Vector3() }; peds.push(p); }
   const rt = pedRoute(opt, line.id, (Math.random() * 2 - 1) * 2.2);
@@ -1090,7 +1191,8 @@ function pedStep(p, dt) {
   if (!p.dep) {
     if (p.F[p.seg]) {
       const need = Math.hypot(b[0] - a[0], b[2] - a[2]) / p.v;
-      if (!(sigF.st('PED') === 'G' && sigF.left() + 4 >= need)) { p.waiting = true; p.wait += dt; p.heading = Math.atan2(b[0] - a[0], b[2] - a[2]); return; }
+      const sg = p.F[p.seg] === 2 ? sigG : sigF, pk = p.F[p.seg] === 2 ? 'GP' : 'PED';
+      if (!(sg.st(pk) === 'G' && sg.left() + 4 >= need)) { p.waiting = true; p.wait += dt; p.heading = Math.atan2(b[0] - a[0], b[2] - a[2]); return; }
     }
     p.dep = true; p.waiting = false;
   }
@@ -1216,7 +1318,7 @@ function setOption(k) {
   sigF.set(AT_GRADE(k) ? PLAN_F.long : PLAN_F.short);
   rebuildNetwork();
   peds.forEach(p => { p.on = false; });
-  if (ready) for (let i = 0; i < 30; i++) spawnPed(PED_LINES[i % 3], i % 3, true);
+  if (ready) for (let i = 0; i < 30; i++) spawnPed(PED_LINES[i % 4], i % 4, true);
   $('info').innerHTML = t('info' + k);
   document.querySelectorAll('[data-opt]').forEach(b => b.classList.toggle('on', b.dataset.opt === k));
   renderCBA(); renderKPI();
@@ -1241,7 +1343,7 @@ let camGoal = null, view = 'bird';
 controls.addEventListener('start', () => { camGoal = null; });
 const VIEWS = {
   bird: { pos: [-380, 560, 760], tgt: [160, 0, -40] },
-  west: { pos: [-330, 110, 110], tgt: [-505, 0, -140] },
+  west: { pos: [-420, 240, 190], tgt: [-575, 0, 10] },
   junction: { pos: [X_FX + 85, 55, 120], tgt: [X_FX, 0, -8] },
   east: { pos: [X_KL - 230, 42, 24], tgt: [X_KL - 30, -4, 0] },
   section: { pos: [X_SEC + 70, 14, 40], tgt: [X_SEC, -3, -8] },
@@ -1291,7 +1393,7 @@ scene.traverse(o => {
   o.castShadow = !flat && !o.userData.noCast; o.receiveShadow = !flat;
 });
 function simStep(h) {
-  simT += h; optT += h; sigF.step(h); sigK.step(h); sigJ.step(h); vehStep(h);
+  simT += h; optT += h; sigF.step(h); sigK.step(h); sigJ.step(h); sigG.step(h); vehStep(h);
   peds.forEach(p => { if (p.on) pedStep(p, h); });
   pedSpawnStep(h);
   if (optT > 30) {
@@ -1328,11 +1430,12 @@ function frame(now) {
 setOption('0'); setView('bird'); updateViewOffset();
 for (let i = 0; i < 150 / 0.05; i++) simStep(0.05);      // 預熱：讓路網先充滿車流
 ready = true; resetStats();
-for (let i = 0; i < 30; i++) spawnPed(PED_LINES[i % 3], i % 3, true);
+for (let i = 0; i < 30; i++) spawnPed(PED_LINES[i % 4], i % 4, true);
 $('overlay').classList.add('hide');
 requestAnimationFrame(frame);
 window.__sim = { setOption, setView, setSpeed, setPerf, setDash, stats, sig: () => sigF.cur(), cars, peds, E,
-  ff: sec => { for (let k = 0; k < sec / 0.05; k++) simStep(0.05); }, geo: { A_PW, B_W, B_E, UPW, UPE } };
+  ff: sec => { for (let k = 0; k < sec / 0.05; k++) simStep(0.05); }, geo: { A_PW, B_W, B_E, UPW, UPE },
+  cam: (p, q) => { camGoal = { p: new THREE.Vector3(...p), t: new THREE.Vector3(...q) }; } };   // 測試用
 </script>
 </body>
 </html>
