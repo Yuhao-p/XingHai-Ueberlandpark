@@ -191,6 +191,7 @@ window.XH_CFG = { CDN_BASES: ['https://cdn.jsdelivr.net/npm/three@0.160.0/', 'ht
 var I18N = {
   zh: {
     docTitle: '辛亥路方案 3D 模擬',
+    pgGNote: '依在地資訊，臺大側門沒有機車進出：已從調查量扣除機車，只計小客車與大型車。',
     fxR: '南向右轉往西',
     fxT: '南向直行入側門',
     fxL: '南向左轉往東',
@@ -205,17 +206,17 @@ var I18N = {
     p_sfL4: '現況 φ4：臺大側門',
     pgKNote: '非本次調查範圍（假設值）',
     p_mL2: '東行機車二段式左轉（往復興南路）',
-    p_mShF: '復興南路、側門機車比例（以輛計）',
+    p_mShF: '復興南路機車比例（以輛計；側門不含機車）',
     p_mSh: '在地車道機車比例（以輛計）',
     pgMo: '機車',
     p_gR: '右轉往東',
     p_gT: '直行往復興南路',
     p_gL: '左轉往西',
     pgG: '臺大側門出口（B）',
-    p_eR: '東行右轉入臺大側門',
+    p_eR: '東行右轉入臺大側門（不含機車）',
     pgXNote: '調查只量到復興南路口的中央車道直行總量；往建國高架與辛亥路西段的拆分為推估。',
     p_fxR: '右轉往西',
-    p_fxT: '直行入臺大側門',
+    p_fxT: '直行入臺大側門（不含機車）',
     p_fxL: '左轉往東',
     mvNTU: '臺大側門出口',
     mvWB: '西行延長綠（直行＋右轉）',
@@ -379,6 +380,7 @@ var I18N = {
   },
   en: {
     docTitle: 'Xinhai Rd 3D Network Simulation',
+    pgGNote: 'Per local knowledge, no motorcycles use the NTU side gate: motorcycles are removed from the survey counts; cars and heavy vehicles only.',
     fxR: 'SB right to west',
     fxT: 'SB through to gate',
     fxL: 'SB left to east',
@@ -393,17 +395,17 @@ var I18N = {
     p_sfL4: 'Base φ4: NTU side gate',
     pgKNote: 'Outside this survey (assumed)',
     p_mL2: 'EB motorcycle two-stage left (to Fuxing)',
-    p_mShF: 'Motorcycle share, Fuxing & gate (by count)',
+    p_mShF: 'Motorcycle share, Fuxing (by count; none at the gate)',
     p_mSh: 'Motorcycle share, local lanes (by count)',
     pgMo: 'Motorcycles',
     p_gR: 'Right to east',
     p_gT: 'Through to Fuxing',
     p_gL: 'Left to west',
     pgG: 'NTU side gate exit (B)',
-    p_eR: 'EB right into NTU side gate',
+    p_eR: 'EB right into NTU side gate (no motorcycles)',
     pgXNote: 'The survey only counts central-lane through totals at the Fuxing junction; the split to Jianguo vs west Xinhai is estimated.',
     p_fxR: 'Right to west',
-    p_fxT: 'Through to NTU side gate',
+    p_fxT: 'Through to NTU side gate (no motorcycles)',
     p_fxL: 'Left to east',
     mvNTU: 'NTU side gate exit',
     mvWB: 'WB extension (through + right)',
@@ -1375,6 +1377,7 @@ addE('GA', line(X_FX + 1.9, 90, X_FX + 1.9, ZG));                               
 addE('GT', bez({ x: X_FX + 1.9, z: ZG }, { x: 0, z: -1 }, { x: X_FX + FXL[0], z: ZF }, { x: 0, z: -1 }, 18));       // 側門直行往復興南路
 addE('GL', bez({ x: X_FX + 1.9, z: ZG }, { x: 0, z: -1 }, { x: X_FX - SL, z: -ZW[0] }, { x: -1, z: 0 }, 16));       // 側門左轉往西
 addE('GR', bez({ x: X_FX + 1.9, z: ZG }, { x: 0, z: -1 }, { x: X_FX + SL, z: ZE[2] }, { x: 1, z: 0 }, 6));          // 側門右轉往東
+// ◎ 臺大側門無機車進出（使用者在地資訊）：側門相關路線皆為小客車
 // 機車二段式左轉（東行 → 復興南路北向）：直行進入待轉區，等側門時相再北行
 const MBOX = { x0: X_FX - 10, x1: X_FX - 6, z0: RD.S + 0.4, z1: RD.S + 3.4 }, MBX = (MBOX.x0 + MBOX.x1) / 2, MBZ = MBOX.z0 + 1.6;
 addE('MTA', [...line(X_FX - SL, ZE[2], X_FX - 16, ZE[2]), ...bez({ x: X_FX - 16, z: ZE[2] }, { x: 1, z: 0 }, { x: MBX, z: MBZ }, { x: 0, z: -1 }, 4).slice(1)]);
@@ -1385,7 +1388,7 @@ addE('KSa', line(X_KL - 3.5, ZN, X_KL - 3.5, -RD.N - 2)); addE('KSb', line(X_KL 
 addE('KSL', bez({ x: X_KL - 3.5, z: -RD.N - 2 }, { x: 0, z: 1 }, { x: X_KL + 14.5, z: ZE[0] }, { x: 1, z: 0 }, 22));   // 基隆路南向左轉 → 辛亥路東段（改道車流）
 const EDGES = Object.values(E);
 // 復興南路口需求：◎ 114/09/09 路口調查（EI109），單位 PCU/h；預設為昏峰 17:45–18:45（數值可於「參數設定」修改）
-const FX_DEM = { L: 1263, T: 54, R: 171, jg: 270, xw: 110, kl: 160, left: 723 };
+const FX_DEM = { L: 1263, T: 48, R: 171, jg: 270, xw: 110, kl: 160, left: 723 };
 const ROUTES = [];
 const RT = (e, o) => { ROUTES.push(Object.assign({ e, rate: 0 }, o)); };
 // pk＝參數鍵、f＝分配比例、ms＝機車比例參數鍵（以輛計）、fx＝復興南路衍生需求、mOnly＝僅機車、div＝改道車流（小客車）
@@ -1402,7 +1405,7 @@ RT(['YS1', 'YN1'], { pk: 'wJG', f: 0.5, v0: 15.5, mv: 'WBT', jm: 'JE', kind: 'x'
 RT(['YS0', 'CW0'], { pk: 'wXW', f: 1, v0: 15, mv: 'WBT', jm: 'JX', kind: 'x' });               // 西行內側車道：續行辛亥路西段
 RT(['KSa', 'KSL', 'LEX0'], { fx: 'kl', f: 1, v0: 11, kind: 'k', div: true });                   // 改道：基隆路南向左轉
 ZE.forEach((z, k) => RT(['LEW' + k, 'LEJ' + k, 'LEE' + k, 'LEX' + k], { pk: 'lE', f: [0.25, 0.3, 0.45][k], ms: 'mSh', v0: 11, mv: 'EBT', jm: 'JX', kind: 'l' }));
-RT(['LEW2', 'TER'], { pk: 'eR', f: 1, ms: 'mSh', v0: 9, mv: 'EBT', jm: 'JX', kind: 'l' });                          // 東行右轉入側門
+RT(['LEW2', 'TER'], { pk: 'eR', f: 1, v0: 9, mv: 'EBT', jm: 'JX', kind: 'l' });                          // 東行右轉入側門
 RT(['LEW2', 'MTA', 'MTB', 'FN1'], { pk: 'mL2', f: 1, mOnly: true, v0: 9, mv: 'EBT', jm: 'JX', kind: 'l' });        // 機車二段式左轉
 ZW.forEach((z, k) => RT(['LWE' + k, 'LWJ' + k, 'LWW' + k], { pk: 'lW', f: [0.35, 0.35, 0.15, 0.15][k], ms: 'mSh', v0: 11, mv: 'WBT', jm: 'JX', kind: 'l' }));
 RT(['LWE2', 'TWR2', 'FN2'], { pk: 'lWR', f: 0.5, ms: 'mSh', v0: 10, mv: 'WBR', kind: 'l' });                       // 西行右轉往復興南路
@@ -1411,11 +1414,11 @@ RT(['LWE3', 'TWR3', 'FN3'], { pk: 'lWR', f: 0.5, ms: 'mSh', v0: 10, mv: 'WBR', k
   RT(['FS' + (k + 1), 'TSL' + k, 'LEE' + k, 'LEX' + k], { fx: 'leftM', f: 0.5, mOnly: true, v0: 11, mv: 'SBL', kind: 'f' });   // 機車（不得行駛快速道路）
   RT(['FS' + (k + 1), 'TSL' + k, 'LEE' + k, 'LEX' + k], { fx: 'leftL', f: 0.5, v0: 12, mv: 'SBL', kind: 'f' });                // 小客車（A、C：中央車道在地下，只能進在地車道）
 });
-RT(['FS1', 'TSG'], { pk: 'fxT', f: 1, ms: 'mShF', v0: 8, mv: 'SBL', kind: 'f' });                                   // 南向直行入側門
+RT(['FS1', 'TSG'], { pk: 'fxT', f: 1, v0: 8, mv: 'SBL', kind: 'f' });                                   // 南向直行入側門
 RT(['FS3', 'TSR', 'LWW3'], { pk: 'fxR', f: 1, ms: 'mShF', v0: 11, mv: 'SBR', kind: 'f' });                         // 南向右轉往西
-RT(['GA', 'GT', 'FN1'], { pk: 'gT', f: 1, ms: 'mShF', v0: 8, mv: 'NTU', kind: 'g' });                             // 側門直行
-RT(['GA', 'GL', 'LWW0'], { pk: 'gL', f: 1, ms: 'mShF', v0: 8, mv: 'NTU', kind: 'g' });                            // 側門左轉往西
-RT(['GA', 'GR', 'LEE2', 'LEX2'], { pk: 'gR', f: 1, ms: 'mShF', v0: 8, mv: 'NTU', kind: 'g' });                    // 側門右轉往東
+RT(['GA', 'GT', 'FN1'], { pk: 'gT', f: 1, v0: 8, mv: 'NTU', kind: 'g' });                             // 側門直行
+RT(['GA', 'GL', 'LWW0'], { pk: 'gL', f: 1, v0: 8, mv: 'NTU', kind: 'g' });                            // 側門左轉往西
+RT(['GA', 'GR', 'LEE2', 'LEX2'], { pk: 'gR', f: 1, v0: 8, mv: 'NTU', kind: 'g' });                    // 側門右轉往東
 RT(['KSa', 'KSb'], { pk: 'kS', f: 1, ms: 'mSh', v0: 12.5, kind: 'k' }); RT(['KN'], { pk: 'kN', f: 1, ms: 'mSh', v0: 12.5, kind: 'k' });
 ROUTES.forEach(r => { r.E = r.e.map(id => E[id]); r.acc = Math.random(); });
 const rateOf = r => r.R ? (PROP(opt) ? r.R.p : r.R.b) : r.rate;
@@ -1847,11 +1850,11 @@ function renderKPI() {
 /* ---------- 使用者輸入：交通量與號誌時制 ---------- */
 const U = 'PCU/h';
 const PSCHEMA = [                                        // [鍵, 預設值（調查昏峰）, 最小, 最大, 間距, 單位]
-  { g: 'pgFx', src: 1, items: [['fxL', 1263, 0, 4000, 10, U], ['fxT', 54, 0, 1000, 5, U], ['fxR', 171, 0, 2000, 5, U]] },
+  { g: 'pgFx', src: 1, items: [['fxL', 1263, 0, 4000, 10, U], ['fxT', 48, 0, 1000, 5, U], ['fxR', 171, 0, 2000, 5, U]] },
   { g: 'pgDiv', note: 'pgDivNote', items: [['dJG', 270, 0, 2000, 10, U], ['dXW', 110, 0, 2000, 10, U], ['dKL', 160, 0, 2000, 10, U]] },
   { g: 'pgX', note: 'pgXNote', items: [['xJG', 785, 0, 4000, 10, U], ['xXW', 336, 0, 4000, 10, U], ['wJG', 820, 0, 4000, 10, U], ['wXW', 461, 0, 4000, 10, U]] },
-  { g: 'pgL', src: 1, items: [['lE', 1460, 0, 5000, 10, U], ['eR', 57, 0, 1500, 5, U], ['lW', 1101, 0, 5000, 10, U], ['lWR', 944, 0, 4000, 10, U]] },
-  { g: 'pgG', src: 1, items: [['gL', 78, 0, 1000, 5, U], ['gT', 56, 0, 1000, 5, U], ['gR', 31, 0, 1000, 5, U]] },
+  { g: 'pgL', src: 1, items: [['lE', 1460, 0, 5000, 10, U], ['eR', 46, 0, 1500, 5, U], ['lW', 1101, 0, 5000, 10, U], ['lWR', 944, 0, 4000, 10, U]] },
+  { g: 'pgG', src: 1, note: 'pgGNote', items: [['gL', 53, 0, 1000, 5, U], ['gT', 38, 0, 1000, 5, U], ['gR', 28, 0, 1000, 5, U]] },
   { g: 'pgMo', src: 1, items: [['mSh', 50, 0, 90, 1, '%'], ['mShF', 64, 0, 90, 1, '%'], ['mL2', 94, 0, 1000, 5, 'veh/h']] },
   { g: 'pgK', note: 'pgKNote', items: [['kS', 450, 0, 3000, 10, U], ['kN', 450, 0, 3000, 10, U], ['mS', 780, 0, 3600, 10, U], ['mN', 780, 0, 3600, 10, U]] },
   { g: 'pgP', note: 'pgKNote', items: [['pW', 300, 0, 3000, 20, 'ped/h'], ['pM', 300, 0, 3000, 20, 'ped/h'], ['pEa', 520, 0, 6000, 20, 'ped/h']] },
@@ -1866,8 +1869,8 @@ const PDEF = {}; PSCHEMA.forEach(gr => gr.items.forEach(([k, v]) => { PDEF[k] = 
 // △ 中央車道往建國高架／辛亥路西段的拆分、改道量、5 分相各分相秒數為推估；基隆路、建國高架主線、行人量非本調查範圍
 const PRESETS = {
   pm: Object.assign({}, PDEF),
-  am: Object.assign({}, PDEF, { fxL: 797, fxT: 81, fxR: 116, dJG: 240, dXW: 95, dKL: 145, xJG: 742, xXW: 318, wJG: 1226, wXW: 689,
-    lE: 1457, eR: 155, lW: 1052, lWR: 1670, gL: 34, gT: 75, gR: 11, mSh: 50, mShF: 39, mL2: 154, sfL1: 60, sfL2: 35, sfL3: 40, sfL4: 15, sfL5: 25, sfS1: 60, sfS2: 40 })
+  am: Object.assign({}, PDEF, { fxL: 797, fxT: 72, fxR: 116, dJG: 240, dXW: 95, dKL: 145, xJG: 742, xXW: 318, wJG: 1226, wXW: 689,
+    lE: 1457, eR: 123, lW: 1052, lWR: 1670, gL: 25, gT: 21, gR: 10, mSh: 50, mShF: 39, mL2: 154, sfL1: 60, sfL2: 35, sfL3: 40, sfL4: 15, sfL5: 25, sfS1: 60, sfS2: 40 })
 };
 const PARAM = Object.assign({}, PDEF);
 try { const sv = JSON.parse(localStorage.getItem('xh_params2') || 'null'); if (sv) Object.keys(PDEF).forEach(k => { if (typeof sv[k] === 'number' && isFinite(sv[k])) PARAM[k] = sv[k]; }); } catch (e) {}
