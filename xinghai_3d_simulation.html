@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>辛亥路方案 3D 模擬</title>
+<style>
+  html, body { margin: 0; height: 100%; overflow: hidden; background: #cfe3f2;
+    font-family: "Microsoft JhengHei", "PingFang TC", "Noto Sans TC", sans-serif; }
+  #panel { position: absolute; top: 12px; left: 12px; width: min(350px, calc(100vw - 24px));
+    max-height: calc(100vh - 24px); overflow: auto; box-sizing: border-box; padding: 14px 16px;
+    background: rgba(255,255,255,.94); border-radius: 12px; box-shadow: 0 4px 18px rgba(0,0,0,.18);
+    color: #1f2933; font-size: 14px; line-height: 1.55; }
+  .head { display: flex; align-items: flex-start; gap: 8px; }
+  h1 { font-size: 17px; margin: 0; flex: 1; }
+  #fold { flex: none; width: 30px; padding: 2px 0; }
+  .sub { color: #5b6670; font-size: 12px; margin: 4px 0 8px; }
+  .step { font-weight: bold; margin-top: 10px; font-size: 13px; }
+  .row { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0; }
+  button { flex: 1 1 90px; border: 1px solid #c5ccd3; background: #f4f6f8; color: #1f2933;
+    border-radius: 8px; padding: 8px 6px; font-size: 13px; font-family: inherit; cursor: pointer; line-height: 1.35; }
+  button:hover { background: #e6ebf0; }
+  button.on { background: #1f6feb; border-color: #1f6feb; color: #fff; }
+  #info { background: #f4f6f8; border-radius: 8px; padding: 8px 10px; font-size: 13px; }
+  #info b { color: #1f6feb; }
+  .legend { font-size: 12px; color: #5b6670; margin-top: 10px; }
+  .dot { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin: 0 3px 0 6px;
+    vertical-align: -1px; border: 1px solid rgba(0,0,0,.25); }
+  #loading { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+    font-size: 18px; color: #1f2933; pointer-events: none; }
+  #err { display: none; position: absolute; inset: 0; background: #fff; padding: 40px; font-size: 16px; line-height: 1.9; color: #1f2933; }
+</style>
+</head>
+<body>
+
+<div id="panel">
+  <div class="head">
+    <h1>辛亥路 Ueberlandpark 化：3D 方案模擬</h1>
+    <button id="fold" title="收合／展開面板">－</button>
+  </div>
+  <div id="panelBody">
+    <div class="sub">概念示意模型（1 格 = 1 公尺；示意路段長 400 m，實際約 1 km）<br>
+      滑鼠左鍵拖曳＝旋轉｜右鍵拖曳＝平移｜滾輪＝縮放</div>
+
+    <div class="step">① 選擇方案</div>
+    <div class="row">
+      <button data-opt="A">方案 A<br>明挖覆蓋地下化</button>
+      <button data-opt="B">方案 B<br>加罩＋屋頂公園</button>
+      <button data-opt="C">方案 C<br>下沉＋分段覆蓋</button>
+    </div>
+    <div id="info"></div>
+
+    <div class="step">② 切換視角／控制</div>
+    <div class="row">
+      <button id="viewBtn">切換到：行人視角</button>
+      <button id="pauseBtn">暫停車流</button>
+    </div>
+
+    <div class="legend">
+      車輛：<span class="dot" style="background:#f4f4f4"></span>白
+      <span class="dot" style="background:#d7263d"></span>紅
+      <span class="dot" style="background:#2e5eaa"></span>藍
+      <span class="dot" style="background:#f2c14e"></span>計程車
+      <span class="dot" style="background:#2a9d8f"></span>公車／貨車<br>
+      <span class="dot" style="background:#ff8a00"></span>行人
+      <span class="dot" style="background:#fff1b8"></span>隧道照明
+      <span class="dot" style="background:#6fae4f"></span>公園綠地
+      <span class="dot" style="background:#8b6b4a"></span>土層<br>
+      方位：南側＝台大校園（紅磚建築）；北側＝大安住宅區
+    </div>
+  </div>
+</div>
+
+<div id="loading">3D 模型載入中…</div>
+<div id="err">
+  <b>⚠ 無法載入 3D 引擎（Three.js）</b><br>
+  1. 請確認電腦已連上網路，然後按 <b>F5</b> 重新整理。<br>
+  2. 若必須在完全離線的環境展示，請參考使用說明中的「離線備案」：把 <code>three.min.js</code> 與
+  <code>OrbitControls.js</code> 兩個檔案放在與本 HTML 檔相同的資料夾即可。
+</div>
+
+<script>
+/* ============================================================
+   第 0 部分：載入 3D 引擎（先試網路 CDN，失敗則改用同資料夾的離線檔案）
+   ============================================================ */
+var THREE_SRC = [
+  'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js',
+  'https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js',
+  'three.min.js'
+];
+var ORBIT_SRC = [
+  'https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js',
+  'https://unpkg.com/three@0.128.0/examples/js/controls/OrbitControls.js',
+  'OrbitControls.js'
+];
+function loadScript(list, cb) {
+  var i = 0;
+  (function next() {
+    if (i >= list.length) { cb(false); return; }
+    var s = document.createElement('script');
+    s.src = list[i++];
+    s.onload = function () { cb(true); };
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+}
+loadScript(THREE_SRC, function (ok) {
+  if (!ok) {
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('err').style.display = 'block';
+    return;
+  }
+  loadScript(ORBIT_SRC, function () { init(); });   // 旋轉控制載入失敗也照樣顯示模型
+});
+
+document.getElementById('fold').onclick = function () {
+  var b = document.getElementById('panelBody');
+  var hide = b.style.display !== 'none';
+  b.style.display = hide ? 'none' : 'block';
+  this.textContent = hide ? '＋' : '－';
+};
+
+/* ============================================================
+   主程式
+   ============================================================ */
+function init() {
+  document.getElementById('loading').style.display = 'none';
+
+  /* ---------- 1. 場景、相機、燈光 ---------- */
+  const L = 400, HALF = L / 2;            // 示意路段長度 400 m（x 軸：西 → 東）
+  const SKY = 0xcfe3f2;
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(SKY);
+  scene.fog = new THREE.Fog(SKY, 500, 1500);
+
+  const camera = new THREE.PerspectiveCamera(50, innerWidth / innerHeight, 0.5, 4000);
+  const renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  renderer.setSize(innerWidth, innerHeight);
+  document.body.appendChild(renderer.domElement);
+
+  scene.add(new THREE.HemisphereLight(0xffffff, 0x8a7a66, 0.8));
+  const sun = new THREE.DirectionalLight(0xffffff, 0.65);
+  sun.position.set(150, 250, 100);
+  scene.add(sun);
+
+  /* ---------- 2. 共用材質（重複使用以節省效能） ---------- */
+  const lam = c => new THREE.MeshLambertMaterial({ color: c });
+  const M = {
+    soil: lam(0x8b6b4a), concrete: lam(0xbdbdb5), asphalt: lam(0x3b3b40), ground: lam(0xd2cdc3),
+    sidewalk: lam(0xe6e1d6), grass: lam(0x6fae4f), lawn: lam(0x86ba62), path: lam(0xe8d8b0),
+    res1: lam(0xdcd6cc), res2: lam(0xc4bdb2), brick: lam(0xc0805e),
+    trunk: lam(0x6b4a2b), crown: lam(0x3f8a3a), ramp: lam(0xa9b4bd), table: lam(0xb9c4cc),
+    ped: lam(0xff8a00), window: lam(0x26323c),
+    white: new THREE.MeshBasicMaterial({ color: 0xffffff }),
+    light: new THREE.MeshBasicMaterial({ color: 0xfff1b8 }),
+    glass: new THREE.MeshLambertMaterial({ color: 0x9fd3e6, transparent: true, opacity: 0.35, depthWrite: false })
+  };
+  const CAR_MATS = [0xf4f4f4, 0xd7263d, 0x2e5eaa, 0xf2c14e, 0xf4f4f4, 0x8d99ae].map(lam);
+  const TRUCK_MAT = lam(0x2a9d8f);
+
+  /* ---------- 3. 小工具 ---------- */
+  const BOX = new THREE.BoxGeometry(1, 1, 1);           // 所有方塊共用同一個幾何體
+  // 依「x 起迄、y 起迄、z 起迄」畫一個方塊
+  function box(parent, mat, x0, x1, y0, y1, z0, z1) {
+    const m = new THREE.Mesh(BOX, mat);
+    m.scale.set(x1 - x0, y1 - y0, z1 - z0);
+    m.position.set((x0 + x1) / 2, (y0 + y1) / 2, (z0 + z1) / 2);
+    parent.add(m);
+    return m;
+  }
+  // 頂面一種材質、側面另一種材質（例如：頂面草地、剖面是土層）
+  const tmCache = {};
+  function topMat(top, side) {
+    side = side || M.soil;
+    const k = top.id + '_' + side.id;
+    return tmCache[k] || (tmCache[k] = [side, side, top, side, side, side]);
+  }
+  const TRUNK = new THREE.CylinderGeometry(0.25, 0.35, 3, 6);
+  const CROWN = new THREE.SphereGeometry(2.3, 8, 6);
+  function tree(parent, x, y, z, s) {
+    s = s || 1;
+    const t = new THREE.Mesh(TRUNK, M.trunk); t.scale.setScalar(s); t.position.set(x, y + 1.5 * s, z);
+    const c = new THREE.Mesh(CROWN, M.crown); c.scale.setScalar(s); c.position.set(x, y + 3.6 * s, z);
+    parent.add(t, c);
+  }
+  // 3D 文字標籤（用畫布繪字，不需外部檔案）
+  function label(parent, text, x, y, z, size, leftAnchor) {
+    const c = document.createElement('canvas'), ctx = c.getContext('2d');
+    const font = 'bold 48px "Microsoft JhengHei","PingFang TC","Noto Sans TC",sans-serif';
+    ctx.font = font;
+    c.width = Math.ceil(ctx.measureText(text).width) + 32; c.height = 76;
+    ctx.font = font;
+    ctx.fillStyle = 'rgba(255,255,255,0.88)'; ctx.fillRect(0, 0, c.width, c.height);
+    ctx.fillStyle = '#1f2933'; ctx.textBaseline = 'middle'; ctx.fillText(text, 16, c.height / 2 + 2);
+    const tex = new THREE.CanvasTexture(c); tex.minFilter = THREE.LinearFilter;
+    const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, depthTest: false, transparent: true }));
+    const s = 0.09 * (size || 1);
+    sp.scale.set(c.width * s, c.height * s, 1);
+    if (leftAnchor) sp.center.set(0, 0.5);
+    sp.position.set(x, y, z); sp.renderOrder = 10;
+    parent.add(sp);
+  }
+  // 固定亂數（每次開啟畫面都一樣）
+  let seed = 20261103;
+  function rnd() { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; }
+  // 取得「避開某些中心點」後剩下的區段（用於隔音牆、欄杆）
+  function gaps(centers, half) {
+    const out = []; let s = -HALF;
+    centers.slice().sort((a, b) => a - b).forEach(c => { if (c - half > s) out.push([s, c - half]); s = c + half; });
+    if (s < HALF) out.push([s, HALF]);
+    return out;
+  }
+
+  /* ---------- 4. 方案參數 ---------- */
+  const LEVEL = { A: -9, B: 0, C: -6.5 };               // 過境車道高程（m）
+  const PED_CFG = {                                     // 行人穿越位置與範圍
+    A: { xs: [-150, -90, -30, 30, 90, 150], range: 45 },  // 全段平面公園：到處都能穿越
+    B: { xs: [-40, 100], range: 72 },                     // 只能走坡道上屋頂
+    C: { xs: [-120, 0, 120], range: 45 }                  // 只能走覆蓋版
+  };
+  const INFO = {
+    A: '<b>方案 A：明挖覆蓋地下化</b><br>' +
+       '• 過境車道：<b>−9 m</b> 地下箱涵（雙向 2+2，全封閉）<br>' +
+       '• 地面：連續線性公園＋兩側在地道路<br>' +
+       '• 行人：<b>平面直接穿越</b>，不需上下樓梯<br>' +
+       '• 代價：洞口轉換段長、機械通風、開挖成本最高',
+    B: '<b>方案 B：原地加罩＋屋頂公園（Einhausung）</b><br>' +
+       '• 過境車道：<b>±0 m</b> 原地面，外加結構箱體罩住<br>' +
+       '• 屋頂公園：<b>+7.5 m</b>（最接近蘇黎世原型）<br>' +
+       '• 行人：經坡道（示意 2 處）<b>爬升 7.5 m</b> 跨越；平面被箱體牆阻隔<br>' +
+       '• 代價：行人直覺性最低、臨路出現約 7.5 m 高的量體',
+    C: '<b>方案 C：下沉路塹＋分段覆蓋</b><br>' +
+       '• 過境車道：<b>−6.5 m</b> 開口 U 型槽<br>' +
+       '• 地面：<b>3 處綠色覆蓋版</b>作為行人廊道；開口段設透明隔音牆<br>' +
+       '• 行人：在覆蓋版上<b>平面穿越</b><br>' +
+       '• 代價：開口段噪音外溢、豪雨抽水需求最高'
+  };
+
+  /* ---------- 5. 共同環境（三方案都有） ---------- */
+  const common = new THREE.Group(); scene.add(common);
+  box(common, M.table, -1500, 1500, -15.6, -15.5, -1500, 1500);         // 底座
+  [1, -1].forEach(s => {
+    const zz = (a, b) => (s > 0 ? [a, b] : [-b, -a]);
+    box(common, topMat(M.ground), -HALF, HALF, -15, 0, ...zz(12, 160));   // 兩側地塊（剖面可見土層）
+    box(common, M.sidewalk, -HALF, HALF, 0, 0.15, ...zz(12, 13.5));       // 路緣
+    box(common, M.asphalt, -HALF, HALF, 0, 0.04, ...zz(13.5, 20.5));      // 在地道路（側車道）
+    box(common, M.sidewalk, -HALF, HALF, 0, 0.15, ...zz(20.5, 24));       // 人行道
+  });
+  box(common, M.lawn, -HALF, HALF, 0, 0.05, 24, 160);                     // 台大校園草地（南側）
+
+  // 北側：大安住宅區
+  for (let x = -180; x <= 180; x += 30) {
+    [-45, -78, -112, -145].forEach(zc => {
+      const w = 16 + rnd() * 8, d = 16 + rnd() * 8, h = 12 + rnd() * 33;
+      box(common, rnd() < 0.5 ? M.res1 : M.res2, x - w / 2, x + w / 2, 0, h, zc - d / 2, zc + d / 2);
+    });
+  }
+  for (let x = -192; x <= 192; x += 16) tree(common, x, 0, -27, 0.9);
+
+  // 南側：台大校園（紅磚建築＋行道樹）
+  [[-165, 75], [-95, 75], [-25, 75], [45, 75], [115, 75], [175, 75],
+   [-140, 140], [-60, 140], [20, 140], [100, 140], [170, 140]].forEach(([x, zc]) => {
+    const w = 22 + rnd() * 14, d = 14 + rnd() * 6, h = 10 + rnd() * 10;
+    box(common, M.brick, x - w / 2, x + w / 2, 0, h, zc - d / 2, zc + d / 2);
+  });
+  for (let x = -195; x <= 195; x += 12) tree(common, x, 0.05, 27, 1.1);
+  for (let x = -190; x <= 190; x += 18) { tree(common, x, 0.05, 50, 1); tree(common, x + 9, 0.05, 108, 1); }
+
+  label(common, '台大校園（南側）', 0, 28, 95, 1);
+  label(common, '大安住宅區（北側）', 0, 55, -95, 1);
+  label(common, '◀ 西：往復興南路', -HALF, 20, 0, 0.8);
+  label(common, '東：往基隆路／國3甲 ▶', HALF, 34, 0, 0.8);
+
+  /* ---------- 6. 三個方案各自的結構 ---------- */
+  const G = { A: new THREE.Group(), B: new THREE.Group(), C: new THREE.Group() };
+  Object.keys(G).forEach(k => scene.add(G[k]));
+
+  // 過境車道路面（雙向 2+2、中央分隔、車道線）
+  function carriageway(g, y) {
+    box(g, M.asphalt, -HALF, HALF, y, y + 0.04, -11, 11);
+    box(g, M.concrete, -HALF, HALF, y, y + 0.9, -0.3, 0.3);                   // 中央紐澤西護欄
+    [-7.3, 7.3].forEach(z => box(g, M.white, -HALF, HALF, y + 0.04, y + 0.07, z - 0.1, z + 0.1));
+    for (let x = -HALF; x < HALF; x += 12)
+      [-3.65, 3.65].forEach(z => box(g, M.white, x, x + 3, y + 0.04, y + 0.07, z - 0.08, z + 0.08));
+  }
+  function tunnelLights(g, yCeil, x0, x1) {
+    [-4, 4].forEach(z => box(g, M.light, x0, x1, yCeil - 0.12, yCeil, z - 0.15, z + 0.15));
+  }
+  // 斑馬線（橫越兩側在地道路）
+  function zebras(g, xs) {
+    xs.forEach(x => [1, -1].forEach(s => {
+      for (let k = 0; k < 7; k++) {
+        const z0 = 13.7 + k;
+        const zz = s > 0 ? [z0, z0 + 0.5] : [-z0 - 0.5, -z0];
+        box(g, M.white, x - 2.5, x + 2.5, 0.04, 0.07, ...zz);
+      }
+    }));
+  }
+
+  // ===== 方案 A：明挖覆蓋地下化（車道 −9 m） =====
+  (function (g) {
+    box(g, M.soil, -HALF, HALF, -15, -10, -12, 12);                 // 下方土層
+    box(g, M.concrete, -HALF, HALF, -10, -9, -12, 12);              // 底版
+    box(g, M.concrete, -HALF, HALF, -9, -2.4, -12, -11);            // 北側牆
+    box(g, M.concrete, -HALF, HALF, -9, -2.4, 11, 12);              // 南側牆
+    box(g, M.concrete, -HALF, HALF, -3.4, -2.4, -11, 11);           // 頂版
+    box(g, topMat(M.grass), -HALF, HALF, -2.4, 0, -12, 12);         // 覆土＋地面公園
+    box(g, M.path, -HALF, HALF, 0, 0.05, -1.5, 1.5);                // 公園步道
+    carriageway(g, -9);
+    tunnelLights(g, -3.4, -HALF, HALF);
+    for (let x = -190, i = 0; x <= 190; x += 19, i++) tree(g, x, 0, i % 2 ? 6.5 : -6.5, 1);
+    zebras(g, PED_CFG.A.xs);
+    label(g, '◀ 地面公園 ±0 m', HALF + 2, 2, -14, 0.6, true);
+    label(g, '◀ 過境車道 −9 m（地下箱涵）', HALF + 2, -7.5, -14, 0.6, true);
+  })(G.A);
+
+  // ===== 方案 B：原地加罩＋屋頂公園（車道 ±0 m，屋頂 +7.5 m） =====
+  function ramp(g, x, s) {                                          // s = +1 南側、-1 北側
+    const run = 48, rise = 7.5, len = Math.hypot(run, rise), ang = Math.atan2(rise, run);
+    const m = new THREE.Mesh(BOX, M.ramp);
+    m.scale.set(4, 0.5, len);
+    m.position.set(x, rise / 2 - 0.25, s * (12 + run / 2));
+    m.rotation.x = s * ang;
+    g.add(m);
+    [26, 44].forEach(a => {                                         // 坡道橋墩
+      const h = rise * (60 - a) / 48 - 0.5;
+      box(g, M.concrete, x - 0.4, x + 0.4, 0, h, s * a - 0.4, s * a + 0.4);
+    });
+  }
+  (function (g) {
+    box(g, M.soil, -HALF, HALF, -15, 0, -12, 12);
+    carriageway(g, 0);
+    box(g, M.concrete, -HALF, HALF, 0, 6.6, -12, -11);              // 箱體側牆
+    box(g, M.concrete, -HALF, HALF, 0, 6.6, 11, 12);
+    box(g, M.concrete, -HALF, HALF, 5.6, 6.6, -11, 11);             // 屋頂版
+    box(g, topMat(M.grass, M.concrete), -HALF, HALF, 6.6, 7.5, -12, 12);  // 屋頂覆土＋公園
+    box(g, M.path, -HALF, HALF, 7.5, 7.55, -1.5, 1.5);
+    gaps(PED_CFG.B.xs, 2.5).forEach(([a, b]) => {                    // 屋頂玻璃欄杆（坡道處留開口）
+      box(g, M.glass, a, b, 7.5, 8.6, -12, -11.85);
+      box(g, M.glass, a, b, 7.5, 8.6, 11.85, 12);
+    });
+    tunnelLights(g, 5.6, -HALF, HALF);
+    for (let x = -190, i = 0; x <= 190; x += 19, i++) tree(g, x, 7.5, i % 2 ? 6.5 : -6.5, 1);
+    PED_CFG.B.xs.forEach(x => { ramp(g, x, 1); ramp(g, x, -1); });
+    label(g, '◀ 屋頂公園 +7.5 m', HALF + 2, 9.5, -14, 0.6, true);
+    label(g, '◀ 過境車道 ±0 m（加罩箱體）', HALF + 2, 2.5, -14, 0.6, true);
+    label(g, '坡道：行人需爬升 7.5 m', -40, 16, 40, 0.6);
+  })(G.B);
+
+  // ===== 方案 C：下沉路塹＋分段覆蓋（車道 −6.5 m） =====
+  (function (g) {
+    const LIDS = PED_CFG.C.xs;
+    box(g, M.soil, -HALF, HALF, -15, -7.5, -12, 12);
+    box(g, M.concrete, -HALF, HALF, -7.5, -6.5, -12, 12);           // U 型槽底版
+    box(g, M.concrete, -HALF, HALF, -6.5, 0, -12, -11);             // U 型槽側牆
+    box(g, M.concrete, -HALF, HALF, -6.5, 0, 11, 12);
+    carriageway(g, -6.5);
+    LIDS.forEach(x => {
+      box(g, topMat(M.grass, M.concrete), x - 20, x + 20, -1.2, 0, -11, 11);  // 覆蓋版（綠橋）
+      box(g, M.path, x - 3, x + 3, 0, 0.05, -11, 11);
+      [[-14, -6], [-14, 6], [14, -6], [14, 6]].forEach(([dx, dz]) => tree(g, x + dx, 0, dz, 0.9));
+      tunnelLights(g, -1.2, x - 20, x + 20);
+    });
+    gaps(LIDS, 20).forEach(([a, b]) => {                             // 開口段透明隔音牆
+      box(g, M.glass, a, b, 0, 2, -12, -11.7);
+      box(g, M.glass, a, b, 0, 2, 11.7, 12);
+    });
+    zebras(g, LIDS);
+    label(g, '◀ 地面 ±0 m（開口段＋隔音牆）', HALF + 2, 2.5, -14, 0.6, true);
+    label(g, '◀ 過境車道 −6.5 m（U 型槽）', HALF + 2, -5.5, -14, 0.6, true);
+    label(g, '覆蓋版：行人平面穿越', 0, 10, 0, 0.6);
+  })(G.C);
+
+  /* ---------- 7. 車輛（純方塊組成） ---------- */
+  const CAR = new THREE.BoxGeometry(4.4, 1.4, 1.9);
+  const CABIN = new THREE.BoxGeometry(2.2, 0.7, 1.7);
+  const cars = [];
+  let colorIdx = 0;
+  function makeCar(lane, i, through, baseY) {
+    const truck = (i % 4 === 3);
+    const m = new THREE.Mesh(CAR, truck ? TRUCK_MAT : CAR_MATS[(colorIdx++) % CAR_MATS.length]);
+    if (truck) m.scale.set(2.4, 1.9, 1.15);
+    else { const cab = new THREE.Mesh(CABIN, M.window); cab.position.set(-0.3, 1.05, 0); m.add(cab); }
+    m.userData = { v: lane.v, dir: lane.dir, through: through, h: truck ? 1.33 : 0.7 };
+    m.position.set(-HALF + (i + rnd() * 0.4) * L / lane.n, baseY + 0.04 + m.userData.h, lane.z);
+    scene.add(m); cars.push(m);
+  }
+  // 台灣靠右行駛：往東（+x）在南側（+z），往西（−x）在北側（−z）；速度單位 m/s
+  const THRU_LANES = [
+    { z: 1.9, dir: 1, v: 19, n: 8 }, { z: 5.4, dir: 1, v: 15, n: 8 },
+    { z: -1.9, dir: -1, v: 18, n: 8 }, { z: -5.4, dir: -1, v: 14, n: 8 }
+  ];
+  const LOCAL_LANES = [{ z: 17, dir: 1, v: 10, n: 6 }, { z: -17, dir: -1, v: 9, n: 6 }];
+  THRU_LANES.forEach(l => { for (let i = 0; i < l.n; i++) makeCar(l, i, true, 0); });
+  LOCAL_LANES.forEach(l => { for (let i = 0; i < l.n; i++) makeCar(l, i, false, 0); });
+
+  /* ---------- 8. 行人 ---------- */
+  const PED = new THREE.BoxGeometry(0.6, 1.75, 0.45);
+  const peds = [];
+  for (let i = 0; i < 18; i++) {
+    const p = new THREE.Mesh(PED, M.ped);
+    p.userData = { dir: i % 2 ? 1 : -1, v: 1.2 + (i % 5) * 0.12, z: 0 };
+    scene.add(p); peds.push(p);
+  }
+  let opt = 'A';
+  function pedY(z) {                                   // 行人所在高度（依方案）
+    const a = Math.abs(z);
+    if (opt === 'B') {
+      if (a <= 12) return 7.5;                         // 屋頂公園
+      if (a <= 60) return 7.5 * (60 - a) / 48;          // 坡道
+      return 0.05;
+    }
+    if ((a >= 12 && a <= 13.5) || (a >= 20.5 && a <= 24)) return 0.15;   // 人行道
+    return 0.05;
+  }
+
+  /* ---------- 9. 切換方案 ---------- */
+  function setOption(k) {
+    opt = k;
+    Object.keys(G).forEach(key => { G[key].visible = (key === k); });
+    cars.forEach(c => { if (c.userData.through) c.position.y = LEVEL[k] + 0.04 + c.userData.h; });
+    const cfg = PED_CFG[k];
+    peds.forEach((p, i) => {
+      const xs = cfg.xs;
+      p.position.x = xs[i % xs.length] + ((((i / xs.length) | 0) % 3) - 1) * 1.2;
+      p.userData.z = -cfg.range + ((i * 7) % 18) / 18 * 2 * cfg.range;
+      p.position.z = p.userData.z;
+      p.position.y = pedY(p.userData.z) + 0.875;
+    });
+    document.getElementById('info').innerHTML = INFO[k];
+    document.querySelectorAll('[data-opt]').forEach(b => b.classList.toggle('on', b.dataset.opt === k));
+  }
+  document.querySelectorAll('[data-opt]').forEach(b => { b.onclick = () => setOption(b.dataset.opt); });
+
+  /* ---------- 10. 相機與視角切換 ---------- */
+  let controls = null;
+  const target = new THREE.Vector3();
+  let camGoal = null;
+  if (THREE.OrbitControls) {
+    controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true; controls.dampingFactor = 0.08;
+    controls.minDistance = 2; controls.maxDistance = 900;
+    controls.addEventListener('start', () => { camGoal = null; });   // 使用者自己拖曳時停止自動移動
+  }
+  const tgt = controls ? controls.target : target;
+  const VIEWS = {
+    section: { pos: [262, 15, 38], tgt: [196, -3, -6] },  // 剖面視角：從東端斷面斜看
+    eye:     { pos: [-62, 1.7, 23], tgt: [-25, 3, -30] }  // 行人視角：站在台大側人行道（三方案同一點，方便比較）
+  };
+  function goView(name) {
+    const v = VIEWS[name];
+    camGoal = { p: new THREE.Vector3(...v.pos), t: new THREE.Vector3(...v.tgt) };
+  }
+  camera.position.set(...VIEWS.section.pos);
+  tgt.set(...VIEWS.section.tgt);
+  camera.lookAt(tgt);
+
+  let view = 'section';
+  const viewBtn = document.getElementById('viewBtn');
+  viewBtn.onclick = () => {
+    view = (view === 'section') ? 'eye' : 'section';
+    goView(view);
+    viewBtn.textContent = (view === 'section') ? '切換到：行人視角' : '切換到：剖面視角';
+  };
+  let paused = false;
+  const pauseBtn = document.getElementById('pauseBtn');
+  pauseBtn.onclick = () => { paused = !paused; pauseBtn.textContent = paused ? '繼續車流' : '暫停車流'; };
+
+  addEventListener('resize', () => {
+    camera.aspect = innerWidth / innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(innerWidth, innerHeight);
+  });
+
+  /* ---------- 11. 動畫迴圈（requestAnimationFrame） ---------- */
+  const clock = new THREE.Clock();
+  function tick() {
+    requestAnimationFrame(tick);
+    const dt = Math.min(clock.getDelta(), 0.05);
+    if (!paused) {
+      // 車輛前進；到路段盡頭就繞回起點，形成無限車流
+      cars.forEach(c => {
+        let x = c.position.x + c.userData.v * c.userData.dir * dt;
+        if (x > HALF) x -= L; else if (x < -HALF) x += L;
+        c.position.x = x;
+      });
+      // 行人來回穿越
+      const R = PED_CFG[opt].range;
+      peds.forEach(p => {
+        let z = p.userData.z + p.userData.v * p.userData.dir * dt;
+        if (z > R) z = -R; else if (z < -R) z = R;
+        p.userData.z = z; p.position.z = z;
+        p.position.y = pedY(z) + 0.875;
+      });
+    }
+    if (camGoal) {                                     // 平滑移動相機
+      const f = 1 - Math.pow(0.02, dt);
+      camera.position.lerp(camGoal.p, f);
+      tgt.lerp(camGoal.t, f);
+      if (camera.position.distanceTo(camGoal.p) < 0.05) camGoal = null;
+    }
+    if (controls) controls.update(); else camera.lookAt(tgt);
+    renderer.render(scene, camera);
+  }
+
+  setOption('A');
+  tick();
+  window.__sim = { setOption, goView };               // 供測試使用
+}
+</script>
+</body>
+</html>
