@@ -191,9 +191,8 @@ window.XH_CFG = { CDN_BASES: ['https://cdn.jsdelivr.net/npm/three@0.160.0/', 'ht
 var I18N = {
   zh: {
     docTitle: '辛亥路方案 3D 模擬',
-    lblBikeE2: '節點 3 東側：現況自行車穿越道（綠色）',
-    lblBridgeB: '人行天橋（樓梯＋電梯）：取代平面行穿線',
-    sigNoPedB: '本方案路口不設行人時相：行人改走人行天橋（樓梯＋電梯，+7.5 m）。',
+    lblBridgeB: '空橋跨越路口，連接兩段屋頂公園',
+    sigNoPedB: '本方案路口不設行人時相：行人由路口兩側樓梯／電梯上到 +7.5 m 屋頂公園，經空橋與公園穿越。',
     userData: '使用者輸入（非實測）',
     pBad: '無法讀取：請貼上「匯出」產生的完整文字。',
     pExported: '已匯出到下方文字框。',
@@ -225,7 +224,7 @@ var I18N = {
     p_sfL2: '現況 3 時相：復興南路南向',
     p_sfL1: '現況 3 時相：辛亥路東西向',
     p_pEb: '節點 3 東側',
-    p_pEa: '節點 3 西側',
+    p_pEa: '節點 3（復興南路口）',
     p_pM: '節點 2（楓香道）',
     p_pW: '節點 1（次震宇宙館）',
     p_mN: '建國高架主線往北',
@@ -300,7 +299,7 @@ var I18N = {
     lblSports: '臺大綜合體育館（示意）',
     lblMain: '◀ 建國高架主線（往羅斯福路）',
     lblUP: '既有辛亥車行地下道（穿越基隆路，長 452 m）',
-    lblBikeE: '節點 3 東側：現況僅自行車穿越道（綠色）；行穿線為新增',
+    lblBikeE: '現況：節點 3 東側只有自行車穿越道（綠色），沒有行人穿越道',
     lblJGJ: '建國南路口 Y 型匯流',
     title: '辛亥路 Ueberlandpark 化：路網 3D 模擬',
     sub: '辛亥路改造方案比較；復興南路只保留平面路段作為車流來源（不施作）<br>縱坡約 5%＋60 m 豎曲線｜建國高架 +10 m（假設）｜既有辛亥車行地下道 −6.5 m（假設）',
@@ -325,9 +324,9 @@ var I18N = {
     sec0: '◀ 快速＋在地車流皆在地面 ±0 m', secA1: '◀ 地面公園 ±0 m', secA2: '◀ 快速車道 −9 m（地下箱涵）',
     secB1: '◀ 屋頂公園 +7.5 m', secB2: '◀ 快速車道 ±0 m（加罩箱體）', secC1: '◀ 地面 ±0 m（開口段＋隔音牆）', secC2: '◀ 快速車道 −6.5 m（U 型槽）',
     lblRampB: '坡道：爬升 7.5 m', lblBreak: '箱體中斷＋號誌（有橫交車流）', lblLid: '覆蓋版：車流與行人平面通過',
-    info0: '<b>現況（基準方案 0）</b><br>• 辛亥路自復興南路口以西約 330 m 起向西北彎，於建國南路口與建國高架連絡匝道 <b>Y 型匯流</b><br>• <b>三處節點皆為號誌化斑馬線</b>：節點 1 西＝次震宇宙館前、節點 2 中＝楓香道口、節點 3 東＝復興南路口（東側現況僅有自行車穿越道，模型中的東側行穿線為新增）；快速車流需在三處停等<br>• 復興南路南向 1,600 veh/h（假設數據），東向 960 veh/h 須平面左轉 → 南向車隊回堵',
+    info0: '<b>現況（基準方案 0）</b><br>• 辛亥路自復興南路口以西約 330 m 起向西北彎，於建國南路口與建國高架連絡匝道 <b>Y 型匯流</b><br>• <b>三處節點皆為號誌化斑馬線</b>：節點 1 西＝次震宇宙館前、節點 2 中＝楓香道口、節點 3 東＝復興南路口（現況行人穿越道只在路口西側，東側只有自行車穿越道）；快速車流需在三處停等<br>• 復興南路南向 1,600 veh/h（假設數據），東向 960 veh/h 須平面左轉 → 南向車隊回堵',
     infoA: '<b>方案 A（提案）：明挖覆蓋地下化＋路網分流</b><br>• 連絡匝道以地下曲線潛入 −9 m；自匯流點至基隆路<b>地面為連續公園</b>，行人可在<b>任意位置</b>穿越（在地車道即時讓行）<br>• <b>α 路網分流</b>：往國3甲車流改走建國高架、辛亥路西段、基隆路，不再從復興南路左轉切入',
-    infoB: '<b>方案 B（提案）：原地加罩＋屋頂公園</b><br>• 節點 1（次震宇宙館）、節點 2（楓香道）沒有橫交車流 → <b>箱體連續不中斷</b>，行人以<b>樓梯＋電梯</b>上下 +7.5 m 屋頂公園<br>• 節點 3（復興南路口）因有橫交車流，箱體中斷並設號誌；行人改走路口兩側的<b>人行天橋</b>，不再有平面行穿線與行人時相（改為 2 時相）<br>• 不做路網分流，東向 960 veh/h 仍須平面左轉',
+    infoB: '<b>方案 B（提案）：原地加罩＋屋頂公園</b><br>• 節點 1（次震宇宙館）、節點 2（楓香道）沒有橫交車流 → <b>箱體連續不中斷</b>，行人以<b>樓梯＋電梯</b>上下 +7.5 m 屋頂公園<br>• 節點 3（復興南路口）因有橫交車流，箱體中斷並設號誌；行人由路口兩側樓梯／電梯直接上到<b>屋頂公園</b>，並以<b>空橋跨越路口連接兩段公園</b>，不再有平面行穿線與行人時相（改為 2 時相）<br>• 不做路網分流，東向 960 veh/h 仍須平面左轉',
     infoC: '<b>方案 C（建議）：下沉路塹＋三處覆蓋版＋路網分流</b><br>• 快速車流在 −6.5 m U 型槽內連續通行；<b>三處覆蓋版精準對齊三處節點</b>，行人在 0 m 版面穿越<br>• <b>α 路網分流</b>：往國3甲的東向車流改由建國高架（經連絡匝道直接進入槽內）、辛亥路西段、基隆路進入，復興南路口左轉 960 → 160 veh/h<br>• 復興南路不施作（既有管線）',
     cbaSub: '依階段二比較框架之定性評等（相對現況 0；非實際金額）',
     secCost: '成本', secInt: '內部效益（延滯與安全）', secExt: '外部效益（阻隔、噪音、碳）', secVerdict: '綜合判讀／增量益本比',
@@ -344,7 +343,7 @@ var I18N = {
     badge0: '基準', badgeA: '效益上限・次佳', badgeB: '不建議作為主方案', badgeC: '★ 建議主方案',
     verdict0: '現況＋號誌時制最佳化，所有效益與成本以此為零點。三處節點皆為號誌化斑馬線，快速車流三度停等；復興南路南向 1,600 veh/h（假設數據）中東向 960 veh/h 須在 3 時相長週期內平面左轉，南向車隊回堵、行人長時間等候。',
     verdictA: '快速車流完全立體化、地面公園最完整，延滯與阻隔效益最大；配合路網分流，復興南路口轉向量降至 800 veh/h。但深開挖、全段機械通風與最長的轉換段使成本最高。關鍵在 <b>ΔBCR(C → A) 是否大於 1</b>，需做轉換值分析。',
-    verdictB: '噪音改善最佳、最接近蘇黎世原型；箱體在次震宇宙館、楓香道兩處<b>連續不中斷</b>，復興南路口改以<b>人行天橋</b>穿越，取消行人時相後路口改為 2 時相，人車衝突消除。但行人在三處都需垂直爬升 7.5 m，且<b>不做路網分流</b>，東向 960 veh/h 仍須平面左轉，復興南路瓶頸未解決。不建議作為主方案。',
+    verdictB: '噪音改善最佳、最接近蘇黎世原型；箱體在次震宇宙館、楓香道兩處<b>連續不中斷</b>，復興南路口以<b>空橋連接兩段屋頂公園</b>、兩側樓梯／電梯直接上公園，取消行人時相後路口改為 2 時相，人車衝突消除。但行人在三處都需垂直爬升 7.5 m，且<b>不做路網分流</b>，東向 960 veh/h 仍須平面左轉，復興南路瓶頸未解決。不建議作為主方案。',
     verdictC: '快速車流降入 U 型槽、從三處覆蓋版下方通過，並與既有基隆路車行地下道同高程銜接。<b>路網分流 α</b> 讓往國3甲車流改走建國高架（經連絡匝道直接進入槽內）、辛亥路西段與基隆路，不再從復興南路左轉切入，路口轉向量 1,600 → 800 veh/h（假設數據），2 時相即可運作。<b>完全不動復興南路</b>，避開既有管線；分流只需導引標誌與轉向管制，成本低，<b>最可能取得最高的 BCR／EIRR</b>。',
     chainTitle: '增量分析順序（依成本現值由低到高）',
     chain0B: '0 → B：成本最低，但復興南路瓶頸未解決，淨效益受限',
@@ -353,9 +352,8 @@ var I18N = {
   },
   en: {
     docTitle: 'Xinhai Rd 3D Network Simulation',
-    lblBikeE2: 'Node 3 east leg: existing bicycle crossing (green)',
-    lblBridgeB: 'Footbridge (stairs + lift) replaces the at-grade zebra',
-    sigNoPedB: 'No pedestrian phase at this junction: pedestrians use the footbridges (stairs + lifts, +7.5 m).',
+    lblBridgeB: 'Skybridge over the junction links the two roof-park segments',
+    sigNoPedB: 'No pedestrian phase at this junction: pedestrians take stairs / lifts on both sides up to the +7.5 m roof park and cross via the park and skybridge.',
     userData: 'User input (not counts)',
     pBad: 'Could not read it: paste the full text produced by “Export”.',
     pExported: 'Exported to the text box below.',
@@ -387,7 +385,7 @@ var I18N = {
     p_sfL2: 'Base 3-phase: Fuxing SB',
     p_sfL1: 'Base 3-phase: Xinhai E–W',
     p_pEb: 'Node 3 east side',
-    p_pEa: 'Node 3 west side',
+    p_pEa: 'Node 3 (Fuxing junction)',
     p_pM: 'Node 2 (Fengxiang Blvd)',
     p_pW: 'Node 1 (Cosmology Hall)',
     p_mN: 'Jianguo mainline northbound',
@@ -462,7 +460,7 @@ var I18N = {
     lblSports: 'NTU Sports Center (schematic)',
     lblMain: '◀ Jianguo Elevated mainline (to Roosevelt Rd)',
     lblUP: 'Existing Xinhai vehicle underpass (under Keelung Rd, 452 m)',
-    lblBikeE: 'Node 3 east leg: existing bicycle crossing only (green); zebra is new',
+    lblBikeE: 'Existing: Node 3 east leg has a bicycle crossing only (green), no pedestrian crossing',
     lblJGJ: 'Jianguo S. Rd Y-merge',
     title: 'Xinhai Rd “Ueberlandpark”: Network 3D Simulation',
     sub: 'Comparing options for Xinhai Rd; Fuxing S. Rd kept only as a surface road feeding traffic (no works)<br>≈5% grades + 60 m vertical curves | Jianguo +10 m (assumed) | existing Xinhai underpass −6.5 m (assumed)',
@@ -487,9 +485,9 @@ var I18N = {
     sec0: '◀ Express + local traffic all at grade ±0 m', secA1: '◀ Surface park ±0 m', secA2: '◀ Express lanes −9 m (tunnel box)',
     secB1: '◀ Roof park +7.5 m', secB2: '◀ Express lanes ±0 m (enclosure)', secC1: '◀ Grade ±0 m (open section + noise wall)', secC2: '◀ Express lanes −6.5 m (U-trough)',
     lblRampB: 'Ramp: climb 7.5 m', lblBreak: 'Box breaks + signal (cross traffic)', lblLid: 'Lid: traffic & pedestrians at grade',
-    info0: '<b>Base case (Option 0)</b><br>• About 330 m west of Fuxing S. Rd, Xinhai Rd bends north-west and <b>Y-merges</b> with the Jianguo Elevated link ramp<br>• <b>All three nodes are signalised zebra crossings</b>: Node 1 west = Cosmology Hall, Node 2 centre = Fengxiang Blvd, Node 3 east = Fuxing junction (its east leg today has only a bicycle crossing; the east zebra in the model is new); express traffic stops three times<br>• Fuxing SB 1,600 veh/h (assumed data): 960 veh/h eastbound must turn left at grade → SB queues',
+    info0: '<b>Base case (Option 0)</b><br>• About 330 m west of Fuxing S. Rd, Xinhai Rd bends north-west and <b>Y-merges</b> with the Jianguo Elevated link ramp<br>• <b>All three nodes are signalised zebra crossings</b>: Node 1 west = Cosmology Hall, Node 2 centre = Fengxiang Blvd, Node 3 east = Fuxing junction (today pedestrians cross on the west leg only; the east leg has only a bicycle crossing); express traffic stops three times<br>• Fuxing SB 1,600 veh/h (assumed data): 960 veh/h eastbound must turn left at grade → SB queues',
     infoA: '<b>Option A (proposal): Cut-and-cover tunnel + network diversion</b><br>• The link ramp dives to −9 m; from the merge to Keelung Rd the surface is one <b>continuous park</b> — pedestrians cross <b>anywhere</b> (local lanes yield)<br>• <b>α diversion</b>: Fwy 3A-bound traffic uses Jianguo Elevated, west Xinhai Rd and Keelung Rd instead of turning in from Fuxing',
-    infoB: '<b>Option B (proposal): Einhausung + roof park</b><br>• Node 1 (Cosmology Hall) and Node 2 (Fengxiang Blvd) have no cross traffic → <b>the box stays continuous</b>; pedestrians use <b>stairs + lifts</b> to the +7.5 m roof park<br>• Node 3 (Fuxing) has cross traffic, so the box breaks with a signal; pedestrians use <b>footbridges</b> on both sides — no at-grade zebras or pedestrian phase (2 phases)<br>• No network diversion, so 960 veh/h eastbound still turns left at grade',
+    infoB: '<b>Option B (proposal): Einhausung + roof park</b><br>• Node 1 (Cosmology Hall) and Node 2 (Fengxiang Blvd) have no cross traffic → <b>the box stays continuous</b>; pedestrians use <b>stairs + lifts</b> to the +7.5 m roof park<br>• Node 3 (Fuxing) has cross traffic, so the box breaks with a signal; pedestrians take stairs / lifts on both sides straight up to the <b>roof park</b>, and a <b>skybridge over the junction links the two park segments</b> — no at-grade zebras or pedestrian phase (2 phases)<br>• No network diversion, so 960 veh/h eastbound still turns left at grade',
     infoC: '<b>Option C (recommended): Trough + three lids + network diversion</b><br>• Express traffic runs continuously in a −6.5 m U-trough; <b>three lids align exactly with the three nodes</b> so pedestrians cross at 0 m<br>• <b>α diversion</b>: eastbound Fwy 3A traffic enters via Jianguo Elevated (straight into the trough via the link ramp), west Xinhai Rd and Keelung Rd; Fuxing left turns 960 → 160 veh/h<br>• No works on Fuxing S. Rd (existing utilities)',
     cbaSub: 'Qualitative ratings from the Stage 2 framework (relative to Base 0; not monetary totals)',
     secCost: 'Costs', secInt: 'Internal benefits (delay & safety)', secExt: 'External benefits (severance, noise, carbon)', secVerdict: 'Verdict / incremental BCR',
@@ -506,7 +504,7 @@ var I18N = {
     badge0: 'Reference', badgeA: 'Benefit ceiling · runner-up', badgeB: 'Not recommended', badgeC: '★ Recommended',
     verdict0: 'Existing road with optimised signals; the zero point for all benefits and costs. All three nodes are signalised zebras, so express traffic stops three times; of the assumed 1,600 veh/h Fuxing SB, 960 veh/h must turn left at grade within a long 3-phase cycle — SB queues and long pedestrian waits.',
     verdictA: 'Fully grade-separated express traffic and the most complete surface park give the largest delay and severance benefits; with network diversion the Fuxing junction drops to 800 veh/h of turns. Deep excavation, full ventilation and the longest transitions make it the most expensive. Key test: <b>does ΔBCR(C → A) exceed 1?</b>',
-    verdictB: 'Best noise reduction and closest to Zurich; the box stays <b>continuous</b> at Cosmology Hall and Fengxiang Blvd, and the Fuxing junction is crossed by <b>footbridges</b>, so the pedestrian phase goes and the junction runs 2 phases without ped–vehicle conflicts. But pedestrians climb 7.5 m at all three nodes and there is <b>no network diversion</b>, so 960 veh/h eastbound still turns left at grade — the Fuxing bottleneck remains. Not recommended.',
+    verdictB: 'Best noise reduction and closest to Zurich; the box stays <b>continuous</b> at Cosmology Hall and Fengxiang Blvd, and the Fuxing junction is spanned by a <b>skybridge linking the roof-park segments</b>, with stairs / lifts on both sides, so the pedestrian phase goes and the junction runs 2 phases without ped–vehicle conflicts. But pedestrians climb 7.5 m at all three nodes and there is <b>no network diversion</b>, so 960 veh/h eastbound still turns left at grade — the Fuxing bottleneck remains. Not recommended.',
     verdictC: 'Express traffic drops into the trough, passes under the three lids and joins the existing Keelung underpass at the same level. <b>Network diversion α</b> sends Fwy 3A traffic via Jianguo Elevated (straight into the trough through the link ramp), west Xinhai Rd and Keelung Rd instead of turning in from Fuxing, cutting junction turns from 1,600 to 800 veh/h (assumed data) so 2 phases suffice. <b>Fuxing S. Rd is untouched</b>, avoiding its utilities; diversion needs only signs and turn controls, so C <b>most likely gives the highest BCR / EIRR</b>.',
     chainTitle: 'Incremental analysis order (by PV cost, low → high)',
     chain0B: '0 → B: lowest cost, but the Fuxing bottleneck remains',
@@ -962,9 +960,6 @@ label(common, 'lblJG', X_JG, 26, -430, 1.1);
 { const o = lp(-720, 0); label(common, 'lblMain', o.x, 20, o.z, 0.8); }
 { const o = lp(X_M, -34); label(common, 'lblJGJ', o.x, 12, o.z, 0.7); }
 label(common, 'lblFX', X_FX, 10, -240, 0.9);
-// ◎ 節點 3 東側（復興南路口 T 字東臂）：現況只有號誌化自行車穿越道；模型中的東側行穿線為新增
-box(common, lam(0x2f9e5b), X_FX + 24.8, X_FX + 26.0, 0.05, 0.065, -16.5, 16.5);
-for (let z = -16.5; z + 0.5 <= 16.5; z += 1.0) [24.6, 26.0].forEach(x => LINES.push([X_FX + x, X_FX + x + 0.2, 0.05, 0.075, z, z + 0.5]));
 X_CW.forEach((x, i) => { const o = lp(x + (i === 2 ? 60 : 0), 30); label(common, 'lblCW' + (i + 1), o.x, 9, o.z, 0.62); });
 { const o = lp(X_CW[0], 50); label(common, 'lblCosmo', o.x, 25, o.z, 0.62); }
 { const o = lp(X_CW[1], 120); label(common, 'lblFengxiang', o.x, 6, o.z, 0.6); }
@@ -1096,10 +1091,10 @@ function junctionSignals(g, peds) {                 // 穿越點 3：復興南�
   signalPole(g, X_FX - SL - 2, 0, 'x-', 'x'); signalPole(g, X_FX + SL + 2, 0, 'x+', 'x');
   signalPole(g, X_FX - 16.5, -24, 'z-', 'f');
   if (peds) {
-    [-22, 22].forEach(dx => zebraXH(g.name, X_FX + dx, -16.5, 16.5, 0.05, 2.5));
+    zebraXH(g.name, X_FX - 22, -16.5, 16.5, 0.05, 2.5);                                    // 行人穿越道只在路口西側
     for (let x = X_FX - 13.7; x + 0.45 <= X_FX + 14; x += 0.9) LINES_O[g.name].push([x, x + 0.45, 0.05, 0.08, -26, -23]);
     stopXH(g.name, X_FX - SL - 0.2, 0.3, 9); stopXH(g.name, X_FX + SL + 0.2, -9, -0.3);
-    [[X_FX - 22, 17.8, 'z-'], [X_FX + 22, 17.8, 'z-'], [X_FX - 22, -17.8, 'z+'], [X_FX + 22, -17.8, 'z+']].forEach(([x, z, f]) => pedHead(g, x, z, f, 'p'));
+    [[X_FX - 22, 17.8, 'z-'], [X_FX - 22, -17.8, 'z+']].forEach(([x, z, f]) => pedHead(g, x, z, f, 'p'));
   }
 }
 function midSignals(g, x, pv, pp) {                 // 穿越點 1、2：路段號誌化行人穿越道
@@ -1139,31 +1134,12 @@ function stairTower(g, X, sd) {
   [[-1.5, -1.5], [1.5, -1.5], [-1.5, 1.5], [1.5, 1.5]].forEach(([x, z]) => { const c = new THREE.Mesh(BOX, M.pole); c.scale.set(0.18, 10.6, 0.18); c.position.set(x, 5.3, z); eg.add(c); });
   const cap = new THREE.Mesh(BOX, M.roof); cap.scale.set(3.4, 0.4, 3.4); cap.position.set(0, 10.6, 0); eg.add(cap);
 }
-// 方案 B：復興南路口兩側人行天橋（+7.5 m，樓梯＋電梯），取代平面行穿線
-function stairRun(g, A, B, YR) {
-  const L = Math.hypot(B.x - A.x, B.z - A.z), st = new THREE.Group();
-  st.position.set((A.x + B.x) / 2, 0, (A.z + B.z) / 2); st.rotation.y = Math.atan2(-(B.z - A.z), B.x - A.x); g.add(st);
-  const N = 26, im = new THREE.InstancedMesh(BOX, M.concrete, N), m4 = new THREE.Matrix4(), q0 = new THREE.Quaternion(), v = new THREE.Vector3(), sc = new THREE.Vector3();
-  for (let i = 0; i < N; i++) { const h = (i + 1) * YR / N; v.set(-L / 2 + (i + 0.5) * L / N, h / 2, 0); sc.set(L / N + 0.02, h, 2); im.setMatrixAt(i, m4.compose(v, q0, sc)); }
-  st.add(im);
-  [-1.05, 1.05].forEach(z => { const rl = new THREE.Mesh(BOX, M.glass); rl.scale.set(L, 1.1, 0.06); rl.position.set(0, YR / 2 + 0.9, z); rl.rotation.z = Math.atan2(YR, L); st.add(rl); });
-}
-function junctionBridge(g, X, sd) {                    // X：天橋中心（沿辛亥路）；sd：-1 西側、+1 東側（樓梯往遠離路口方向延伸）
-  const YR = 7.5;
-  box(g, M.concrete, X - 2, X + 2, YR - 0.6, YR, -21, 21); box(g, M.path, X - 2, X + 2, YR, YR + 0.05, -21, 21);
-  [-2, 2].forEach(dx => box(g, M.glass, X + dx - 0.03, X + dx + 0.03, YR, YR + 1.1, -21, 21));
-  [-1, 1].forEach(s => {
-    stairRun(g, { x: X + sd * 14.5, z: s * 18.6 }, { x: X + sd * 2, z: s * 18.6 }, YR);
-    box(g, M.concreteDark, X - 0.4, X + 0.4, 0, YR - 0.6, s * 19.8 - 0.4, s * 19.8 + 0.4);           // 橋墩（位於人行道）
-    box(g, M.glass, X - 1.5, X + 1.5, 0, 10.4, s * 22.5 - 1.5, s * 22.5 + 1.5);                       // 電梯井
-    [[-1.5, -1.5], [1.5, -1.5], [-1.5, 1.5], [1.5, 1.5]].forEach(([a, b]) => box(g, M.pole, X + a - 0.09, X + a + 0.09, 0, 10.6, s * 22.5 + b - 0.09, s * 22.5 + b + 0.09));
-    box(g, M.roof, X - 1.7, X + 1.7, 10.4, 10.8, s * 22.5 - 1.7, s * 22.5 + 1.7);
-  });
-}
 // ---- 現況 0：三處節點皆為號誌化斑馬線 ----
 buildExpress('0'); atGradeCrossings(G['0']); fuxingMedian(G['0']);
+// ◎ 現況：節點 3 東側（復興南路口 T 字東臂）只有自行車穿越道、沒有行人穿越道（僅現況方案顯示）
+box(G['0'], lam(0x2f9e5b), X_FX + 24.8, X_FX + 26.0, 0.05, 0.065, -16.5, 16.5);
+for (let z = -16.5; z + 0.5 <= 16.5; z += 1.0) [24.6, 26.0].forEach(x => LINES_O['0'].push([X_FX + x, X_FX + x + 0.2, 0.05, 0.075, z, z + 0.5]));
 label(G['0'], 'lblBikeE', X_FX + 26, 7, -27, 0.5);
-['A', 'B', 'C'].forEach(o => label(G[o], 'lblBikeE2', X_FX + 26, 7, -27, 0.5));
 label(G['0'], 'sec0', X_SEC - 0.5, 3, -22, 0.6, true, true);
 // ---- 方案 A：全段地下化，地面為連續公園，可任意穿越 ----
 buildExpress('A');
@@ -1196,7 +1172,12 @@ buildExpress('B');
     const T = []; for (let x = a + 6; x < b - 4; x += 8) { const o = at(x, 0); T.push([o.x, 7.5, o.z, 0.95]); } trees(g, T);
   });
   junctionSignals(g, false); jgSignals(g); fuxingMedian(g);
-  [-1, 1].forEach(sd => junctionBridge(g, X_FX + sd * 22, sd)); label(g, 'lblBridgeB', X_FX - 22, 13, 26, 0.5);
+  // 復興南路口：空橋跨越路口連接兩段屋頂公園（行人可在 +7.5 m 公園上連續通行）；兩側樓梯＋電梯直接上到屋頂公園
+  const BX0 = X_FX - SL - 1, BX1 = X_FX + SL + 1;
+  band(g, M.concrete, -2.6, 2.6, 6.9, 7.5, null, BX0 - 2, BX1 + 2); band(g, M.path, -2.6, 2.6, 7.5, 7.55, null, BX0 - 2, BX1 + 2);
+  [-2.6, 2.6].forEach(d => band(g, M.glass, d - 0.03, d + 0.03, 7.5, 8.6, null, BX0 - 2, BX1 + 2));
+  [X_FX - 36, X_FX + 24].forEach(x => [1, -1].forEach(sd => stairTower(g, x, sd)));
+  label(g, 'lblBridgeB', X_FX, 12, 0, 0.5);
   [X_CW[0], X_CW[1]].forEach(x => { [1, -1].forEach(sd => stairTower(g, x, sd)); const o = at(x, -26); label(g, 'lblStair', o.x, 15, o.z, 0.5); });
   { const o = at(X_FX, 0); label(g, 'lblBreak', o.x, 12, o.z, 0.5); }
   label(g, 'secB1', X_SEC - 0.5, 9.5, -22, 0.6, true, true); label(g, 'secB2', X_SEC - 0.5, 2.5, -22, 0.6, true, true);
@@ -1242,7 +1223,7 @@ class Signal {
 }
 const PLAN_F = {
   long:  [{ g: ['EBT', 'WBT', 'WBR'], d: 44 }, { g: ['SBL', 'SBR', 'NTU'], d: 26 }, { g: ['PED'], d: 30 }],   // 現況：3 時相（含行人專用時相）
-  short: [{ g: ['EBT', 'WBT', 'WBR'], d: 22 }, { g: ['SBL', 'SBR', 'NTU'], d: 30 }]                            // A、B、C：2 時相（A、C 行人走覆蓋版／公園，B 走人行天橋）
+  short: [{ g: ['EBT', 'WBT', 'WBR'], d: 22 }, { g: ['SBL', 'SBR', 'NTU'], d: 30 }]                            // A、B、C：2 時相（A、C 行人走覆蓋版／公園，B 走屋頂公園與空橋）
 };
 const sigF = new Signal(PLAN_F.long);
 const SIGP = {                                            // 其他號誌時制（可於「參數設定」修改）
@@ -1328,11 +1309,11 @@ const ROUTES = [                                         // pk＝對應的參數
 ROUTES.forEach(r => { r.E = r.e.map(id => E[id]); r.acc = Math.random(); });
 const rateOf = r => r.R ? (PROP(opt) ? r.R.p : r.R.b) : r.rate;
 const CWS = {                                       // 固定穿越區（車輛讓行人／清道）；方案 A 為「任意位置」動態讓行
-  '0': [[X_CW[0] - 2.5, X_CW[0] + 2.5], [X_CW[1] - 2.5, X_CW[1] + 2.5], [X_FX - 24.5, X_FX - 19.5], [X_FX + 19.5, X_FX + 24.5]],
+  '0': [[X_CW[0] - 2.5, X_CW[0] + 2.5], [X_CW[1] - 2.5, X_CW[1] + 2.5], [X_FX - 24.5, X_FX - 19.5]],
   C: [[X_CW[0] - 3, X_CW[0] + 3], [X_CW[1] - 3, X_CW[1] + 3], [X_FX - 39, X_FX - 33], [X_FX + 33, X_FX + 39]],
   A: []
 };
-CWS.B = [];                                         // B：三處節點皆以樓梯／電梯（復興南路口為人行天橋）穿越，無平面行穿線
+CWS.B = [];                                         // B：三處節點皆以樓梯／電梯上屋頂公園穿越（復興南路口另有空橋連接兩段公園），無平面行穿線
 let opt = '0';
 function rebuildNetwork() {
   LN.forEach((d, k) => {
@@ -1508,7 +1489,7 @@ function drawCars() {
    10. 行人（InstancedMesh，四肢擺動）與路徑
    ===================================================================== */
 const GY = 0.12;
-const PED_LINES = [{ id: 'W', rate: 300 }, { id: 'M', rate: 300 }, { id: 'Ea', rate: 260 }, { id: 'Eb', rate: 260 }];
+const PED_LINES = [{ id: 'W', rate: 300 }, { id: 'M', rate: 300 }, { id: 'Ea', rate: 260 }, { id: 'Eb', rate: 260 }];   // Ea、Eb：節點 3 兩股人流，皆走路口西側
 function pedRoute(o, id, off) {              // 以「南（臺大）→ 北」建立；F[k]：1＝復興南路口行人時相、2＝節點 1、3＝節點 2、4＝電梯
   const P = [], F = [];
   const add = (x, d, y, sig) => { const q = offXH(x, d); P.push([q.x, y == null ? GY : y, q.z]); if (P.length > 1) F.push(sig || 0); };
@@ -1530,13 +1511,13 @@ function pedRoute(o, id, off) {              // 以「南（臺大）→ 北」�
       add(X + off * 0.4, -70);
     } else { add(X + off * 0.5, 45); add(X + off * 0.5, 21.5); add(X + off, 18.6 + back); add(X + off, -18.6, null, sg); add(X + off * 0.4, -70); }
   } else {                                   // 穿越點 3：復興南路口（臺大校門）
-    const sd = id === 'Eb' ? 1 : -1;
-    if (o === 'B') {                         // 方案 B：人行天橋（樓梯 75%／電梯 25%）
-      const X = X_FX + sd * 22, YR = 7.55;
-      add(X_FX + off * 0.5, 45); add(X_FX + off * 0.5, 22.5);
-      if (Math.random() < 0.25) { add(X, 22.5); add(X, 22.5, YR, 4); add(X + off * 0.3, 19, YR); add(X + off * 0.3, -19, YR); add(X, -22.5, YR); add(X, -22.5, GY, 4); add(X_FX + sd * 16, -22.5); }
-      else { add(X_FX + off * 0.5, 18.6); add(X + sd * 14.5, 18.6); add(X + sd * 2, 18.6, YR); add(X + off * 0.3, 17, YR); add(X + off * 0.3, -17, YR); add(X + sd * 2, -18.6, YR); add(X + sd * 14.5, -18.6); add(X_FX + sd * 16, -18.6); }
-      add(X_FX + sd * 16, -130);
+    const sd = (o === '0' || id === 'Ea') ? -1 : 1;   // 現況東側只有自行車穿越道 → 現況行人一律走西側；改善方案兩側皆可
+    if (o === 'B') {                         // 方案 B：路口兩側樓梯／電梯直接上屋頂公園，於公園上穿越
+      const X = sd < 0 ? X_FX - 36 : X_FX + 24, YR = 7.55, u = X + 5 + off * 0.3;
+      add(X_FX + off * 0.5, 45); add(X_FX + off * 0.5, 21.5); add(X_FX + off * 0.5, 18.6);
+      if (Math.random() < 0.25) { add(X + 8.5, 18.1); add(X + 8.5, 18.1, YR, 4); add(u, 16.5, YR); add(u, -16.5, YR); add(X + 8.5, -18.1, YR); add(X + 8.5, -18.1, GY, 4); }
+      else { add(X - 9.5, 18.6); add(X + 3, 18.6, YR); add(u, 16.5, YR); add(u, -16.5, YR); add(X + 3, -18.6, YR); add(X - 9.5, -18.6); }
+      add(X_FX + sd * 16, -18.6); add(X_FX + sd * 16, -130);
       return { P, F };
     }
     if (o === 'C') { add(X_FX + off * 0.5, 45); add(X_FX + off * 0.5, 21.5); add(X_FX + sd * 36 + off, 18.6); add(X_FX + sd * 36 + off, -18.6); add(X_FX + sd * 16, -23); add(X_FX + sd * 16, -130); }
@@ -1738,7 +1719,7 @@ const PSCHEMA = [                                        // [鍵, 預設值, 最
   { g: 'pgX', items: [['xJG', 1040, 0, 3600, 20, 'veh/h'], ['xXW', 440, 0, 3600, 20, 'veh/h'], ['wJG', 720, 0, 1800, 20, 'veh/h'], ['wXW', 400, 0, 1800, 20, 'veh/h']] },
   { g: 'pgL', items: [['lE', 300, 0, 1500, 20, 'veh/h'], ['lW', 260, 0, 1500, 20, 'veh/h'], ['lWR', 240, 0, 1500, 20, 'veh/h'], ['ntu', 20, 0, 300, 10, 'veh/h']] },
   { g: 'pgK', items: [['kS', 450, 0, 1800, 20, 'veh/h'], ['kN', 450, 0, 1800, 20, 'veh/h'], ['mS', 780, 0, 3600, 20, 'veh/h'], ['mN', 780, 0, 3600, 20, 'veh/h']] },
-  { g: 'pgP', items: [['pW', 300, 0, 3000, 20, 'ped/h'], ['pM', 300, 0, 3000, 20, 'ped/h'], ['pEa', 260, 0, 3000, 20, 'ped/h'], ['pEb', 260, 0, 3000, 20, 'ped/h']] },
+  { g: 'pgP', items: [['pW', 300, 0, 3000, 20, 'ped/h'], ['pM', 300, 0, 3000, 20, 'ped/h'], ['pEa', 520, 0, 6000, 20, 'ped/h']] },
   { g: 'pgSF', cyc: 'F', items: [['sfL1', 44, 5, 120, 1, 's'], ['sfL2', 26, 5, 120, 1, 's'], ['sfL3', 30, 5, 120, 1, 's'], ['sfS1', 22, 5, 120, 1, 's'], ['sfS2', 30, 5, 120, 1, 's']] },
   { g: 'pgSO', cyc: 'O', items: [['sK1', 30, 5, 120, 1, 's'], ['sK2', 25, 5, 120, 1, 's'], ['sJ1', 26, 5, 120, 1, 's'], ['sJ2', 34, 5, 120, 1, 's'],
     ['sG1v', 50, 5, 120, 1, 's'], ['sG1p', 24, 5, 120, 1, 's'], ['sG2v', 46, 5, 120, 1, 's'], ['sG2p', 24, 5, 120, 1, 's']] },
@@ -1763,7 +1744,7 @@ function applyParams() {                                  // 依參數更新各�
     else if (r.fx === 'wb') r.rate = wb;
     else if (r.fx) r.R = { b: 0, p: FX_DEM[r.fx] / (r.fx === 'kl' ? 1 : 2) };
   });
-  PED_LINES[0].rate = P.pW; PED_LINES[1].rate = P.pM; PED_LINES[2].rate = P.pEa; PED_LINES[3].rate = P.pEb;
+  PED_LINES[0].rate = P.pW; PED_LINES[1].rate = P.pM; PED_LINES[2].rate = P.pEa / 2; PED_LINES[3].rate = P.pEa / 2;
   Y_T = P.sY; AR_T = P.sAR;
   PLAN_F.long[0].d = P.sfL1; PLAN_F.long[1].d = P.sfL2; PLAN_F.long[2].d = P.sfL3; PLAN_F.short[0].d = P.sfS1; PLAN_F.short[1].d = P.sfS2;
   SIGP.K[0].d = P.sK1; SIGP.K[1].d = P.sK2; SIGP.J[0].d = P.sJ1; SIGP.J[1].d = P.sJ2;
@@ -1797,7 +1778,7 @@ let ready = false;
 function setOption(k) {
   opt = k; optT = 0;
   OPTS.forEach(o => { G[o].visible = o === k; });
-  sigF.set(k === '0' ? PLAN_F.long : PLAN_F.short);                 // B 改走人行天橋 → 與 A、C 同為 2 時相
+  sigF.set(k === '0' ? PLAN_F.long : PLAN_F.short);                 // B 行人走屋頂公園與空橋 → 與 A、C 同為 2 時相
   ['FS1', 'FS2'].forEach(id => { E[id].cars.forEach(c => { c.on = false; }); E[id].cars.length = 0; });   // 清除前一方案的復興南路回堵車隊
   rebuildNetwork(); updateGround(k);
   peds.forEach(p => { p.on = false; });
